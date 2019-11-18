@@ -1,0 +1,26 @@
+{
+    "name": "pingu/field-module",
+    "description": "",
+    "type" : "asgard-module",
+    "authors": [
+        {
+            "name": "Boris Blondin",
+            "email": "blondin.boris@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Pingu\\Field\\Providers\\FieldServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Pingu\\Field\\": ""
+        }
+    }
+}

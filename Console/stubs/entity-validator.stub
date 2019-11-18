@@ -1,0 +1,22 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use Pingu\Field\Support\FieldValidator\BaseFieldsValidator;
+
+class $CLASS$ extends $EXTENDS$
+{
+    protected function rules(): array
+    {
+        return [
+
+        ];
+    }
+
+    protected function messages(): array
+    {
+        return [
+
+        ];
+    }
+}

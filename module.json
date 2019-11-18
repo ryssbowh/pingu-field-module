@@ -1,0 +1,19 @@
+{
+    "name": "Field",
+    "alias": "field",
+    "description": "Pingu Field API",
+    "keywords": [],
+    "core": 1,
+    "order": -99,
+    "providers": [
+        "Pingu\\Field\\Providers\\FieldServiceProvider",
+        "Pingu\\Field\\Providers\\CommandServiceProvider"
+    ],
+    "aliases": {
+        "Field": "Pingu\\Field\\Facades\\Field"
+    },
+    "files": [
+        "functions.php"
+    ],
+    "requires": []
+}

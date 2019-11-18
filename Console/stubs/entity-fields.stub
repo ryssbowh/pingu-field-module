@@ -1,0 +1,15 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use Pingu\Field\Support\FieldRepository\BaseFieldRepository;
+
+class $CLASS$ extends BaseFieldRepository
+{
+    protected function fields(): array
+    {
+        return [
+
+        ];
+    }
+}
