@@ -68,9 +68,7 @@ class FieldDatetime extends BaseModel implements BundleFieldContract
             [
                 'label' => false,
                 'default' => $value ?? $this->default,
-                'format' => $this->format
-            ],
-            [
+                'format' => $this->format,
                 'required' => $this->required
             ]
         );

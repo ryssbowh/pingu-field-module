@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Pingu\Field\Support\BaseField;
+use Pingu\Forms\Exceptions\FormFieldException;
 use Pingu\Forms\Support\Fields\Select;
 
 class Model extends BaseField
@@ -15,8 +16,19 @@ class Model extends BaseField
     public function __construct(string $machineName, array $options = [], ?string $name = null, ?string $formFieldClass = null)
     {
         $options['textField'] = Arr::wrap($options['textField']);
+        $this->checkModelFields($options['textField'], $options['model'], $machineName);
         $options['items'] = $options['items'] ?? $options['model']::all();
         parent::__construct($machineName, $options, $name, $formFieldClass);
+    }
+
+    protected function checkModelFields(array $fields, string $model, string $machineName)
+    {
+        $instance = new $model;
+        foreach ($fields as $field) {
+            if (!$instance->fields()->has($field)) {
+                throw FormFieldException::modelFieldDoesntExist($machineName, $field, $model);
+            }
+        }
     }
 
     /**
@@ -75,17 +87,9 @@ class Model extends BaseField
         return [
             'multiple' => false,
             'required' => false,
-            'noValueLabel' => theme_config('forms.noValueLabel'),
+            'noValueLabel' => theme_config('forms.noValueLabel', 'Select'),
             'separator' => ' - '
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function formFieldOptions(): array
-    {
-        return $this->options->only('items', 'multiple')->toArray();
     }
 
     /**

@@ -6,7 +6,6 @@ use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Forms\Support\Fields\Hidden;
 use Pingu\Forms\Support\Fields\Link;
-use Pingu\Forms\Support\Fields\NumberInput;
 use Pingu\Forms\Support\Fields\Select;
 use Pingu\Forms\Support\Fields\Submit;
 use Pingu\Forms\Support\Form;

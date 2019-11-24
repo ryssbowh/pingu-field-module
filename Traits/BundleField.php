@@ -145,7 +145,7 @@ trait BundleField
      */
     public function value(bool $casted = true)
     {
-        $value = $this->entity->exists ? $this->entity->{$this->machineName()} : [];
+        $value = ($this->entity and $this->entity->exists) ? $this->entity->{$this->machineName()} : [];
         if ($casted) {
             return $value;
         }

@@ -84,6 +84,7 @@ class M2019_10_01_182836436202_InstallField extends Migration
             $table->increments('id');
             $table->string('default');
             $table->boolean('required');
+            $table->integer('maxLength')->unsigned();
             $table->timestamps();
         });
 

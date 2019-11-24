@@ -55,9 +55,7 @@ class FieldTextLong extends BaseModel implements BundleFieldContract
             $this->machineName(),
             [
                 'label' => false,
-                'default' => $value ?? $this->default
-            ],
-            [
+                'default' => $value ?? $this->default,
                 'required' => $this->required
             ]
         );
