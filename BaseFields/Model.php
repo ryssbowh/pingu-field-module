@@ -16,19 +16,8 @@ class Model extends BaseField
     public function __construct(string $machineName, array $options = [], ?string $name = null, ?string $formFieldClass = null)
     {
         $options['textField'] = Arr::wrap($options['textField']);
-        $this->checkModelFields($options['textField'], $options['model'], $machineName);
         $options['items'] = $options['items'] ?? $options['model']::all();
         parent::__construct($machineName, $options, $name, $formFieldClass);
-    }
-
-    protected function checkModelFields(array $fields, string $model, string $machineName)
-    {
-        $instance = new $model;
-        foreach ($fields as $field) {
-            if (!$instance->fields()->has($field)) {
-                throw FormFieldException::modelFieldDoesntExist($machineName, $field, $model);
-            }
-        }
     }
 
     /**

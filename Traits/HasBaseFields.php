@@ -49,7 +49,7 @@ trait HasBaseFields
     public function fields(): FieldRepository
     {
         $_this = $this;
-        return \Field::getModelFieldRepository(
+        return \Field::getFieldRepository(
             $this,
             function () use ($_this) {
                 return $_this->getFieldRepository();
@@ -65,7 +65,7 @@ trait HasBaseFields
     public function validator(): FieldsValidator
     {
         $_this = $this;
-        return \Field::getModelFieldsValidator(
+        return \Field::getFieldsValidator(
             $this,
             function () use ($_this) {
                 return $_this->getFieldsValidator();

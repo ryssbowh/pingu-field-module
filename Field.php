@@ -82,56 +82,17 @@ class Field
     }
 
     /**
-     * Gets a field repository instance for a bundle.
+     * Gets a field repository instance for an object.
      * Will register it in the IOC
      * 
-     * @param Bundle $bundle
-     * @param Closure $callback
-     * 
-     * @return FieldRepository
-     */
-    public function getBundleFieldRepository(BundleContract $bundle, $callback): FieldRepository
-    {
-        $key = 'field.bundle-field-repository.'.$bundle->bundleName();
-        if (!app()->bound($key)) {
-            app()->instance($key, $callback());
-        }
-        return app()[$key];
-    }
-
-    /**
-     * Gets a field validator instance for a bundle.
-     * Will register it in the IOC
-     * 
-     * @param BundleContract $bundle
-     * @param Closure        $callback
-     * 
-     * @return FieldsValidator
-     */
-    public function getBundleFieldsValidator(BundleContract $bundle, $callback): FieldsValidator
-    {
-        $key = 'field.fields-validator.'.get_class($bundle);
-        if (!app()->bound($key)) {
-            app()->instance($key, $callback());
-        }
-        return app()[$key];
-    }
-
-    /**
-     * Gets a field repository instance for a model.
-     * Will register it in the IOC
-     * 
-     * @param BaseModel $model
+     * @param object|string $object
      * @param Closure   $callback
      * 
      * @return FieldRepository
      */
-    public function getModelFieldRepository(BaseModel $model, $callback): FieldRepository
+    public function getFieldRepository($object, $callback): FieldRepository
     {
-        $key = 'field.field-repository.'.get_class($model);
-        if ($model->exists) {
-            $key .= '.'.$model->getKey();
-        }
+        $key = 'field.repository.'.object_to_class($object);
         if (!app()->bound($key)) {
             app()->instance($key, $callback());
         }
@@ -139,20 +100,17 @@ class Field
     }
 
     /**
-     * Gets a field validator instance for a model.
+     * Gets a field validator instance for an object.
      * Will register it in the IOC
      * 
-     * @param BaseModel $model
+     * @param object|string $model
      * @param Closure   $callback
      * 
      * @return FieldRepository
      */
-    public function getModelFieldsValidator(BaseModel $model, $callback)
+    public function getFieldsValidator($object, $callback)
     {
-        $key = 'field.fields-validator.'.get_class($model);
-        if ($model->exists) {
-            $key .= '.'.$model->getKey();
-        }
+        $key = 'field.validator.'.get_class($object);
         if (!app()->bound($key)) {
             app()->instance($key, $callback());
         }
