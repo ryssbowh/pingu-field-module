@@ -22,14 +22,6 @@ abstract class FieldRepository
     public function __construct(HasFields $object)
     {
         $this->object = $object;
-        $_this = $this;
-        $this->fields = \Field::getCache(
-            $this->fieldsCacheKey, $object, function () use ($_this) {
-                $fields = $_this->buildFields();
-                event(new FieldsRetrieved($fields, $_this->object));
-                return $fields;
-            }
-        );
     }
 
     /**
@@ -39,27 +31,43 @@ abstract class FieldRepository
      */
     abstract protected function buildFields(): Collection;
 
+    protected function resolveFields()
+    {
+        if (is_null($this->fields)) {
+            $_this = $this;
+            $this->fields = \Field::getCache(
+                $this->fieldsCacheKey, $this->object, function () use ($_this) {
+                    $fields = $_this->buildFields();
+                    event(new FieldsRetrieved($fields, $_this->object));
+                    return $fields;
+                }
+            );
+        }
+        return $this->fields;
+    }
+
     /**
      * Returns a collection of object's fields (or a single field).
      * fields will be kept in cache forever.
      *
-     * @param array|string $fields
+     * @param array|string $only
      * 
      * @return Field|Collection
      */
-    public function get($fields = null)
+    public function get($only = null)
     {
-        if (!is_null($fields)) {
-            if (is_array($fields)) {
-                return $this->fields->only($fields);
+        $fields = $this->resolveFields();
+        if (!is_null($only)) {
+            if (is_array($only)) {
+                return $fields->only($only);
             } else {
-                if (!$this->fields->has($fields)) {
-                    throw FieldsException::undefined($fields, $this->object);
+                if (!$fields->has($only)) {
+                    throw FieldsException::undefined($only, $this->object);
                 }
-                return $this->fields->get($fields);
+                return $fields->get($only);
             }
         }
-        return $this->fields;
+        return $fields;
     }
 
     /**
@@ -71,7 +79,7 @@ abstract class FieldRepository
      */
     public function has(string $name): bool
     {
-        return $this->get()->has($name);
+        return $this->resolveFields()->has($name);
     }
 
     /**
@@ -81,7 +89,7 @@ abstract class FieldRepository
      */
     public function allNames(): array
     {
-        return $this->get()->keys()->all();
+        return $this->resolveFields()->keys()->all();
     }
 
     /**
@@ -101,9 +109,9 @@ abstract class FieldRepository
     public function toFormElements($fields = null): array
     {
         if (!is_null($fields)) {
-            $fields = $this->get()->only(Arr::wrap($fields));
+            $fields = $this->resolveFields()->only(Arr::wrap($fields));
         } else {
-            $fields = $this->get();
+            $fields = $this->resolveFields();
         }
 
         $out = [];
