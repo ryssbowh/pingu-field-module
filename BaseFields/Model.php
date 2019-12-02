@@ -5,18 +5,25 @@ namespace Pingu\Field\BaseFields;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Pingu\Field\Exceptions\FieldsException;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Exceptions\FormFieldException;
 use Pingu\Forms\Support\Fields\Select;
 
 class Model extends BaseField
 {
-    protected $requiredOptions = ['model', 'textField'];
+    protected $requiredOptions = ['textField'];
 
     public function __construct(string $machineName, array $options = [], ?string $name = null, ?string $formFieldClass = null)
     {
-        $options['textField'] = Arr::wrap($options['textField']);
-        $options['items'] = $options['items'] ?? $options['model']::all();
+        if (isset($options['items']) and isset($options['items'][0])) {
+            $options['model'] = get_class($options['items'][0]);
+        } elseif (isset($options['model'])) {
+            $options['items'] = $options['model']::all();
+        } else {
+            throw FieldsException::missingOption($machineName, 'items or model');
+        }
+        
         parent::__construct($machineName, $options, $name, $formFieldClass);
     }
 
@@ -33,12 +40,13 @@ class Model extends BaseField
      */
     protected function buildItems()
     {
+        $textField = Arr::wrap($this->option('textField'));
         $values = [];
         if (!$this->option('required')) {
             $values[''] = $this->option('noValueLabel');
         }
         foreach ($this->option('items') as $model) {
-            $values[''.$model->id] = implode($this->option('separator'), $model->only($this->option('textField')));
+            $values[''.$model->id] = implode($this->option('separator'), $model->only($textField));
         }
         return $values;
     }
