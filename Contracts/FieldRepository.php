@@ -35,7 +35,7 @@ abstract class FieldRepository
     {
         if (is_null($this->fields)) {
             $_this = $this;
-            $this->fields = \Field::getCache(
+            $this->fields = \Field::getFieldsCache(
                 $this->fieldsCacheKey, $this->object, function () use ($_this) {
                     $fields = $_this->buildFields();
                     event(new FieldsRetrieved($fields, $_this->object));

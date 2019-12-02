@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Exceptions\ClassException;
 use Pingu\Entity\Contracts\BundleContract;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Entity\Support\Bundle;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Contracts\FieldRepository;
@@ -110,7 +111,7 @@ class Field
      */
     public function getFieldsValidator($object, $callback)
     {
-        $key = 'field.validator.'.get_class($object);
+        $key = 'field.validator.'.object_to_class($object);
         if (!app()->bound($key)) {
             app()->instance($key, $callback());
         }
@@ -122,15 +123,15 @@ class Field
      * Uses ArrayCache so all cache related to this object can be cleared at once.
      * 
      * @param string  $key
-     * @param object  $object
+     * @param object|string  $object
      * @param Closure $callback
      * 
      * @return array
      */
-    public function getCache(string $key, HasFields $object, $callback)
+    public function getFieldsCache(string $key, $object, $callback)
     {   
         if (config('field.useCache', false)) {
-            $key = 'field.fields.'.get_class($object).'.'.$key;
+            $key = 'field.fields.'.object_to_class($object).'.'.$key;
             return \ArrayCache::rememberForever($key, $callback);
         }
         return $callback();
@@ -141,11 +142,9 @@ class Field
      * 
      * @param object $object
      */
-    public function clearCache($object)
+    public function forgetFieldCache($object)
     {
-        if (is_object($object)) {
-            $object = get_class($object);
-        }
+        $object = object_to_class($object);
         $key = 'field.fields.'.$object;
         \ArrayCache::forget($key);
     }
@@ -153,8 +152,45 @@ class Field
     /**
      * Clears cache for all objects
      */
-    public function clearAllCache()
+    public function forgetAllFieldCache()
     {
         \ArrayCache::forget('field.fields');
+    }
+
+    /**
+     * Get a revision related cache for an entity
+     * 
+     * @param string $key
+     * @param Entity $entity
+     * @param callable $callback
+     * 
+     * @return mixed   
+     */
+    public function getRevisionCache(string $key, Entity $entity, $callback)
+    {   
+        if (config('field.useCache', false)) {
+            $key = 'field.revisions.'.get_class($entity).'.'.$entity->getKey().'.'.$key;
+            return \ArrayCache::rememberForever($key, $callback);
+        }
+        return $callback();
+    }
+
+    /**
+     * Clears revision related cache for an entity
+     * 
+     * @param Entity $entity
+     */
+    public function forgetRevisionCache(Entity $entity)
+    {
+        $key = 'field.revisions.'.get_class($entity).'.'.$entity->getKey();
+        \ArrayCache::forget($key);
+    }
+
+    /**
+     * Clears all revision related cache
+     */
+    public function forgetAllRevisionCache()
+    {
+        \ArrayCache::forget('field.revisions');
     }
 }

@@ -45,7 +45,13 @@ class BundleField extends BaseModel implements HasRouteSlugContract
 
         static::deleted(
             function($field) {
-                \Field::clearAllCache();
+                \Field::forgetAllFieldCache();
+            }
+        );
+
+        static::saved(
+            function($field) {
+                \Field::forgetAllFieldCache();
             }
         );
     }
@@ -86,7 +92,6 @@ class BundleField extends BaseModel implements HasRouteSlugContract
         $generic->bundle = $bundle->bundleName();
         $generic->instance()->associate($bundleField);
         $generic->saveWithRelations($genericValues);
-        \Field::clearAllCache();
         return $generic;
     }
 

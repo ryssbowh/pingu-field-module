@@ -211,7 +211,9 @@ trait BundleField
                 $fields[] = $field;
             }
         } else {
-            $fields[] = $this->toSingleFormField(null);
+            $field = $this->toSingleFormField(null);
+            $field->option('multiple', true);
+            $fields[] = $field;
         }
         $options = [
             'helper' => $this->field->helper,
@@ -226,9 +228,6 @@ trait BundleField
     public function defaultValidationRules(): array
     {
         $cardinality = $this->cardinality();
-        if ($cardinality == 1) {
-            return [$this->machineName() => $this->defaultValidationRule()];
-        }
         $size = $cardinality == -1 ? '' : '|max:'.$cardinality;
         return [
             $this->machineName() => 'array'.$size,

@@ -2,7 +2,9 @@
 
 namespace Pingu\Field\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Support\RevisionRepository;
 
 trait HasBundleFields
@@ -42,6 +44,22 @@ trait HasBundleFields
             return $this->fieldRevisions->getValue($key);
         }
         return parent::getAttribute($key);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllAttributes()
+    {
+        return array_merge($this->getAttributes(), $this->fieldRevisions->getRawValues());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllOriginal()
+    {
+        return array_merge($this->getOriginal(), $this->fieldRevisions->getOriginal());
     }
 
     /**
@@ -102,5 +120,43 @@ trait HasBundleFields
     {
         $this->fieldRevisions->save();
         parent::finishSave($options);
+    }
+
+    /**
+     * Get the value of the model's route key taking into account bundle fields
+     *
+     * @return mixed
+     */
+    public function getRouteKey()
+    {
+        $routeKey = parent::getRouteKey();
+        $keyName = $this->getRouteKeyName();
+        if (substr($keyName, 0, 6) == 'field_') {
+            return $routeKey[0];
+        }
+        return $routeKey;
+    }
+
+    /**
+     * Retrieve the model for a bound value taking into account bundle fields
+     *
+     * @param  mixed  $value
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value)
+    {
+        $keyName = $this->getRouteKeyName();
+        if (substr($keyName, 0, 6) == 'field_') {
+            $fieldName = substr($keyName, 6);
+            $fieldValue = BundleFieldValue::where('entity_type', get_class($this))
+                ->where('value', $value)
+                ->whereHas('field', function (Builder $query) use ($fieldName) {
+                    $query->where('machineName', $fieldName);
+                })->first();
+            
+            return $fieldValue ? $fieldValue->entity : null;
+
+        }
+        return parent::resolveRouteBinding($value);
     }
 }

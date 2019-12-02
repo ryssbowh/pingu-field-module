@@ -49,7 +49,7 @@ abstract class FieldsValidator
     public function getMessages(): array
     {
         $_this = $this;
-        return \Field::getCache(
+        return \Field::getFieldsCache(
             $this->messagesCacheKey, $this->object, function () use ($_this) {
                 $messages = $_this->buildMessages();
                 event(new FieldsValidationMessagesRetrieved($messages, $_this->object));
@@ -72,7 +72,7 @@ abstract class FieldsValidator
     {
         $_this = $this;
         $key = $this->rulesCacheKey . ($updating ? '-updating' : '-creating');
-        $rules = \Field::getCache(
+        $rules = \Field::getFieldsCache(
             $this->rulesCacheKey, $this->object, function () use ($_this, $updating) {
                 $rules = $_this->buildRules();
                 event(new FieldsValidationRulesRetrieved($rules, $_this->object, $updating));

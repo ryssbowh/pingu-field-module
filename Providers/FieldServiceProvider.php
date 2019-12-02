@@ -15,6 +15,7 @@ use Pingu\Field\Entities\FieldText;
 use Pingu\Field\Entities\FieldTextLong;
 use Pingu\Field\Entities\FieldUrl;
 use Pingu\Field\Field;
+use Pingu\Field\Validation\BundleFieldRules;
 
 class FieldServiceProvider extends ModuleServiceProvider
 {
@@ -27,6 +28,7 @@ class FieldServiceProvider extends ModuleServiceProvider
     {
         $this->registerConfig();
         $this->registerBundleFields();
+        $this->extendValidator();
         \ModelRoutes::registerSlugFromObject(new BundleFieldModel);
     }
 
@@ -40,6 +42,11 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->singleton('field.field', Field::class);
+    }
+
+    protected function extendValidator()
+    {
+        \Validator::extend('unique_field', BundleFieldRules::class.'@unique');
     }
 
     protected function registerBundleFields()

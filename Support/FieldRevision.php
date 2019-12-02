@@ -98,8 +98,10 @@ class FieldRevision
         if ($this->loaded) {
             return $this;
         }
-        foreach ($this->entity->bundle()->fields()->get() as $field) {
-            $fieldValue = $this->getFieldValues($field->field);
+        $this->values = $this->values->groupBy('field_id');
+        foreach ($this->values as $values) {
+            $field = $values[0]->field->instance;
+            $fieldValue = $values->pluck('value')->toArray();
             $this->rawValues[$field->machineName()] = $field->formValue($fieldValue);
             $this->castedValues[$field->machineName()] = $field->castValue($fieldValue);
         }
@@ -117,6 +119,16 @@ class FieldRevision
     {
         $this->original = $this->rawValues;
         return $this;
+    }
+
+    /**
+     * Get original attributes
+     * 
+     * @return array
+     */
+    public function getOriginal(): array
+    {
+        return $this->original;
     }
 
     /**
@@ -175,7 +187,7 @@ class FieldRevision
     }
 
     /**
-     * get the raw value of a field in this revision
+     * Get the raw value of a field in this revision
      * 
      * @param string $name
      * 
@@ -184,6 +196,16 @@ class FieldRevision
     public function getRawValue(string $name)
     {
         return $this->rawValues[$name] ?? [];
+    }
+
+    /**
+     * Get all raw values
+     * 
+     * @return array
+     */
+    public function getRawValues(): array
+    {
+        return $this->rawValues;
     }
 
     /**
@@ -245,8 +267,10 @@ class FieldRevision
      */
     public function delete(): FieldRevision
     {
-        foreach ($this->values as $value) {
-            $value->delete();
+        foreach ($this->values as $collection) {
+            $collection->each(function ($value) {
+                $value->delete();
+            });
         }
         return $this;
     }
@@ -307,10 +331,10 @@ class FieldRevision
      * 
      * @return array
      */
-    protected function getFieldValues(BundleField $field): array
-    {
-        return $this->values->where('field_id', $field->id)->pluck('value')->toArray();
-    }
+    // protected function getFieldValues(BundleField $field): array
+    // {
+    //     return $this->values->where('field_id', $field->id)->pluck('value')->toArray();
+    // }
 
     /**
      * Creates a field value model

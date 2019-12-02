@@ -18,6 +18,30 @@ class BundleFieldValue extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected $casts = [
+        'current' => 'bool'
+    ];
+
+    /**
+     * @inheritDoc
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(
+            function($field) {
+                \Field::forgetRevisionCache($field->entity);
+            }
+        );
+
+        static::saved(
+            function($field) {
+                \Field::forgetRevisionCache($field->entity);
+            }
+        );
+    }
+    
     /**
      * Field relation
      * 
