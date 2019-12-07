@@ -39,9 +39,6 @@ Every Bundle field must implement `BundleFieldContract` and be registered in the
 
 `\Field::registerBundleFields($fields)`
 
-Bundle fields values are organized in revisions (`FieldRevision` class), a revision is a set of values for a set of fields for an entity.
-Every time an entity is saved, a new revision is created. Once you've reached the amount of revision sets in the `numberOfRevisionToKeep` config, the oldest revisions will be soft deleted.
-
 A bundle field can have multiple values attached to it, so a value for a field for an entity will always be returned as an array.
 You can define a bundle field to have a cardinality of 1 (only one value), but the value for an entity for that field will also return an array (of 1 element).
 
@@ -55,6 +52,13 @@ The fields repositories, validation rules and messages will be stored in Cache s
 This happens in the `Field` facade, and uses `ArrayCache` so that you can empty all the cache for an object in one go.
 
 The config `field.useCache` controls whether you use this cache or not. it's off if your APP_DEBUG is set to true.
+
+## Revisions
+
+Revisions are activated on the entity.
+They will be saved in database and are handled by the `RevisionRepository` class.
+The config `field.numberRevisionsToKeep` controls how many revisions to keep in database.
+Revisions will be saved for any field defined in the entity field repository and any bundle field if this entity is bundled.
 
 ## Commands
 

@@ -110,10 +110,10 @@ class RevisionRepository
      * 
      * @return RevisionRepository
      */
-    public function deleteMultiple(array $revisions, $soft = true): RevisionRepository
+    public function deleteMultiple(array $revisions): RevisionRepository
     {
         foreach ($revisions as $revisionId) {
-            $this->delete($revisionId, $soft);
+            $this->delete($revisionId);
         }
         return $this;
     }
@@ -249,39 +249,21 @@ class RevisionRepository
      */
     protected function forget(int $id)
     {
-        $ind = array_search($id, $this->revisions);
-        unset($this->revisions[$ind]);
-    }
-
-    /**
-     * Restores a revision by id
-     * 
-     * @param int $id
-     * 
-     * @return FieldRevision
-     */
-    public function restore(int $id): FieldRevision
-    {
-        return $this->get($id)->restore();
+        $this->revisions->forget($id);
     }
 
     /**
      * Soft deletes old revisions. Number of revisions to keep is a config
-     * 
-     * @return array
      */
-    protected function deleteOldRevisions(): array
+    protected function deleteOldRevisions()
     {
         $size = $this->count();
         $maxSize = config('field.numberRevisionsToKeep', 10);
-        if ($size == -1) { return [];
+        if ($maxSize == -1 or $size <= $maxSize) {
+            return [];
         }
-        if ($size > $maxSize) {
-            $toDelete = array_slice($this->revisions, $maxSize);
-            $this->deleteMultiple(array_keys($toDelete));
-            return $toDelete;
-        }
-        return [];
+        $toDelete = $this->revisions->sortKeysDesc()->slice($maxSize);
+        $this->deleteMultiple($toDelete->keys()->all());
     }
 
     /**
