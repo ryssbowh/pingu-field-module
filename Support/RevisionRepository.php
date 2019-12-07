@@ -2,14 +2,19 @@
 
 namespace Pingu\Field\Support;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Pingu\Entity\Contracts\HasBundleContract;
+use Illuminate\Support\Collection;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\BundleFieldValue;
+use Pingu\Field\Entities\Revision;
+use Pingu\Field\Events\CreatingRevision;
+use Pingu\Field\Events\RevisionCreated;
 use Pingu\Field\Exceptions\RevisionException;
+use Pingu\Field\Support\BaseField;
+use Pingu\Field\Support\FieldRevision;
 
 /**
  * Class designed to handle a set of revisions attached to an entity
@@ -26,26 +31,17 @@ class RevisionRepository
      * 
      * @var array
      */
-    protected $revisions = [];
+    protected $revisions;
 
     /**
-     * Current revision
-     * 
-     * @var FieldRevision
+     * @var boolean
      */
-    protected $current;
+    protected $loaded = false;
 
-    /**
-     * Cache key used for revision values
-     * 
-     * @var string
-     */
-    protected $cacheKeyValues = 'values';
-
-    public function __construct(HasBundleContract $entity)
+    public function __construct(Entity $entity)
     {
+        $this->revisions = collect();
         $this->entity = $entity;
-        $this->current = new FieldRevision($this->entity, collect(), 0);
     }
 
     /**
@@ -55,29 +51,35 @@ class RevisionRepository
      */
     public function load(): RevisionRepository
     {
-        $this->revisions = $this->loadRevisionIds();
-        if ($this->revisions) {
-            $this->current = $this->loadRevision(Arr::first($this->revisions));
+        if ($this->loaded) {
+            return $this;
         }
+        $this->revisions = $this->loadRevisions();
+        $this->loaded = true;
         return $this;
     }
 
     /**
-     * Alias for revisions
+     * Get a revison by id
      * 
-     * @return array
+     * @param int    $id
+     * 
+     * @return FieldRevision
      */
-    public function ids(): array
+    public function get(int $id): FieldRevision
     {
-        return $this->revisions();
+        if (!$this->has($id)) {
+            throw RevisionException::doesNotExist($this->entity, $id);
+        }
+        return $this->revisions[$id];
     }
 
     /**
      * Gets all the revisions ids
      * 
-     * @return array
+     * @return Collection
      */
-    public function revisions(): array
+    public function all(): Collection
     {
         return $this->revisions;
     }
@@ -89,7 +91,7 @@ class RevisionRepository
      */
     public function count(): int
     {
-        return sizeof($this->revisions);
+        return $this->revisions->count();
     }
 
     /**
@@ -122,43 +124,11 @@ class RevisionRepository
      * 
      * @return RevisionRepository
      */
-    public function delete(int $id, $soft = true): RevisionRepository
+    public function delete(int $id): RevisionRepository
     {
-        if ($this->current->id() == $revision) {
-            throw RevisionException::cantDeleteCurrent($id, $this->entity);
-        }
-        if (!$this->has($id)) {
-            throw RevisionException::doesNotExist($this->entity, $id);
-        }
-        $method = $soft ? 'softDelete' : 'forceDelete';
-        $this->$method($id);
+        $this->get($id)->delete();
+        $this->forget($id);
         return $this;
-    }
-
-    /**
-     * Soft deletes a revision values 
-     * 
-     * @param int $id
-     */
-    protected function softDelete(int $id)
-    {
-        $values = $this->getRevisionValues($id);
-        foreach ($values as $value) {
-            $value->delete();
-        }
-    }
-
-    /**
-     * Force deletes a revision values 
-     * 
-     * @param int $id
-     */
-    protected function forceDelete(int $id)
-    {
-        $values = $this->getRevisionValues($id);
-        foreach ($values as $value) {
-            $value->forceDelete();
-        }
     }
 
     /**
@@ -170,7 +140,101 @@ class RevisionRepository
      */
     public function has(int $id)
     {
-        return in_array($id, $this->revisions);
+        return $this->revisions->has($id);
+    }
+
+    /**
+     * Gets the latest revision id
+     * 
+     * @return int
+     */
+    public function getLastId(): int
+    {
+        if ($this->revisions->isEmpty()) {
+            return 0;
+        }
+        return $this->revisions->first()->id();
+    }
+
+    /**
+     * Saves the current revision as a new revision
+     * 
+     * @return FieldRevision
+     */
+    public function createRevision(): FieldRevision
+    {
+        $id = $this->getLastId() + 1;
+        $models = collect();
+        foreach ($this->entity->fields()->get() as $field) {
+            $method = 'createBundleFieldModel';
+            if ($field instanceof BaseField) {
+                $method = 'createBaseFieldModel';
+            }
+            $models->put($field->machineName(), $this->$method($id, $field));
+        }
+        event(new CreatingRevision($this->entity, $models, $id));
+        $this->performCreate($models);
+        $revision = new FieldRevision($this->entity, $models, $id);
+        event(new RevisionCreated($this->entity, $revision));
+        $this->revisions->put($id, $revision);
+        $this->deleteOldRevisions();
+        return $revision;
+    }
+
+    /**
+     * Perform revision creation
+     * 
+     * @param Collection $models
+     */
+    protected function performCreate(Collection $models)
+    {
+        foreach ($models as $collection) {
+            foreach ($collection as $model) {
+                $model->save();
+            }
+        }
+    }
+
+    /**
+     * Creates a revision model for a bundle field
+     * 
+     * @param  int                 $id    
+     * @param  BundleFieldContract $field
+     * @return Collection
+     */
+    protected function createBundleFieldModel(int $id, BundleFieldContract $field): Collection
+    {
+        $out = collect();
+        foreach ($field->value(false) as $value) {
+            $model = new Revision;
+            $model->fill([
+                'value' => $value,
+                'revision' => $id,
+                'field' => $field->machineName()
+            ]);
+            $model->entity()->associate($this->entity);
+            $out->push($model);
+        }
+        return $out;
+    }
+
+    /**
+     * Creates a revision model for a base field
+     * 
+     * @param  int                 $id    
+     * @param  BundleFieldContract $field
+     * @return Collection
+     */
+    protected function createBaseFieldModel(int $id, BaseField $field): Collection
+    {
+        $model = new Revision;
+        $model->fill([
+            'value' => $field->value(false),
+            'revision' => $id,
+            'field' => $field->machineName()
+        ]);
+        $model->entity()->associate($this->entity);
+        return collect([$model]);
     }
 
     /**
@@ -185,16 +249,6 @@ class RevisionRepository
     }
 
     /**
-     * Saves the current revision as a new revision
-     * 
-     * @return FieldRevision
-     */
-    public function save(): FieldRevision
-    {
-        return $this->duplicateAndSetCurrent($this->current);
-    }
-
-    /**
      * Restores a revision by id
      * 
      * @param int    $id
@@ -203,52 +257,7 @@ class RevisionRepository
      */
     public function restore(int $id): FieldRevision
     {
-        if ($id === $this->id()) {
-            return $this->current;
-        }
-        $revision = $this->get($id);
-        return $this->duplicateAndSetCurrent($revision);
-    }
-
-    /**
-     * Forward all calls to the current revision
-     * 
-     * @param $method 
-     * @param $args 
-     * 
-     * @return mixed
-     */
-    public function __call($method, $args)
-    {
-        return call_user_func_array([$this->current, $method], $args);
-    }
-
-    /**
-     * Gets current revision
-     * 
-     * @return FieldRevision
-     */
-    public function current(): FieldRevision
-    {
-        return $this->current;
-    }
-
-    /**
-     * Duplicates a revision and sets it as the current one
-     * 
-     * @param FieldRevision $revision
-     * 
-     * @return FieldRevision
-     */
-    protected function duplicateAndSetCurrent(FieldRevision $revision): FieldRevision
-    {
-        $newId = $this->id() + 1;
-        $newRevision = $revision->saveAsNew($newId);
-        $revision->delete();
-        array_unshift($this->revisions, $newId);
-        $this->current = $newRevision;
-        $this->deleteOldRevisions();
-        return $newRevision;
+        return $this->get($id)->restore();
     }
 
     /**
@@ -258,51 +267,15 @@ class RevisionRepository
      */
     protected function deleteOldRevisions(): array
     {
-        $revisionIds = $this->ids();
         $size = $this->count();
         $maxSize = config('field.numberRevisionsToKeep', 10);
         if ($size == -1) return [];
         if ($size > $maxSize) {
-            $toDelete = array_slice($revisionIds, $maxSize);
-            $this->deleteMultiple($toDelete, false);
+            $toDelete = array_slice($this->revisions, $maxSize);
+            $this->deleteMultiple(array_keys($toDelete));
             return $toDelete;
         }
         return [];
-    }
-
-    /**
-     * Get values for a revision.
-     * Will save result in cache
-     * 
-     * @param  int $id
-     * @return Collection
-     */
-    protected function getRevisionValues(int $id): Collection
-    {
-        $entity = $this->entity;
-        return \Field::getRevisionCache('values.'.$id, $this->entity, function () use ($entity, $id) {
-            return $entity->morphMany(BundleFieldValue::class, 'entity')
-                ->withTrashed()
-                ->where('revision_id', $id)
-                ->get();   
-            }
-        );
-    }
-
-    /**
-     * Loads a revision
-     * 
-     * @param  int    $id
-     * @return FieldRevision
-     */
-    public function loadRevision(int $id): FieldRevision
-    {
-        $values = $this->getRevisionValues($id);
-        if ($values->isEmpty()) {
-            throw RevisionException::doesNotExist($this->entity, $id);
-        }
-        $revision = new FieldRevision($this->entity, $values, $id);
-        return $revision->load();
     }
 
     /**
@@ -311,18 +284,19 @@ class RevisionRepository
      * 
      * @return array
      */
-    protected function loadRevisionIds(): array
+    protected function loadRevisions(): Collection
     {
         $entity = $this->entity;
-        return \Field::getRevisionCache('ids', $this->entity, function () use ($entity) {
-            return $this->entity->morphMany(BundleFieldValue::class, 'entity')
-                ->withTrashed()
-                ->orderBy('revision_id', 'DESC')
+        return \Field::getRevisionCache($this->entity, function () use ($entity) {
+            $values = $entity->morphMany(Revision::class, 'entity')
+                ->orderBy('revision', 'DESC')
                 ->get()
-                ->groupBy('revision_id')
-                ->keys()
-                ->toArray();
+                ->groupBy(['revision', 'field']);
+            $out = collect();
+            foreach ($values as $id => $collection) {
+                $out->put($id, new FieldRevision($entity, $collection, $id));
             }
-        );
+            return $out;
+        });
     }
 }

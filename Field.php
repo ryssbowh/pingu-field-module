@@ -166,10 +166,10 @@ class Field
      * 
      * @return mixed   
      */
-    public function getRevisionCache(string $key, Entity $entity, $callback)
+    public function getBundleValuesCache(Entity $entity, $callback)
     {   
         if (config('field.useCache', false)) {
-            $key = 'field.revisions.'.get_class($entity).'.'.$entity->getKey().'.'.$key;
+            $key = 'field.values.'.get_class($entity).'.'.$entity->getKey();
             return \ArrayCache::rememberForever($key, $callback);
         }
         return $callback();
@@ -180,17 +180,18 @@ class Field
      * 
      * @param Entity $entity
      */
-    public function forgetRevisionCache(Entity $entity)
+    public function forgetBundleValuesCache(Entity $entity)
     {
-        $key = 'field.revisions.'.get_class($entity).'.'.$entity->getKey();
+        $key = 'field.values.'.get_class($entity).'.'.$entity->getKey();
         \ArrayCache::forget($key);
     }
 
-    /**
-     * Clears all revision related cache
-     */
-    public function forgetAllRevisionCache()
+    public function getRevisionCache(Entity $entity, $callback)
     {
-        \ArrayCache::forget('field.revisions');
+        if (config('field.useCache', false)) {
+            $key = 'field.revisions.'.get_class($entity).'.'.$entity->getKey();
+            return \ArrayCache::rememberForever($key, $callback);
+        }
+        return $callback();
     }
 }

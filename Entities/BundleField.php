@@ -64,10 +64,7 @@ class BundleField extends BaseModel implements HasRouteSlugContract
     public function getMachineNameAttribute()
     {
         $name = $this->attributes['machineName'];
-        if (!Str::startsWith($name, 'field_')) {
-            $name = 'field_' . $name;
-        }
-        return $name;
+        return 'field_' . $name;
     }
 
     /**
@@ -113,37 +110,6 @@ class BundleField extends BaseModel implements HasRouteSlugContract
     public function values()
     {
         return $this->hasMany(BundleFieldValue::class, 'field_id')->orderBy('revision_id', 'desc');
-    }
-
-    /**
-     * Get this field latest value for an entity
-     * 
-     * @param Entity $entity
-     * 
-     * @return BundleFieldValue|null
-     */
-    public function getLatestValue(Entity $entity)
-    {
-        return $this->values
-            ->where('entity_id', $entity->id)
-            ->where('entity_type', get_class($entity))
-            ->first();
-    }
-
-    /**
-     * Value for that field for an entity
-     * 
-     * @param  Entity   $entity
-     * @param  int|null $revision
-     * @return mixed
-     */
-    public function value(Entity $entity)
-    {
-        $value = $this->getLatestValue($entity);
-        if ($value) {
-            return $value->value;
-        }
-        return null;
     }
 
     /**

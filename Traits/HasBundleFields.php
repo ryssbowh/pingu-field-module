@@ -5,32 +5,37 @@ namespace Pingu\Field\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Pingu\Field\Entities\BundleFieldValue;
-use Pingu\Field\Support\RevisionRepository;
+use Pingu\Field\Support\FieldValuesRepository;
 
 trait HasBundleFields
 {
-    public $fieldRevisions;
+    public $fieldValues;
 
     public function initializeHasBundleFields()
     {
-        $this->fieldRevisions = new RevisionRepository($this);
+        $this->fieldValues = new FieldValuesRepository($this);
     }
 
     /**
      * Boot this trait,
-     * load the revisions for this entity when the model is retrieved.
+     * load the bundle field values for this entity when the model is retrieved.
      * deletes all values for this entity when the model is deleted.
      */
     public static function bootHasBundleFields()
     {
         static::retrieved(
             function ($entity) {
-                $entity->fieldRevisions->load();
+                $entity->fieldValues->load();
             }
         );
+
         static::deleted(
             function ($entity) {
-                $entity->fieldRevisions->destroy();
+                if (method_exists($entity, 'isForceDeleting') and !$entity->isForceDeleting()) {
+                    $entity->fieldValues->delete();
+                } else {
+                    $entity->fieldValues->forceDelete();
+                }
             }
         );
     }
@@ -41,7 +46,7 @@ trait HasBundleFields
     public function getAttribute($key)
     {
         if (Str::startsWith($key, 'field_')) {
-            return $this->fieldRevisions->getValue($key);
+            return $this->fieldValues->getValue($key);
         }
         return parent::getAttribute($key);
     }
@@ -51,7 +56,7 @@ trait HasBundleFields
      */
     public function getAllAttributes()
     {
-        return array_merge($this->getAttributes(), $this->fieldRevisions->getRawValues());
+        return array_merge($this->getAttributes(), $this->fieldValues->getRawValues());
     }
 
     /**
@@ -59,7 +64,7 @@ trait HasBundleFields
      */
     public function getAllOriginal()
     {
-        return array_merge($this->getOriginal(), $this->fieldRevisions->getOriginal());
+        return array_merge($this->getOriginal(), $this->fieldValues->getOriginal());
     }
 
     /**
@@ -68,7 +73,7 @@ trait HasBundleFields
     public function setAttribute($key, $value)
     {
         if (Str::startsWith($key, 'field_')) {
-            $this->fieldRevisions->setValue($key, $value);
+            $this->fieldValues->setValue($key, $value);
             return $this;
         }
         return parent::setAttribute($key, $value);
@@ -79,7 +84,7 @@ trait HasBundleFields
      */
     public function wasChanged($attributes = null)
     {
-        return (parent::wasChanged($attributes) or $this->fieldRevisions->wasChanged($attributes));
+        return (parent::wasChanged($attributes) or $this->fieldValues->wasChanged($attributes));
     }
 
     /**
@@ -87,7 +92,7 @@ trait HasBundleFields
      */
     public function isDirty($attributes = null)
     {
-        return (parent::isDirty($attributes) or $this->fieldRevisions->isDirty($attributes));
+        return (parent::isDirty($attributes) or $this->fieldValues->isDirty($attributes));
     }
 
     /**
@@ -96,8 +101,8 @@ trait HasBundleFields
     public function toArray()
     {
         $array = parent::toArray();
-        if ($this->fieldRevisions) {
-            $array = array_merge($array, $this->fieldRevisions->toArray());
+        if ($this->fieldValues) {
+            $array = array_merge($array, $this->fieldValues->toArray());
         }
         return $array;
     }
@@ -118,7 +123,7 @@ trait HasBundleFields
      */
     protected function finishSave(array $options)
     {
-        $this->fieldRevisions->save();
+        $this->fieldValues->save();
         parent::finishSave($options);
     }
 

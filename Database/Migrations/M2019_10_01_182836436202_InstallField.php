@@ -33,9 +33,8 @@ class M2019_10_01_182836436202_InstallField extends Migration
             $table->morphs('entity');
             $table->integer('field_id')->unsigned();
             $table->foreign('field_id')->references('id')->on('bundle_fields')->onDelete('cascade');
-            $table->integer('revision_id')->unsigned()->nullable();
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamps();
         });
 
         Schema::create('field_booleans', function (Blueprint $table) {
