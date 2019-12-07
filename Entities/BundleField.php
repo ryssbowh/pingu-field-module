@@ -44,13 +44,13 @@ class BundleField extends BaseModel implements HasRouteSlugContract
         );
 
         static::deleted(
-            function($field) {
+            function ($field) {
                 \Field::forgetAllFieldCache();
             }
         );
 
         static::saved(
-            function($field) {
+            function ($field) {
                 \Field::forgetAllFieldCache();
             }
         );

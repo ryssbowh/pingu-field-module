@@ -105,7 +105,7 @@ abstract class BaseField implements FieldContract
     /**
      * Does this field has an option called $name
      * 
-     * @param string  $name
+     * @param string $name
      * 
      * @return boolean
      */
@@ -128,7 +128,7 @@ abstract class BaseField implements FieldContract
      * Sets/gets an option
      * 
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      * 
      * @return Form|mixed
      */

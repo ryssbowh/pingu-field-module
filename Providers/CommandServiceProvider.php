@@ -30,16 +30,19 @@ class CommandServiceProvider extends ServiceProvider
     }
     /**
      * Registers the serve command
-     *
      */
     protected function registerCommands()
     {
-        $this->app->bind('command.moduleMakeEntityFields', function ($app) {
-            return new ModuleMakeEntityFields();
-        });
-        $this->app->bind('command.moduleMakeEntityValidator', function ($app) {
-            return new ModuleMakeEntityValidator();
-        });
+        $this->app->bind(
+            'command.moduleMakeEntityFields', function ($app) {
+                return new ModuleMakeEntityFields();
+            }
+        );
+        $this->app->bind(
+            'command.moduleMakeEntityValidator', function ($app) {
+                return new ModuleMakeEntityValidator();
+            }
+        );
         $this->commands($this->commands);
     }
     /**

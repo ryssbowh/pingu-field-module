@@ -14,9 +14,11 @@ class BundleFieldRules
         $machineName = substr(explode('.', $attribute)[0], 6);
         $query = BundleFieldValue::where('entity_type', $class)
             ->where('value', $value)
-            ->whereHas('field', function (Builder $query) use ($machineName) {
-                $query->where('machineName', $machineName);
-            });
+            ->whereHas(
+                'field', function (Builder $query) use ($machineName) {
+                    $query->where('machineName', $machineName);
+                }
+            );
         if ($id) {
             $query->whereNot('entity_id', $id);
         }

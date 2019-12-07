@@ -7,7 +7,8 @@ use Pingu\Field\Contracts\FieldRepository;
 use Pingu\Field\Contracts\FieldsValidator;
 
 interface HasFields
-{   
+{
+   
     /**
      * Fields repository getter
      * 

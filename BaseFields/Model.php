@@ -64,7 +64,8 @@ class Model extends BaseField
      */
     public function filterQueryModifier(Builder $query, $value)
     {
-        if (!$value) return;
+        if (!$value) { return;
+        }
         $query->where($this->machineName.'_id', '=', $value);
     }
 

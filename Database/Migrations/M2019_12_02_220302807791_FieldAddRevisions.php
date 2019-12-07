@@ -13,15 +13,17 @@ class M2019_12_02_220302807791_FieldAddRevisions extends Migration
      */
     public function up()
     {
-        Schema::create('revisions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->longText('value')->nullable();
-            $table->unsignedInteger('revision');
-            $table->morphs('model');
-            $table->string('field');
-            $table->createdBy();
-            $table->timestamps();
-        });
+        Schema::create(
+            'revisions', function (Blueprint $table) {
+                $table->increments('id');
+                $table->longText('value')->nullable();
+                $table->unsignedInteger('revision');
+                $table->morphs('model');
+                $table->string('field');
+                $table->createdBy();
+                $table->timestamps();
+            }
+        );
     }
 
     /**

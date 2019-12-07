@@ -46,7 +46,7 @@ class Field
     /**
      * Registers multiple bundle fields
      * 
-     * @param array  $fieldClasses
+     * @param array $fieldClasses
      */
     public function registerBundleFields(array $fieldClasses)
     {
@@ -87,7 +87,7 @@ class Field
      * Will register it in the IOC
      * 
      * @param object|string $object
-     * @param Closure   $callback
+     * @param Closure       $callback
      * 
      * @return FieldRepository
      */
@@ -105,7 +105,7 @@ class Field
      * Will register it in the IOC
      * 
      * @param object|string $model
-     * @param Closure   $callback
+     * @param Closure       $callback
      * 
      * @return FieldRepository
      */
@@ -122,9 +122,9 @@ class Field
      * Retrieves a cache content for a object and a key.
      * Uses ArrayCache so all cache related to this object can be cleared at once.
      * 
-     * @param string  $key
-     * @param object|string  $object
-     * @param Closure $callback
+     * @param string        $key
+     * @param object|string $object
+     * @param Closure       $callback
      * 
      * @return array
      */
@@ -160,8 +160,8 @@ class Field
     /**
      * Get a revision related cache for an entity
      * 
-     * @param string $key
-     * @param Entity $entity
+     * @param string   $key
+     * @param Entity   $entity
      * @param callable $callback
      * 
      * @return mixed   

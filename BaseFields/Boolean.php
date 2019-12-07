@@ -6,7 +6,8 @@ use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkbox;
 
 class Boolean extends BaseField
-{   
+{
+   
     /**
      * @inheritDoc
      */

@@ -76,7 +76,7 @@ trait HasBaseFields
     /**
      * Syncs all values for fields that define 'multiple' relations
      * 
-     * @param  array  $relations
+     * @param  array $relations
      * @return bool
      */
     protected function syncMultipleRelations(array $relations): bool
@@ -94,7 +94,7 @@ trait HasBaseFields
     /**
      * Fill all values for fields that define 'single' relations
      * 
-     * @param array  $relations
+     * @param array $relations
      * 
      * @return bool           
      */
@@ -160,7 +160,7 @@ trait HasBaseFields
      *     ]
      * ]
      * 
-     * @param  array  $values
+     * @param  array $values
      * @return array
      */
     protected function sortFieldTypes(array $values): array

@@ -6,7 +6,8 @@ use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
 
 interface BundleFieldContract extends FieldContract, HasFields
-{   
+{
+   
     /**
      * Unique name for that field
      *

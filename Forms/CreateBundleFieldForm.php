@@ -86,7 +86,7 @@ class CreateBundleFieldForm extends Form
      * ['action' => 'MyController@action']
      * 
      * @return array
-     * @see https://github.com/LaravelCollective/docs/blob/5.6/html.md
+     * @see    https://github.com/LaravelCollective/docs/blob/5.6/html.md
      */
     public function action(): array
     {

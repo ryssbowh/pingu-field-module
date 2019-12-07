@@ -20,13 +20,16 @@ class ManyModel extends Model
      */
     public function filterQueryModifier(Builder $query, $value)
     {
-        if(!$value) return;
+        if(!$value) { return;
+        }
         $name = $this->machineName;
         $model = $query->getModel()->buildFieldDefinitions()[$name]->option('model');
         $model = new $model;
-        $query->whereHas($name, function($query) use ($model, $value){
-            $query->where(str_singular($model->getTable()).'_id', '=', $value);
-        });
+        $query->whereHas(
+            $name, function ($query) use ($model, $value) {
+                $query->where(str_singular($model->getTable()).'_id', '=', $value);
+            }
+        );
     }
 
     /**

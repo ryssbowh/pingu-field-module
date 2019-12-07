@@ -11,9 +11,11 @@ trait HasRevisions
 
     public static function bootHasRevisions()
     {
-        static::saved(function ($entity) {
-            $entity->revisionRepository()->createRevision();
-        });
+        static::saved(
+            function ($entity) {
+                $entity->revisionRepository()->createRevision();
+            }
+        );
     }
 
     public function initializeHasRevisions()

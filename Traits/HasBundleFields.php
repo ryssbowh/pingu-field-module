@@ -145,7 +145,7 @@ trait HasBundleFields
     /**
      * Retrieve the model for a bound value taking into account bundle fields
      *
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return \Illuminate\Database\Eloquent\Model|null
      */
     public function resolveRouteBinding($value)
@@ -155,9 +155,11 @@ trait HasBundleFields
             $fieldName = substr($keyName, 6);
             $fieldValue = BundleFieldValue::where('entity_type', get_class($this))
                 ->where('value', $value)
-                ->whereHas('field', function (Builder $query) use ($fieldName) {
-                    $query->where('machineName', $fieldName);
-                })->first();
+                ->whereHas(
+                    'field', function (Builder $query) use ($fieldName) {
+                        $query->where('machineName', $fieldName);
+                    }
+                )->first();
             
             return $fieldValue ? $fieldValue->entity : null;
 

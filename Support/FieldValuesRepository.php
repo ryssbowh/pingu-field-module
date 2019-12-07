@@ -15,7 +15,8 @@ use Pingu\Field\Exceptions\RevisionException;
  * Class designed to handle a set of revisions attached to an entity
  */
 class FieldValuesRepository
-{   
+{
+   
     /**
      * BundleFieldValue Collection
      * 
@@ -103,7 +104,7 @@ class FieldValuesRepository
      * Sets the value of a field
      * 
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return FieldValuesRepository
      */
@@ -137,7 +138,7 @@ class FieldValuesRepository
     /**
      * Determine if the revision or any of the given attribute(s) have been modified.
      *
-     * @param array|string|null  $attributes
+     * @param array|string|null $attributes
      * 
      * @return bool
      */
@@ -341,9 +342,11 @@ class FieldValuesRepository
     protected function resolveValues(): Collection
     {
         $entity = $this->entity;
-        return \Field::getBundleValuesCache($this->entity, function () use ($entity) {
-            return $entity->morphMany(BundleFieldValue::class, 'entity')->get();   
-        });
+        return \Field::getBundleValuesCache(
+            $this->entity, function () use ($entity) {
+                return $entity->morphMany(BundleFieldValue::class, 'entity')->get();   
+            }
+        );
     }
 
     /**
@@ -379,8 +382,8 @@ class FieldValuesRepository
     /**
      * Determine if any of the given attributes were changed.
      *
-     * @param array  $changes
-     * @param array|string|null  $attributes
+     * @param array             $changes
+     * @param array|string|null $attributes
      * 
      * @return bool
      */

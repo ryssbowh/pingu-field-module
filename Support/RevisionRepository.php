@@ -20,7 +20,8 @@ use Pingu\Field\Support\FieldRevision;
  * Class designed to handle a set of revisions attached to an entity
  */
 class RevisionRepository
-{   
+{
+   
     /**
      * @var HasBundleContract
      */
@@ -62,7 +63,7 @@ class RevisionRepository
     /**
      * Get a revison by id
      * 
-     * @param int    $id
+     * @param int $id
      * 
      * @return FieldRevision
      */
@@ -105,7 +106,7 @@ class RevisionRepository
     /**
      * Deletes multiple revisions
      * 
-     * @param array  $revisions
+     * @param array $revisions
      * 
      * @return RevisionRepository
      */
@@ -120,7 +121,7 @@ class RevisionRepository
     /**
      * Deletes a revision
      * 
-     * @param int    $id
+     * @param int $id
      * 
      * @return RevisionRepository
      */
@@ -207,11 +208,13 @@ class RevisionRepository
         $out = collect();
         foreach ($field->value(false) as $value) {
             $model = new Revision;
-            $model->fill([
+            $model->fill(
+                [
                 'value' => $value,
                 'revision' => $id,
                 'field' => $field->machineName()
-            ]);
+                ]
+            );
             $model->entity()->associate($this->entity);
             $out->push($model);
         }
@@ -228,11 +231,13 @@ class RevisionRepository
     protected function createBaseFieldModel(int $id, BaseField $field): Collection
     {
         $model = new Revision;
-        $model->fill([
+        $model->fill(
+            [
             'value' => $field->value(false),
             'revision' => $id,
             'field' => $field->machineName()
-        ]);
+            ]
+        );
         $model->entity()->associate($this->entity);
         return collect([$model]);
     }
@@ -251,7 +256,7 @@ class RevisionRepository
     /**
      * Restores a revision by id
      * 
-     * @param int    $id
+     * @param int $id
      * 
      * @return FieldRevision
      */
@@ -269,7 +274,8 @@ class RevisionRepository
     {
         $size = $this->count();
         $maxSize = config('field.numberRevisionsToKeep', 10);
-        if ($size == -1) return [];
+        if ($size == -1) { return [];
+        }
         if ($size > $maxSize) {
             $toDelete = array_slice($this->revisions, $maxSize);
             $this->deleteMultiple(array_keys($toDelete));
@@ -287,16 +293,18 @@ class RevisionRepository
     protected function loadRevisions(): Collection
     {
         $entity = $this->entity;
-        return \Field::getRevisionCache($this->entity, function () use ($entity) {
-            $values = $entity->morphMany(Revision::class, 'entity')
-                ->orderBy('revision', 'DESC')
-                ->get()
-                ->groupBy(['revision', 'field']);
-            $out = collect();
-            foreach ($values as $id => $collection) {
-                $out->put($id, new FieldRevision($entity, $collection, $id));
+        return \Field::getRevisionCache(
+            $this->entity, function () use ($entity) {
+                $values = $entity->morphMany(Revision::class, 'entity')
+                    ->orderBy('revision', 'DESC')
+                    ->get()
+                    ->groupBy(['revision', 'field']);
+                $out = collect();
+                foreach ($values as $id => $collection) {
+                    $out->put($id, new FieldRevision($entity, $collection, $id));
+                }
+                return $out;
             }
-            return $out;
-        });
+        );
     }
 }

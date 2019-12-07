@@ -81,11 +81,13 @@ class ModuleMakeEntityValidator extends GeneratorCommand
             $class .= 'Validator';
         }
 
-        return (new Stub("/entity-validator.stub", [
+        return (new Stub(
+            "/entity-validator.stub", [
             'NAMESPACE'    => $this->getClassNamespace($module),
             'CLASS'        => $class,
             'EXTENDS'        => class_basename(BaseFieldsValidator::class)
-        ]))->render();
+            ]
+        ))->render();
     }
 
     /**

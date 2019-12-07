@@ -67,10 +67,12 @@ class ModuleMakeEntityFields extends GeneratorCommand
             $class .= 'Fields';
         }
 
-        return (new Stub("/entity-fields.stub", [
+        return (new Stub(
+            "/entity-fields.stub", [
             'NAMESPACE'    => $this->getClassNamespace($module),
             'CLASS'        => $class,
-        ]))->render();
+            ]
+        ))->render();
     }
 
     /**

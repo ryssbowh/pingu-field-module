@@ -87,7 +87,7 @@ abstract class FieldsValidator
      * Validates a request and return validated data
      * 
      * @param Request $request
-     * @param ?bool $editing
+     * @param ?bool   $editing
      * 
      * @return array
      */
@@ -182,7 +182,7 @@ abstract class FieldsValidator
     /**
      * Go through all the fields and make them upload the files
      * 
-     * @param  array  $values
+     * @param  array $values
      * @return array
      */
     public function uploadFiles(array $values): array
@@ -199,14 +199,16 @@ abstract class FieldsValidator
     /**
      * Removes all the values that starts with underscore
      * 
-     * @param  array  $values
+     * @param  array $values
      * @return array
      */
     protected function removeNonFillableValues(array $values): array
     {
-        return array_filter($values, function ($key) {
-            return substr($key, 0, 1) != '_';
-        }, ARRAY_FILTER_USE_KEY);
+        return array_filter(
+            $values, function ($key) {
+                return substr($key, 0, 1) != '_';
+            }, ARRAY_FILTER_USE_KEY
+        );
     }
 
     /**
@@ -229,7 +231,7 @@ abstract class FieldsValidator
     /**
      * Go through all the fields and make them cast the values
      * 
-     * @param  array  $validated
+     * @param  array $validated
      * @return array
      */
     public function castValues(array $validated)
@@ -250,7 +252,8 @@ abstract class FieldsValidator
      * @param bool      $updating
      */
     protected function modifyValidator(Validator $validator, array $values, bool $updating)
-    {}
+    {
+    }
 
     /**
      * Merges two sets of rules. if a rule exists in $rule
