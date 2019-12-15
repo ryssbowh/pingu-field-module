@@ -6,13 +6,7 @@ use Pingu\Forms\Support\Fields\Password as PasswordFormField;
 
 class Password extends Text
 {
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return PasswordFormField::class;
-    }
+    protected static $availableWidgets = [PasswordFormField::class];
 
     /**
      * @inheritDoc

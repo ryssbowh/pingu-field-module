@@ -8,13 +8,7 @@ use Pingu\Forms\Support\Fields\Textarea;
 
 class LongText extends BaseField
 {
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return Textarea::class;
-    }
+    protected static $availableWidgets = [Textarea::class];
 
     /**
      * @inheritDoc

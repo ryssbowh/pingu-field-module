@@ -5,7 +5,7 @@ namespace Pingu\Field\Support;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Pingu\Entity\Contracts\HasBundleContract;
+use Pingu\Entity\Entities\BundledEntity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\BundleFieldValue;
@@ -25,7 +25,7 @@ class FieldValuesRepository
     protected $values;
 
     /**
-     * @var HasBundleContract
+     * @var BundledEntity
      */
     protected $entity;
 
@@ -71,7 +71,7 @@ class FieldValuesRepository
      */
     protected $loaded = false;
 
-    public function __construct(HasBundleContract $entity)
+    public function __construct(BundledEntity $entity)
     {
         $this->entity = $entity;
         $this->values = collect();

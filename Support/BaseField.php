@@ -5,18 +5,21 @@ namespace Pingu\Field\Support;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Contracts\FieldContract;
 use Pingu\Field\Exceptions\FieldsException;
+use Pingu\Field\Traits\HasWidgets;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\FormElement;
 
 abstract class BaseField implements FieldContract
 {
+    use HasWidgets;
+
     protected $machineName;
     protected $options;
-    protected $formFieldClass;
+    protected $widget;
     protected $model;
     protected $requiredOptions = [];
 
-    public function __construct(string $machineName, array $options = [], ?string $name = null, ?string $formFieldClass = null)
+    public function __construct(string $machineName, array $options = [], ?string $name = null, ?string $widget = null)
     {
         foreach ($this->requiredOptions as $attr) {
             if (!isset($options[$attr])) {
@@ -24,39 +27,20 @@ abstract class BaseField implements FieldContract
             }
         }
         if (is_null($name)) {
-            $this->name = ucfirst($machineName);
+            $name = form_label($machineName);
         }
         $this->machineName = $machineName;
         $this->name = $name;
         $this->options = collect(array_merge($this->defaultOptions(), $options));
-        $this->formFieldClass = $formFieldClass ?? $this->defaultFormFieldClass();
+        $this->widget = $widget ?? $this->defaultWidget();
         $this->init();
     }
 
     /**
-     * Initialize this field, called in the constructor
-     */
-    protected function init()
-    {
-    }
-
-    /**
-     * Default form class to turn this field into a FormElement
+     * Set the model this field is attached to
      * 
-     * @return string
+     * @param BaseModel $model
      */
-    abstract protected function defaultFormFieldClass(): string;
-
-    /**
-     * @inheritDoc
-     */
-    public abstract function castValue($value);
-
-    /**
-     * @inheritDoc
-     */
-    public abstract function formValue($value);
-
     public function setModel(BaseModel $model)
     {
         $this->model = $model;
@@ -146,7 +130,7 @@ abstract class BaseField implements FieldContract
      */
     public function toFormElement(): FormElement
     {
-        $class = $this->formFieldClass;
+        $class = \FormField::getRegisteredField($this->widget());
         $options = $this->formFieldOptions();
         $field = new $class($this->machineName, $options);
         $field->setValue($this->value(false));
@@ -179,6 +163,13 @@ abstract class BaseField implements FieldContract
     public function defaultValidationMessages(): array
     {
         return [];
+    }
+
+    /**
+     * Initialize this field, called in the constructor
+     */
+    protected function init()
+    {
     }
 
     /**

@@ -10,13 +10,7 @@ class Datetime extends BaseField
 {
     protected $format = 'd/m/Y H:i:s';
 
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return DatetimeField::class;
-    }
+    protected static $availableWidgets = [DatetimeField::class];
 
     /**
      * @inheritDoc

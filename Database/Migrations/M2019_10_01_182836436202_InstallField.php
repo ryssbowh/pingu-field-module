@@ -20,7 +20,6 @@ class M2019_10_01_182836436202_InstallField extends Migration
                 $table->string('machineName');
                 $table->string('helper');
                 $table->string('bundle');
-                $table->integer('weight');
                 $table->integer('cardinality');
                 $table->boolean('deletable');
                 $table->boolean('editable');

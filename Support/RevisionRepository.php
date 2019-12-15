@@ -23,7 +23,7 @@ class RevisionRepository
 {
    
     /**
-     * @var HasBundleContract
+     * @var Entity
      */
     protected $entity;
 

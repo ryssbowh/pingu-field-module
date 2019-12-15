@@ -3,15 +3,12 @@
 namespace Pingu\Field\Entities;
 
 use Carbon\Carbon;
-use Pingu\Core\Entities\BaseModel;
-use Pingu\Field\Contracts\BundleFieldContract;
-use Pingu\Field\Traits\BundleField;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Datetime;
 
-class FieldDatetime extends BaseModel implements BundleFieldContract
+class FieldDatetime extends BaseBundleField
 {
-    use BundleField;
+    protected static $availableWidgets = [Datetime::class];
 
     protected $fillable = ['setToCurrent', 'required'];
 
@@ -43,7 +40,7 @@ class FieldDatetime extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function castSingleValue($value)
+    public function castSingleValue($value)
     {
         if ($value) {
             return Carbon::createFromFormat($this->format, $value);
@@ -77,7 +74,7 @@ class FieldDatetime extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function defaultValidationRule(): string
+    public function defaultValidationRule(): string
     {
         return $this->required ? 'required' : '';
     }

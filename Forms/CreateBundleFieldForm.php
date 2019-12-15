@@ -51,20 +51,20 @@ class CreateBundleFieldForm extends Form
         $fixedCardinality = $this->field->fixedCardinality();
         if ($fixedCardinality === false) {
             $this->getElement('cardinality')
-                ->attribute('required', true);
+                ->option('required', true);
             return;
         }
         if ($fixedCardinality == -1) {
             $this->getElement('_cardinality_select')
                 ->setValue('-1')
-                ->attribute('disabled', true);
+                ->option('disabled', true);
             $this->removeField('cardinality');
         } else {
             $this->getElement('_cardinality_select')
                 ->setValue('number')
-                ->attribute('disabled', true);
+                ->option('disabled', true);
             $this->getElement('cardinality')
-                ->attribute('disabled', true)
+                ->option('disabled', true)
                 ->setValue($fixedCardinality);
         }
     }

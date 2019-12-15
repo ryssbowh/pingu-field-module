@@ -8,6 +8,7 @@ use Pingu\Field\Contracts\FieldContract;
 use Pingu\Field\Contracts\FieldRepository;
 use Pingu\Field\Contracts\FieldsValidator;
 use Pingu\Field\Entities\BundleField;
+use Pingu\Field\Support\FieldLayout;
 
 trait HasFields
 {

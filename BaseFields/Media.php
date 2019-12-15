@@ -2,11 +2,13 @@
 
 namespace Pingu\Field\BaseFields;
 
-use Pingu\Forms\Support\Fields\MediaField;
+use Pingu\Forms\Support\Fields\SelectMedia;
 use Pingu\Media\Entities\Media as MediaModel;
 
 class Media extends Model
 {
+    protected static $availableWidgets = [SelectMedia::class];
+
     /**
      * @inheritDoc
      */
@@ -14,14 +16,6 @@ class Media extends Model
     {
         $extensions = \Media::getAvailableFileExtensions();
         return [$this->machineName => 'file_extension:'.implode(',', $extensions).'|max:'.config('media.maxFileSize')];
-    }
-    
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return MediaField::class;
     }
 
     /**

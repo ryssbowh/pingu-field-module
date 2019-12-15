@@ -1,56 +1,24 @@
-<?php
+<?php 
 
-namespace Pingu\Field\Traits;
+namespace Pingu\Field\Entities;
 
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Entities\Entity;
-use Pingu\Field\Contracts\FieldRepository;
-use Pingu\Field\Contracts\FieldsValidator;
-use Pingu\Field\Entities\BundleField as BundleFieldModel;
+use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Support\FormRepository\BundleFieldForms;
-use Pingu\Forms\Support\Field;
+use Pingu\Field\Traits\HasWidgets;
 use Pingu\Forms\Support\FieldGroup;
 use Pingu\Forms\Support\FormElement;
 use Pingu\Forms\Support\FormRepository;
 
-trait BundleField
+abstract class BaseBundleField extends BaseModel implements BundleFieldContract
 {
+    use HasWidgets;
+
     protected $entity;
-
-    /**
-     * Cast a value from a form to a model usable value
-     * 
-     * @param mixed $value
-     * 
-     * @return mixed
-     */
-    abstract protected function castSingleValue($value);
-
-    /**
-     * Cast a value from a model into a form usable format
-     * 
-     * @param mixed $value
-     * 
-     * @return mixed
-     */
-    abstract protected function singleFormValue($value);
-
-    /**
-     * Turn a value of this field into a FormElement
-     * 
-     * @return Field
-     */
-    abstract protected function toSingleFormField(): Field;
-
-    /**
-     * Default validation rules
-     * 
-     * @return string
-     */
-    abstract protected function defaultValidationRule(): string;
 
     /**
      * Sets the entity for this field
@@ -95,7 +63,7 @@ trait BundleField
      */
     public function field()
     {
-        return $this->morphOne(BundleFieldModel::class, 'instance');
+        return $this->morphOne(BundleField::class, 'instance');
     }
 
     /**
@@ -137,7 +105,7 @@ trait BundleField
         if (Str::startsWith($baseName, 'Field')) {
             $baseName = substr($baseName, 5);
         }
-        return explodeCamelCase($baseName);
+        return friendly_classname($baseName);
     }
 
     /**

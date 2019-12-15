@@ -8,13 +8,7 @@ use Pingu\Forms\Support\Fields\TextInput;
 
 class Text extends BaseField
 {
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return TextInput::class;
-    }
+    protected static $availableWidgets = [TextInput::class];
 
     /**
      * @inheritDoc

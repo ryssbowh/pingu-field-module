@@ -2,15 +2,12 @@
 
 namespace Pingu\Field\Entities;
 
-use Pingu\Core\Entities\BaseModel;
-use Pingu\Field\Contracts\BundleFieldContract;
-use Pingu\Field\Traits\BundleField;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\TextInput;
 
-class FieldUrl extends BaseModel implements BundleFieldContract
+class FieldUrl extends BaseBundleField
 {
-    use BundleField;
+    protected static $availableWidgets = [TextInput::class];
     
     protected $fillable = ['required', 'default'];
 
@@ -33,7 +30,7 @@ class FieldUrl extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function castSingleValue($value)
+    public function castSingleValue($value)
     {
         return $value;
     }
@@ -64,7 +61,7 @@ class FieldUrl extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function defaultValidationRule(): string
+    public function defaultValidationRule(): string
     {
         return 'string';
     }

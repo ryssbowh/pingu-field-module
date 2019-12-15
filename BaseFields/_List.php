@@ -4,19 +4,17 @@ namespace Pingu\Field\BaseFields;
 
 use Illuminate\Database\Query\Builder;
 use Pingu\Field\Support\BaseField;
+use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
 
 class _List extends BaseField
 {
     protected $requiredOptions = ['items'];
 
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return Select::class;
-    }
+    protected static $availableWidgets = [
+        Select::class,
+        Checkboxes::class
+    ];
 
     /**
      * @inheritDoc

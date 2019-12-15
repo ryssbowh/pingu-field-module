@@ -3,14 +3,12 @@
 namespace Pingu\Field\Entities;
 
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Field\Contracts\BundleFieldContract;
-use Pingu\Field\Traits\BundleField;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Email;
 
-class FieldEmail extends BaseModel implements BundleFieldContract
+class FieldEmail extends BaseBundleField
 {
-    use BundleField;
+    protected static $availableWidgets = [Email::class];
 
     protected $fillable = ['default', 'required'];
 
@@ -33,7 +31,7 @@ class FieldEmail extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function castSingleValue($value)
+    public function castSingleValue($value)
     {
         return $value;
     }
@@ -64,7 +62,7 @@ class FieldEmail extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function defaultValidationRule(): string
+    public function defaultValidationRule(): string
     {
         return ($this->required ? 'required|' : '') . 'email';
     }

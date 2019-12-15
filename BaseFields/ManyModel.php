@@ -4,16 +4,14 @@ namespace Pingu\Field\BaseFields;
 
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkboxes;
+use Pingu\Forms\Support\Fields\Select;
 
 class ManyModel extends Model
 {
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return Checkboxes::class;
-    }
+    protected static $availableWidgets = [
+        Checkboxes::class,
+        Select::class
+    ];
 
     /**
      * @inheritDoc

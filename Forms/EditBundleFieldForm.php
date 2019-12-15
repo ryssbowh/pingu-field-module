@@ -42,6 +42,6 @@ class EditBundleFieldForm extends CreateBundleFieldForm
 
     protected function afterBuilt()
     {
-        $this->getElement('machineName')->attribute('disabled', true);
+        $this->getElement('machineName')->option('disabled', true);
     }
 }

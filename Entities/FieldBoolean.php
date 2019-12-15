@@ -2,15 +2,12 @@
 
 namespace Pingu\Field\Entities;
 
-use Pingu\Core\Entities\BaseModel;
-use Pingu\Field\Contracts\BundleFieldContract;
-use Pingu\Field\Traits\BundleField;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Checkbox;
 
-class FieldBoolean extends BaseModel implements BundleFieldContract
+class FieldBoolean extends BaseBundleField
 {
-    use BundleField;
+    protected static $availableWidgets = [Checkbox::class];
     
     protected $fillable = ['default'];
 
@@ -41,7 +38,7 @@ class FieldBoolean extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function castSingleValue($value)
+    public function castSingleValue($value)
     {
         return (bool)$value;
     }
@@ -63,7 +60,7 @@ class FieldBoolean extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function defaultValidationRule(): string
+    public function defaultValidationRule(): string
     {
         return 'boolean';
     }

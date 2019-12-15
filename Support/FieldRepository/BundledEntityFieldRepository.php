@@ -4,9 +4,10 @@ namespace Pingu\Field\Support\FieldRepository;
 
 use Illuminate\Support\Collection;
 use Pingu\Entity\Contracts\BundleContract;
-use Pingu\Entity\Contracts\HasBundleContract;
+use Pingu\Entity\Entities\BundledEntity;
 use Pingu\Entity\Exceptions\EntityException;
 use Pingu\Field\Entities\BundleField;
+use Pingu\Field\Support\FieldLayoutBundled;
 use Pingu\Field\Support\FieldRepository\BaseFieldRepository;
 
 /**
@@ -17,9 +18,9 @@ abstract class BundledEntityFieldRepository extends BaseFieldRepository
     protected $bundle;
     protected $bundleFieldsAdded = false;
 
-    public function __construct(HasBundleContract $object)
+    public function __construct(BundledEntity $object)
     {
-        parent::__construct($object);
+        $this->object = $object;
         if ($bundle = $object->bundle()) {
             $this->bundle = $bundle;
         }

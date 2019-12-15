@@ -7,8 +7,14 @@ use Pingu\Field\Support\RevisionRepository;
 
 trait HasRevisions
 {
+    /**
+     * @var RevisionRepository
+     */
     protected $revisionRepository;
 
+    /**
+     * Boots trait. creates revision when model is created
+     */
     public static function bootHasRevisions()
     {
         static::saved(
@@ -18,11 +24,19 @@ trait HasRevisions
         );
     }
 
+    /**
+     * Initialize trait.
+     */
     public function initializeHasRevisions()
     {
         $this->revisionRepository = new RevisionRepository($this);
     }
 
+    /**
+     * Revision repository getter
+     * 
+     * @return RevisionRepository
+     */
     public function revisionRepository(): RevisionRepository
     {
         return $this->revisionRepository->load();

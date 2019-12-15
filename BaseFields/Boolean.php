@@ -7,14 +7,7 @@ use Pingu\Forms\Support\Fields\Checkbox;
 
 class Boolean extends BaseField
 {
-   
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return Checkbox::class;
-    }
+    protected static $availableWidgets = [Checkbox::class];
 
     /**
      * @inheritDoc

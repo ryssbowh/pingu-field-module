@@ -19,9 +19,9 @@ use Pingu\Forms\Support\FormRepository;
 
 class BundleField extends BaseModel implements HasRouteSlugContract
 {
-    use HasWeight, HasRouteSlug;
+    use HasRouteSlug;
 
-    protected $fillable = ['weight', 'machineName', 'bundle', 'helper', 'name', 'cardinality'];
+    protected $fillable = ['machineName', 'bundle', 'helper', 'name', 'cardinality'];
 
     protected $attributes = [
         'editable' => true,
@@ -35,23 +35,23 @@ class BundleField extends BaseModel implements HasRouteSlugContract
     {
         parent::boot();
 
-        static::saving(
-            function ($field) {
-                if (is_null($field->weight)) {
-                    $field->weight = $field::getNextWeight(['bundle' => $field->bundle]);
-                }
-            }
-        );
-
         static::deleted(
             function ($field) {
                 \Field::forgetAllFieldCache();
+                \Field::forgetFormLayoutCache($field->bundle);
             }
         );
 
         static::saved(
             function ($field) {
                 \Field::forgetAllFieldCache();
+                \Field::forgetFormLayoutCache($field->bundle);
+            }
+        );
+
+        static::created(
+            function ($field) {
+                $field->bundle()->formLayout()->createForField($field->instance);
             }
         );
     }
@@ -119,6 +119,6 @@ class BundleField extends BaseModel implements HasRouteSlugContract
      */
     public function bundle(): BundleContract
     {
-        return \Bundle::getBundle($this->bundle);
+        return \Bundle::get($this->bundle);
     }
 }

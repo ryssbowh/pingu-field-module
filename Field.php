@@ -14,13 +14,23 @@ use Pingu\Field\Contracts\FieldsValidator;
 use Pingu\Field\Contracts\HasFields;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Exceptions\BundleFieldException;
+use Pingu\Field\Support\FieldLayout;
 use Pingu\Forms\Contracts\Models\FormableContract;
 use Pingu\Forms\Exceptions\ModelNotFormable;
 
 class Field
 {
+    /**
+     * List of registered bundle fields
+     * @var array
+     */
     protected $bundleFields = [];
-    protected $cacheKeys = [];
+
+    /**
+     * List of registered form layouts
+     * @var array
+     */
+    protected $formLayouts = [];
 
     /**
      * Registers a type of bundle field
@@ -41,6 +51,7 @@ class Field
             throw BundleFieldException::registered($name, $field, $this->bundleFields[$name]);
         }
         $this->bundleFields[$name] = $fieldClass;
+        $fieldClass::registerWidgets();
     }
 
     /**
@@ -132,9 +143,9 @@ class Field
     {   
         if (config('field.useCache', false)) {
             $key = 'field.fields.'.object_to_class($object).'.'.$key;
-            return \ArrayCache::rememberForever($key, $callback);
+            return \ArrayCache::rememberForever($key, $callback($object));
         }
-        return $callback();
+        return $callback($object);
     }
 
     /**
@@ -193,5 +204,29 @@ class Field
             return \ArrayCache::rememberForever($key, $callback);
         }
         return $callback();
+    }
+
+    public function registerFormLayout(string $slug, FieldLayout $layout)
+    {
+        $this->formLayouts[$slug] = $layout;
+    }
+
+    public function getFormLayout(string $object)
+    {
+        return isset($this->formLayouts[$object]) ? $this->formLayouts[$object]->load() : null;
+    }
+
+    public function getFormLayoutCache(string $object, $callback)
+    {
+        if (config('field.useCache', false)) {
+            $key = 'field.layout.'.$object;
+            return \ArrayCache::rememberForever($key, $callback($object));
+        }
+        return $callback($object);
+    }
+
+    public function forgetFormLayoutCache(string $object)
+    {
+        \ArrayCache::forget('field.layout.'.$object);
     }
 }

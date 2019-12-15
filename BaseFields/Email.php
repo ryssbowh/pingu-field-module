@@ -6,13 +6,7 @@ use Pingu\Forms\Support\Fields\Email as EmailFormField;
 
 class Email extends Text
 {
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return EmailFormField::class;
-    }
+    protected static $availableWidgets = [EmailFormField::class];
 
     /**
      * @inheritDoc

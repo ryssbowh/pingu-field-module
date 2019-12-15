@@ -7,13 +7,7 @@ use Pingu\Forms\Support\Fields\NumberInput;
 
 class _Float extends BaseField
 {
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return NumberInput::class;
-    }
+    protected static $availableWidgets = [NumberInput::class];
 
     /**
      * @inheritDoc

@@ -1,24 +1,19 @@
 <?php
-
 namespace Pingu\Field\Forms;
 
-use Pingu\Forms\Support\Fields\Select;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Forms\Support\Fields\Submit;
+use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Support\Form;
 
-class BundleFieldsForm extends Form
+class CreateLayoutGroupForm extends Form
 {
-
     /**
      * Bring variables in your form through the constructor :
      */
-    public function __construct(array $action)
+    public function __construct(Entity $entity)
     {
-        $this->action = $action;
-        $this->availableFields = [];
-        foreach (\Field::getRegisteredBundleFields() as $name => $class) {
-            $this->availableFields[$name] = $class::friendlyName();
-        }
+        $this->entity = $entity;
         parent::__construct();
     }
 
@@ -31,20 +26,14 @@ class BundleFieldsForm extends Form
     public function elements(): array
     {
         return [
-            new Select(
-                'type', 
+            new TextInput(
+                'name',
                 [
-                    'label' => 'Add new field',
-                    'items' => $this->availableFields,
-                    'allowNoValue' => false
+                    'label' => 'Create group',
+                    'placeholder' => 'Name'
                 ]
             ),
-            new Submit(
-                'submit',
-                [
-                    'label' => 'Submit'
-                ]
-            )
+            new Submit()
         ];
     }
 
@@ -55,7 +44,7 @@ class BundleFieldsForm extends Form
      */
     public function method(): string
     {
-        return 'GET';
+        return 'POST';
     }
 
     /**
@@ -65,22 +54,22 @@ class BundleFieldsForm extends Form
      * ['action' => 'MyController@action']
      * 
      * @return array
-     * @see    https://github.com/LaravelCollective/docs/blob/5.6/html.md
+     * @see https://github.com/LaravelCollective/docs/blob/5.6/html.md
      */
     public function action(): array
     {
-        return $this->action;
+        return ['url' => '/admin/form-layout/'.$this->entity->entityType()];
     }
 
     /**
      * Name for this form, ideally it would be application unique, 
      * best to prefix it with the name of the module it's for.
+     * only alphanumeric and hyphens
      * 
      * @return string
      */
     public function name(): string
     {
-        return 'add-entity-field';
+        return 'create-form-layout-group';
     }
-
 }

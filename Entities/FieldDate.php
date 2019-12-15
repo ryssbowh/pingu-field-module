@@ -2,9 +2,6 @@
 
 namespace Pingu\Field\Entities;
 
-use Pingu\Forms\Support\Field;
-use Pingu\Forms\Support\Fields\Datetime;
-
 class FieldDate extends FieldDatetime
 {
     protected $fillable = ['setToCurrent', 'required'];

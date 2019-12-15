@@ -2,15 +2,12 @@
 
 namespace Pingu\Field\Entities;
 
-use Pingu\Core\Entities\BaseModel;
-use Pingu\Field\Contracts\BundleFieldContract;
-use Pingu\Field\Traits\BundleField;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\TextInput;
 
-class FieldText extends BaseModel implements BundleFieldContract
+class FieldText extends BaseBundleField
 {
-    use BundleField;
+    protected static $availableWidgets = [TextInput::class];
     
     protected $fillable = ['default', 'required', 'maxLength'];
 
@@ -34,7 +31,7 @@ class FieldText extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function castSingleValue($value)
+    public function castSingleValue($value)
     {
         return $value;
     }
@@ -66,7 +63,7 @@ class FieldText extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    protected function defaultValidationRule(): string
+    public function defaultValidationRule(): string
     {
         $rules = ['string|max:'.$this->maxLength];
         if ($this->required) {

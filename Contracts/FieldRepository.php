@@ -7,11 +7,23 @@ use Illuminate\Support\Collection;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Events\FieldsRetrieved;
 use Pingu\Field\Exceptions\FieldsException;
+use Pingu\Field\Support\FieldLayout;
 
 abstract class FieldRepository
 {
+    /**
+     * @var string
+     */
     protected $fieldsCacheKey = 'fields';
+
+    /**
+     * @var HasFields
+     */
     protected $object;
+
+    /**
+     * @var Collection
+     */
     protected $fields;
 
     /**
@@ -98,6 +110,16 @@ abstract class FieldRepository
     public function clearCache()
     {
         \Field::clearCache($this->object);
+    }
+
+    /**
+     * Get firld layout class
+     * 
+     * @return FieldLayout
+     */
+    public function layout(): FieldLayout
+    {
+        return $this->layout->load();
     }
 
     /**

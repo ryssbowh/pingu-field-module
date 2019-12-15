@@ -15,7 +15,7 @@ class DashifyMachineNameField
         if ($form->getName() == 'create-bundle-field') {
             $field = $form->getElement('machineName');
             $field->classes->add('js-dashify');
-            $field->attribute('data-dashifyfrom', 'name');
+            $field->option('data-dashifyfrom', 'name');
         }
     }
 }

@@ -15,7 +15,6 @@ class BundleFieldFields extends BaseFieldRepository
     protected function fields(): array
     {
         return [
-            new Integer('weight'),
             new Text(
                 'name',
                 [

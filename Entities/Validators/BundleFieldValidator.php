@@ -14,7 +14,6 @@ class BundleFieldValidator extends BaseFieldsValidator
         return [
             'machineName' => 'required|string',
             'name' => 'required',
-            'weight' => 'integer',
             'cardinality' => 'integer'
         ];
     }

@@ -8,11 +8,17 @@ use Illuminate\Support\Collection;
 use Pingu\Field\Exceptions\FieldsException;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Exceptions\FormFieldException;
+use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
 
 class Model extends BaseField
 {
     protected $requiredOptions = ['textField'];
+
+    protected static $availableWidgets = [
+        Select::class,
+        Checkboxes::class
+    ];
 
     public function __construct(string $machineName, array $options = [], ?string $name = null, ?string $formFieldClass = null)
     {
@@ -49,14 +55,6 @@ class Model extends BaseField
             $values[''.$model->id] = implode($this->option('separator'), $model->only($textField));
         }
         return $values;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function defaultFormFieldClass(): string
-    {
-        return Select::class;
     }
 
     /**
