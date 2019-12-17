@@ -63,7 +63,8 @@ class FieldDatetime extends BaseBundleField
         return new Datetime(
             $this->machineName(),
             [
-                'label' => false,
+                'label' => $this->name(),
+                'showLabel' => false,
                 'default' => $value ?? $this->default,
                 'format' => $this->format,
                 'required' => $this->required

@@ -32,8 +32,6 @@ class FieldLayoutBundle extends FieldLayout
      */
     protected function getFields(): Collection
     {
-        $entity = $this->object->entityFor();
-        $entity = new $entity;
-        return $this->object->fields()->get()->merge($entity->fields()->get());
+        return $this->object->fields()->getAll();
     }
 }

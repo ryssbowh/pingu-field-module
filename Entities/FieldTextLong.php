@@ -51,7 +51,8 @@ class FieldTextLong extends BaseBundleField
         return new Textarea(
             $this->machineName(),
             [
-                'label' => false,
+                'label' => $this->name(),
+                'showLabel' => false,
                 'default' => $value ?? $this->default,
                 'required' => $this->required
             ]

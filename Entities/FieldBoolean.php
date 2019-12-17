@@ -51,7 +51,8 @@ class FieldBoolean extends BaseBundleField
         return new Checkbox(
             $this->machineName(),
             [
-                'label' => false,
+                'label' => $this->name(),
+                'showLabel' => false,
                 'default' => $value ?? $this->default
             ]
         );

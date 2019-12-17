@@ -3,17 +3,13 @@
 namespace Pingu\Field\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Pingu\Core\Exceptions\ParameterMissing;
 use Pingu\Field\Entities\BundleField;
 
 class StoreBundleFieldRequest extends FormRequest
 {
     public function getField()
     {
-        $field = $this->post('_field', false);
-        if (!$field) {
-            throw new ParameterMissing('_field', 'post');
-        }
+        $field = $this->requireParameter('_field');
         $field = \Field::getRegisteredBundleField($field);
         return new $field;
     }

@@ -105,6 +105,22 @@ class FieldLayout
     }
 
     /**
+     * Get a field by its name
+     * 
+     * @param  string $name
+     * @return ?FormLayout
+     */
+    public function getField(string $name): ?FormLayout
+    {
+        foreach ($this->layout as $group) {
+            if ($group->hasField($name)) {
+                return $group->getField($name);
+            }
+        }
+        return null;
+    }
+
+    /**
      * Does a group exists
      * 
      * @param string $name
@@ -199,6 +215,15 @@ class FieldLayout
             }
         }
         return true;
+    }
+
+    public function toFormGroups()
+    {
+        $out = [];
+        foreach ($this->layout as $group) {
+            $out[$group->name] = $group->layout->pluck('field')->toArray();
+        }
+        return $out;
     }
 
     /**

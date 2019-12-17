@@ -115,14 +115,7 @@ abstract class FieldsValidator
      */
     public function validateStoreRequest(Request $request, bool $cast = true): array
     {
-        $validator = $this->makeValidator($request->all(), false);
-        $validator->validate();
-        $validated = $validator->validated();
-        $validated = $this->uploadFiles($validated);
-        if ($cast) {
-            return $this->castValues($validated);
-        }
-        return $validated;
+        return $this->validateValues($request->all(), false, $cast);
     }
 
     /**
@@ -135,7 +128,21 @@ abstract class FieldsValidator
      */
     public function validateUpdateRequest(Request $request, bool $cast = true): array
     {
-        $validator = $this->makeValidator($request->all(), true);
+        return $this->validateValues($request->all(), true, $cast);
+    }
+
+    /**
+     * Validates an array of values and return validated data
+     * 
+     * @param array $values
+     * @param bool  $updating
+     * @param bool  $cast
+     * 
+     * @return array
+     */
+    public function validateValues(array $values, bool $updating = false, bool $cast = true): array
+    {
+        $validator = $this->makeValidator($values, $updating);
         $validator->validate();
         $validated = $validator->validated();
         $validated = $this->uploadFiles($validated);

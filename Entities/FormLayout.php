@@ -68,7 +68,7 @@ class FormLayout extends BaseModel implements HasRouteSlugContract
         if (is_null($this->optionsInstance)) {
             $class = \FormField::getRegisteredOptions($this->widget);
             $options = json_decode($this->attributes['options'], true);
-            $this->optionsInstance = new $class($options, $this->widget);
+            $this->optionsInstance = new $class($options);
         }
         return $this->optionsInstance;
     }

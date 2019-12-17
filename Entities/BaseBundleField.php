@@ -175,11 +175,13 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
             foreach ($values as $index => $value) {
                 $field = $this->toSingleFormField($value);
                 $field->option('multiple', true);
+                $field->option('id', $this->machineName().$index);
                 $field->setIndex($index);
                 $fields[] = $field;
             }
         } else {
             $field = $this->toSingleFormField(null);
+            $field->option('id', $this->machineName().'0');
             $field->option('multiple', true);
             $fields[] = $field;
         }

@@ -26,11 +26,6 @@ trait HasFields
      */
     abstract protected function getFieldsValidator(): FieldsValidator;
 
-    public function getField(string $name): FieldContract
-    {
-        return $this->fields()->get($name);
-    }
-
     /**
      * Gets the field repository for this model by loading it through the Field Facade
      * 

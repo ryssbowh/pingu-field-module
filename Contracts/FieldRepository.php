@@ -43,7 +43,7 @@ abstract class FieldRepository
      */
     abstract protected function buildFields(): Collection;
 
-    protected function resolveFields()
+    protected function resolveFields(): Collection
     {
         if (is_null($this->fields)) {
             $_this = $this;
@@ -64,7 +64,7 @@ abstract class FieldRepository
      *
      * @param array|string $only
      * 
-     * @return Field|Collection
+     * @return FieldContract|Collection
      */
     public function get($only = null)
     {

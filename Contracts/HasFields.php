@@ -18,15 +18,6 @@ interface HasFields
     public function fields(): FieldRepository;
 
     /**
-     * Field getter
-     * 
-     * @param string $name
-     * 
-     * @return FieldContract
-     */
-    public function getField(string $name): FieldContract;
-
-    /**
      * FieldsValidator getter
      * 
      * @return FieldsValidator

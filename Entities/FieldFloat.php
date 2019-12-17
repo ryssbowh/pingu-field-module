@@ -51,7 +51,8 @@ class FieldFloat extends BaseBundleField
         return new NumberInput(
             $this->machineName(),
             [
-                'label' => false,
+                'label' => $this->name(),
+                'showLabel' => false,
                 'default' => $value ?? $this->default,
                 'required' => $this->required
             ]

@@ -52,7 +52,8 @@ class FieldText extends BaseBundleField
         return new TextInput(
             $this->machineName(),
             [
-                'label' => false,
+                'label' => $this->name(),
+                'showLabel' => false,
                 'default' => $value,
                 'required' => $this->required,
                 'maxlength' => $this->maxLength

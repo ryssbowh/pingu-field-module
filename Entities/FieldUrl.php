@@ -51,7 +51,8 @@ class FieldUrl extends BaseBundleField
         return new TextInput(
             $this->machineName(),
             [
-                'label' => false,
+                'label' => $this->name(),
+                'showLabel' => false,
                 'default' => $value ?? $this->default,
                 'required' => $this->required
             ]
