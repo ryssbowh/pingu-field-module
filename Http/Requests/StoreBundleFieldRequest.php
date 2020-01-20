@@ -9,7 +9,7 @@ class StoreBundleFieldRequest extends FormRequest
 {
     public function getField()
     {
-        $field = $this->requireParameter('_field');
+        $field = $this->post('_field');
         $field = \Field::getRegisteredBundleField($field);
         return new $field;
     }

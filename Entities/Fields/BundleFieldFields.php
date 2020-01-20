@@ -48,7 +48,7 @@ class BundleFieldFields extends BaseFieldRepository
             new Integer(
                 'cardinality', 
                 [
-                    'label' => false,
+                    'showLabel' => false,
                     'default' => 1
                 ]
             ),
