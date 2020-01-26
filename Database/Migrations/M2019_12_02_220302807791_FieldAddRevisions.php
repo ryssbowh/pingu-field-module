@@ -18,7 +18,7 @@ class M2019_12_02_220302807791_FieldAddRevisions extends Migration
                 $table->increments('id');
                 $table->longText('value')->nullable();
                 $table->unsignedInteger('revision');
-                $table->morphs('model');
+                $table->morphs('entity');
                 $table->string('field');
                 $table->createdBy();
                 $table->timestamps();

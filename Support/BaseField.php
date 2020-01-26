@@ -150,7 +150,7 @@ abstract class BaseField implements FieldContract
      */
     public function value(bool $casted = true)
     {
-        $value = ($this->model and $this->model->exists) ? $this->model->getFormValue($this->machineName) : $this->defaultValue();
+        $value = ($this->model and $this->model->exists) ? $this->model->{$this->machineName} : $this->defaultValue();
         if ($casted) {
             return $value;
         }
