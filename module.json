@@ -4,7 +4,7 @@
     "description": "Pingu Field API",
     "keywords": [],
     "core": 1,
-    "order": -99,
+    "order": -98,
     "providers": [
         "Pingu\\Field\\Providers\\FieldServiceProvider",
         "Pingu\\Field\\Providers\\CommandServiceProvider"
