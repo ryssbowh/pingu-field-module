@@ -2,7 +2,7 @@
 
 namespace Pingu\Field\Traits;
 
-use Pingu\Field\Support\FieldLayoutBundled;
+use Pingu\Field\Support\FieldLayout;
 
 trait HasFormLayout
 {
@@ -20,7 +20,7 @@ trait HasFormLayout
      */
     public function registerFormLayout()
     {
-        \Field::registerFormLayout(get_class($this), new FieldLayoutBundled($this));
+        \Field::registerFormLayout(get_class($this), new FieldLayout($this));
     }
 
     /**
@@ -28,6 +28,6 @@ trait HasFormLayout
      */
     public static function formLayout()
     {
-        return \Field::getFormLayout(static::class);
+        return \Field::getFormLayout(static::class)->layout();
     }
 }

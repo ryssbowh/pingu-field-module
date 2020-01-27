@@ -52,13 +52,22 @@ class FieldLayout
         if ($this->loaded and !$force) {
             return $this;
         }
-        $this->layout = \Field::getFormLayoutCache($this->getObjectAttribute(), function ($object) {
+        $this->layout = $this->resolveCache();
+        if ($this->layout->isEmpty()) {
+            $this->create();
+            $this->layout = $this->resolveCache();
+        }
+        $this->loaded = true;
+        return $this;
+    }
+
+    protected function resolveCache()
+    {
+        return \Field::getFormLayoutCache($this->getObjectAttribute(), function ($object) {
             return FormLayoutGroup::where('object', $object)
                 ->orderBy('weight')
                 ->get();
         });
-        $this->loaded = true;
-        return $this;
     }
 
     /**
@@ -100,7 +109,7 @@ class FieldLayout
             'name' => $name,
             'object' => $this->getObjectAttribute()
         ]);
-        $this->layout->put($name, collect());
+        $this->layout->put($name, $group);
         return $group;
     }
 
@@ -167,12 +176,8 @@ class FieldLayout
     {
         $group = $this->getDefaultGroup();
         foreach ($this->getFields() as $field) {
-            if ($this->hasField($field->machineName())) {
-                continue;
-            }
             $this->createForField($field, $group);
         }
-        $this->load(true);
     }
 
     /**
@@ -183,8 +188,11 @@ class FieldLayout
      * 
      * @return FormLayout
      */
-    public function createForField(FieldContract $field, ?FormLayoutGroup $group = null): FormLayout
+    public function createForField(FieldContract $field, ?FormLayoutGroup $group = null): ?FormLayout
     {
+        if ($this->hasField($field->machineName())) {
+            return null;
+        }
         if (is_null($group)) {
             $group = $this->getDefaultGroup();
         }
