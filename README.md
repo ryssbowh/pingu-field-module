@@ -60,6 +60,15 @@ They will be saved in database and are handled by the `RevisionRepository` class
 The config `field.numberRevisionsToKeep` controls how many revisions to keep in database.
 Revisions will be saved for any field defined in the entity field repository and any bundle field if this entity is bundled.
 
+### Form layouts
+
+Each entity has a form layout, which defines the layout for the form that adds/edits that entity. The layout definition includes the place of the field in the form, the widget used to display it and the options associated to that widget.
+
+for bundled entity that layout is the bundle layout that can be edited through the UI for each bundle.
+Basic entities form layout is not editable atm.
+
+Form layouts are registered and accessible in the Field facade 
+
 ## Commands
 
 - artisan:module:make-entity-fields Model Module : Creates a new Field Repository class
