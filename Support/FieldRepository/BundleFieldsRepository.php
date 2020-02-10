@@ -33,7 +33,7 @@ class BundleFieldsRepository extends FieldRepository
         }
 
         $fields = [];
-        $bundleFields = BundleField::where(['bundle' => $this->object->bundleName()])->orderBy('name')->get();
+        $bundleFields = BundleField::where(['bundle' => $this->object->bundleName()])->get();
         foreach ($bundleFields as $field) {
             $fields[$field->machineName] = $field->instance;
         }

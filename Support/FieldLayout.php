@@ -11,7 +11,7 @@ use Pingu\Field\Entities\FormLayoutGroup;
 class FieldLayout
 {
     /**
-     * @var BundledEntity
+     * @var object
      */
     protected $object;
 

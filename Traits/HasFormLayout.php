@@ -26,8 +26,8 @@ trait HasFormLayout
     /**
      * Get form layout instance from Field facade
      */
-    public static function formLayout()
+    public function formLayout()
     {
-        return \Field::getFormLayout(static::class)->layout();
+        return \Field::getEntityFormLayout($this)->load();
     }
 }

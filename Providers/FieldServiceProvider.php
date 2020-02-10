@@ -129,5 +129,8 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->replaceConfigFrom(
             __DIR__.'/../Config/modules.php', 'modules'
         );
+        $this->publishes([
+            __DIR__.'/../Config/config.php' => config_path('module-field.php')
+        ], 'config');
     }
 }

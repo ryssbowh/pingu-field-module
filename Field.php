@@ -197,6 +197,14 @@ class Field
         \ArrayCache::forget($key);
     }
 
+    /**
+     * Load or save an entity revision cache
+     * 
+     * @param Entity $entity
+     * @param callable $callback
+     * 
+     * @return mixed
+     */
     public function getRevisionCache(Entity $entity, $callback)
     {
         if (config('field.useCache', false)) {
@@ -206,16 +214,49 @@ class Field
         return $callback();
     }
 
+    /**
+     * Registers a form layout for a class
+     * 
+     * @param string      $slug   class name
+     * @param FieldLayout $layout
+     */
     public function registerFormLayout(string $slug, FieldLayout $layout)
     {
         $this->formLayouts[$slug] = $layout;
     }
 
-    public function getFormLayout(string $object)
+    /**
+     * Get a FormLayout class for an Entity
+     * 
+     * @param Entity $entity
+     * 
+     * @return ?FormLayout
+     */
+    public function getEntityFormLayout(Entity $entity)
     {
+        $object = get_class($entity);
         return isset($this->formLayouts[$object]) ? $this->formLayouts[$object]->load() : null;
     }
 
+    /**
+     * Get a FormLayout class for a Bundle
+     * 
+     * @param BundleContract $bundle
+     * 
+     * @return ?FormLayout
+     */
+    public function getBundleFormLayout(BundleContract $bundle)
+    {
+        $object = $bundle->bundleName();
+        return isset($this->formLayouts[$object]) ? $this->formLayouts[$object]->load() : null;
+    }
+
+    /**
+     * Load or save an object form layout
+     * 
+     * @param string   $object
+     * @param callable $callback
+     */
     public function getFormLayoutCache(string $object, $callback)
     {
         if (config('field.useCache', false)) {
@@ -225,6 +266,11 @@ class Field
         return $callback($object);
     }
 
+    /**
+     * Forget the form layout cache for an object
+     * 
+     * @param string $object
+     */
     public function forgetFormLayoutCache(string $object)
     {
         \ArrayCache::forget('field.layout.'.$object);
