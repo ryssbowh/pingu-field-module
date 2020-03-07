@@ -102,7 +102,7 @@ trait HasBaseFields
     {
         $changes = false;
         foreach ($relations as $name => $value) {
-            $oldValue = $this->$name ? $this->$name->getKey() : null;
+            $oldValue = $this->$name;
 
             if ($value) {
                 $this->$name()->associate($value);
@@ -110,7 +110,7 @@ trait HasBaseFields
                 $this->$name()->dissociate();
             }
 
-            $value = $value ? $value->getKey() : null;
+            $value = $this->$name;
             
             if ($oldValue != $value) {
                 $changes = true;
@@ -133,17 +133,15 @@ trait HasBaseFields
             $values = $this->validator()->castValues($values);
         }
         $fieldTypes = $this->sortFieldTypes($values);
-        // dump($fieldTypes);
+
         $this->fill($fieldTypes['attributes'] ?? []);
         $this->fillSingleRelations($fieldTypes['relations']['single'] ?? []);
 
         if (!$this->save()) {
             return false;
-        }
-        try{
+        } try{
             $changesRelation = $this->syncMultipleRelations($fieldTypes['relations']['multiple'] ?? []);
-        }
-        catch(\Exception $e){
+        } catch(\Exception $e){
             return false;
         }
 

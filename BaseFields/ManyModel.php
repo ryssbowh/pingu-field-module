@@ -43,9 +43,9 @@ class ManyModel extends Model
      */
     protected function defaultOptions(): array
     {
-        return [
+        return array_merge(parent::defaultOptions(), [
             'multiple' => true
-        ];
+        ]);
     }
 
     /**

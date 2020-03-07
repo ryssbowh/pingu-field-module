@@ -13,9 +13,7 @@ class FieldIntegerValidator extends BundleFieldFieldsValidator
     {
         return [
             'default' => 'string',
-            'required' => 'boolean',
-            'name' => 'required|string',
-            'helper' => 'string',
+            'required' => 'boolean'
         ];
     }
 

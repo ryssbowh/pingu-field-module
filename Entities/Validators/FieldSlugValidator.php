@@ -14,9 +14,7 @@ class FieldSlugValidator extends BundleFieldFieldsValidator
         return [
             'from' => 'string',
             'default' => 'string',
-            'required' => 'boolean',
-            'name' => 'required|string',
-            'helper' => 'string',
+            'required' => 'boolean'
         ];
     }
 

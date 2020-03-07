@@ -3,6 +3,7 @@
 namespace Pingu\Field;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Exceptions\ClassException;
 use Pingu\Entity\Contracts\BundleContract;
@@ -57,10 +58,11 @@ class Field
     /**
      * Registers multiple bundle fields
      * 
-     * @param array $fieldClasses
+     * @param array|srting $fieldClasses
      */
-    public function registerBundleFields(array $fieldClasses)
+    public function registerBundleFields($fieldClasses)
     {
+        $fieldClasses = Arr::wrap($fieldClasses);
         foreach ($fieldClasses as $fieldClass) {
             $this->registerBundleField($fieldClass);
         }

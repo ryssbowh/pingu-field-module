@@ -20,8 +20,11 @@ class Model extends BaseField
         Checkboxes::class
     ];
 
-    public function __construct(string $machineName, array $options = [], ?string $name = null, ?string $formFieldClass = null)
-    {
+    /**
+     * @inheritDoc
+     */
+    protected function init(array $options)
+    {   
         if (isset($options['items']) and isset($options['items'][0])) {
             $options['model'] = get_class($options['items'][0]);
         } elseif (isset($options['model'])) {
@@ -29,15 +32,7 @@ class Model extends BaseField
         } else {
             throw FieldsException::missingOption($machineName, 'items or model');
         }
-        
-        parent::__construct($machineName, $options, $name, $formFieldClass);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function init()
-    {
+        parent::init($options);
         $this->option('items', $this->buildItems());
     }
 
@@ -80,12 +75,12 @@ class Model extends BaseField
      */
     protected function defaultOptions(): array
     {
-        return [
+        return array_merge(parent::defaultOptions(), [
             'multiple' => false,
             'required' => false,
             'noValueLabel' => theme_config('forms.noValueLabel', 'Select'),
             'separator' => ' - '
-        ];
+        ]);
     }
 
     /**

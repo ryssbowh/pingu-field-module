@@ -189,7 +189,7 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
             'helper' => $this->field->helper,
             'label' => $this->name(),
         ];
-        return new FieldGroup($this->machineName(), $options, $fields);
+        return new FieldGroup($this->machineName(), $options, $fields, $this->cardinality());
     }
 
     /**

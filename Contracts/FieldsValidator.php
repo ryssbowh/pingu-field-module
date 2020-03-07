@@ -12,7 +12,7 @@ use Pingu\Field\Events\FieldsValidationRulesRetrieved;
 use Pingu\Field\Events\FieldsValidatorBuilt;
 use Pingu\Field\Exceptions\FieldsException;
 use Pingu\Forms\Support\Field;
-use Pingu\Media\Contracts\UploadsFiles;
+use Pingu\Media\Contracts\UploadsMedias;
 
 abstract class FieldsValidator
 {
@@ -145,7 +145,7 @@ abstract class FieldsValidator
         $validator = $this->makeValidator($values, $updating);
         $validator->validate();
         $validated = $validator->validated();
-        $validated = $this->uploadFiles($validated);
+        $validated = $this->uploadMedias($validated);
         if ($cast) {
             return $this->castValues($validated);
         }
@@ -166,6 +166,7 @@ abstract class FieldsValidator
         $values = $this->removeNonFillableValues($values);
         // $values = $this->removeNonFormableValues($values);
         $rules = $this->getRules($updating);
+
         //if updating a object, making sure a validation rule exist for all posted fields
         //if creating a object, making sure a validation rule exist for all defined fields
         if ($updating) {
@@ -192,12 +193,12 @@ abstract class FieldsValidator
      * @param  array $values
      * @return array
      */
-    public function uploadFiles(array $values): array
+    public function uploadMedias(array $values): array
     {
         foreach ($values as $fieldName => $value) {
             $field = $this->object->fields()->get($fieldName);
-            if ($field instanceof UploadsFiles) {
-                $values[$fieldName] = $field->uploadFile($value);
+            if ($field instanceof UploadsMedias) {
+                $values[$fieldName] = $field->uploadMedias($value);
             }
         }
         return $values;

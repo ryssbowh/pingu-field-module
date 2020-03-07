@@ -13,9 +13,7 @@ class FieldEmailValidator extends BundleFieldFieldsValidator
     {
         return [
             'default' => 'email',
-            'required' => 'boolean',
-            'name' => 'required|string',
-            'helper' => 'string',
+            'required' => 'boolean'
         ];
     }
 

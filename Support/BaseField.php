@@ -31,9 +31,13 @@ abstract class BaseField implements FieldContract
         }
         $this->machineName = $machineName;
         $this->name = $name;
+        $this->init($options);
+    }
+
+    protected function init(array $options)
+    {
         $this->options = collect(array_merge($this->defaultOptions(), $options));
         $this->widget = $widget ?? $this->defaultWidget();
-        $this->init();
     }
 
     /**
@@ -150,7 +154,9 @@ abstract class BaseField implements FieldContract
      */
     public function value(bool $casted = true)
     {
-        $value = ($this->model and $this->model->exists) ? $this->model->{$this->machineName} : $this->defaultValue();
+        $value = ($this->model and $this->model->exists) ? 
+            $this->model->getFormValue($this->machineName) : 
+            $this->defaultValue();
         if ($casted) {
             return $value;
         }
@@ -166,13 +172,6 @@ abstract class BaseField implements FieldContract
     }
 
     /**
-     * Initialize this field, called in the constructor
-     */
-    protected function init()
-    {
-    }
-
-    /**
      * Default options for this field
      * 
      * @return array
@@ -180,7 +179,8 @@ abstract class BaseField implements FieldContract
     protected function defaultOptions(): array
     {
         return [
-            'label' => $this->name
+            'label' => $this->name,
+            'cardinality' => 1
         ];
     }
 

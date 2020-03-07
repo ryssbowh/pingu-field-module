@@ -13,9 +13,7 @@ class FieldUrlValidator extends BundleFieldFieldsValidator
     {
         return [
             'default' => 'valid_url',
-            'required' => 'boolean',
-            'name' => 'required|string',
-            'helper' => 'string',
+            'required' => 'boolean'
         ];
     }
 

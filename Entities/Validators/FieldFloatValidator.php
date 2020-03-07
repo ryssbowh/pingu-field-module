@@ -14,9 +14,7 @@ class FieldFloatValidator extends BundleFieldFieldsValidator
         return [
             'precision' => 'integer|min:1',
             'default' => 'numeric',
-            'required' => 'boolean',
-            'name' => 'required|string',
-            'helper' => 'string',
+            'required' => 'boolean'
         ];
     }
 

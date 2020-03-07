@@ -12,9 +12,7 @@ class FieldBooleanValidator extends BundleFieldFieldsValidator
     protected function rules(): array
     {
         return [
-            'default' => 'boolean',
-            'name' => 'required|string',
-            'helper' => 'string',
+            'default' => 'boolean'
         ];
     }
 

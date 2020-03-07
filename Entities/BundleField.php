@@ -51,7 +51,7 @@ class BundleField extends BaseModel implements HasRouteSlugContract
 
         static::created(
             function ($field) {
-                $field->bundle()->formLayout()->createForField($field->instance);
+                \Field::getBundleFormLayout($field->bundle())->createForField($field->instance);
             }
         );
     }

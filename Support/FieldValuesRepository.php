@@ -280,6 +280,7 @@ class FieldValuesRepository
         } elseif ($diff < 0) {
             $this->addExtraModels($models, $diff * -1, $field);
         }
+        $values = array_values($values);
         foreach ($models as $index => $model) {
             $model->value = $values[$index];
             $model->save();
