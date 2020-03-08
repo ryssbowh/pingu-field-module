@@ -85,8 +85,8 @@ trait HasBaseFields
         foreach ($relations as $name => $value) {
             if ($this->$name()->sync($value)) {
                 $changes = true;
+                $this->load($name);
             }
-            $this->load($name);
         }
         return $changes;
     }
@@ -137,9 +137,10 @@ trait HasBaseFields
         $this->fill($fieldTypes['attributes'] ?? []);
         $this->fillSingleRelations($fieldTypes['relations']['single'] ?? []);
 
-        if (!$this->save()) {
-            return false;
-        } try{
+        try{
+            if (!$this->save()) {
+                return false;
+            } 
             $changesRelation = $this->syncMultipleRelations($fieldTypes['relations']['multiple'] ?? []);
         } catch(\Exception $e){
             return false;

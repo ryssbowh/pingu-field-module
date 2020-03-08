@@ -10,7 +10,14 @@ class Datetime extends BaseField
 {
     protected $format = 'd/m/Y H:i:s';
 
+    protected $requiredOptions = ['format'];
+
     protected static $availableWidgets = [DatetimeField::class];
+
+    public function getFormat()
+    {
+        return $this->option('format') ?? $this->format;
+    }
 
     /**
      * @inheritDoc
@@ -44,7 +51,17 @@ class Datetime extends BaseField
      */
     public function defaultValidationRules(): array
     {
-        return [$this->machineName => 'date_format:'.$this->format];
+        return [$this->machineName => 'date_format:'.$this->getFormat()];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function castToFormValue($value)
+    {
+        if ($value) {
+            return $value->format($this->getFormat());
+        }
     }
 
     /**
@@ -52,14 +69,8 @@ class Datetime extends BaseField
      */
     public function castValue($value)
     {
-        return Carbon::fromFormat($this->format, $value);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function formValue($value)
-    {
-        return $value->format($this->format);
+        if ($value) {
+            return Carbon::fromFormat($this->getFormat());
+        }
     }
 }

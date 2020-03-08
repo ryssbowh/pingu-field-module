@@ -31,6 +31,22 @@ class FieldText extends BaseBundleField
     /**
      * @inheritDoc
      */
+    public function castSingleValueToDb($value)
+    {
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function castToSingleFormValue($value)
+    {
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function castSingleValue($value)
     {
         return $value;
@@ -39,7 +55,7 @@ class FieldText extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function singleFormValue($value)
+    public function castSingleValueFromDb($value)
     {
         return $value;
     }

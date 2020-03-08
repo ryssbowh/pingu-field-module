@@ -15,20 +15,4 @@ class Email extends Text
     {
         return [$this->machineName => 'email'];
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function castValue($value)
-    {
-        return $value;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function formValue($value)
-    {
-        return $value;
-    }
 }

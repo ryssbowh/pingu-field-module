@@ -137,7 +137,7 @@ abstract class BaseField implements FieldContract
         $class = \FormField::getRegisteredField($this->widget());
         $options = $this->formFieldOptions();
         $field = new $class($this->machineName, $options);
-        $field->setValue($this->value(false));
+        $field->setValue($this->formValue());
         return $field;
     }
 
@@ -152,15 +152,12 @@ abstract class BaseField implements FieldContract
     /**
      * @inheritDoc
      */
-    public function value(bool $casted = true)
+    public function formValue()
     {
         $value = ($this->model and $this->model->exists) ? 
-            $this->model->getFormValue($this->machineName) : 
+            $this->model->{$this->machineName} : 
             $this->defaultValue();
-        if ($casted) {
-            return $value;
-        }
-        return $this->formValue($value);
+        return $this->castToFormValue($value);
     }
 
     /**

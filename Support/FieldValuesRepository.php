@@ -92,8 +92,9 @@ class FieldValuesRepository
         foreach ($fields as $field) {
             $values = $this->values->where('field_id', $field->field->id);
             $fieldValue = $values->pluck('value')->toArray();
-            $this->rawValues[$field->machineName()] = $field->formValue($fieldValue);
-            $this->castedValues[$field->machineName()] = $field->castValue($fieldValue);
+            $rawValue = $field->castValueFromDb($fieldValue);
+            $this->rawValues[$field->machineName()] = $rawValue;
+            $this->castedValues[$field->machineName()] = $field->castValue($rawValue);
         }
         $this->syncOriginal();
         $this->loaded = true;
@@ -112,7 +113,7 @@ class FieldValuesRepository
     {
         $field = $this->entity->fields()->get($name);
         $value = Arr::wrap($value);
-        $rawValue = $field->formValue($value);
+        $rawValue = $field->castValueToDb($value);
         if (!isset($this->rawValues[$name]) or !$this->originalIsEquivalent($this->rawValues[$name], $rawValue)) {
             $this->castedValues[$name] = $value;
             $this->rawValues[$name] = $rawValue;

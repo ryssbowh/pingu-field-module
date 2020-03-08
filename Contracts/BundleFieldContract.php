@@ -26,13 +26,49 @@ interface BundleFieldContract extends FieldContract, HasFields
     public function castSingleValue($value);
 
     /**
-     * Cast a value from a model into a form usable format
+     * ast a value to a form readable format
      * 
      * @param mixed $value
      * 
      * @return mixed
      */
-    public function singleFormValue($value);
+    public function castToSingleFormValue($value);
+
+    /**
+     * Cast a value coming from database
+     * 
+     * @param mixed $value
+     * 
+     * @return mixed
+     */
+    public function castValueFromDb($value);
+
+    /**
+     * Cast a single value coming from database
+     * 
+     * @param mixed $value
+     * 
+     * @return mixed
+     */
+    public function castSingleValueFromDb($value);
+
+    /**
+     * Cast a value to a database valid format
+     * 
+     * @param mixed $value
+     * 
+     * @return mixed
+     */
+    public function castValueToDb($value);
+
+    /**
+     * Cast a single value to a database valid format
+     * 
+     * @param mixed $value
+     * 
+     * @return mixed
+     */
+    public function castSingleValueToDb($value);
 
     /**
      * Turn a value of this field into a FormElement

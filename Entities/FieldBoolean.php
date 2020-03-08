@@ -24,15 +24,28 @@ class FieldBoolean extends BaseBundleField
      */
     public function defaultValue()
     {
-        return (int)$this->default;
+        return (bool)$this->default;
     }
 
     /**
      * @inheritDoc
      */
-    public function singleFormValue($value)
+    public function castSingleValueToDb($value)
     {
         return (int)$value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function castSingleValueFromDb($value)
+    {
+        return (bool)$value;
+    }
+
+    public function castToSingleFormValue($value)
+    {
+        return $value;
     }
 
     /**

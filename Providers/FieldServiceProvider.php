@@ -10,7 +10,6 @@ use Pingu\Field\BaseFields\Email;
 use Pingu\Field\BaseFields\Integer;
 use Pingu\Field\BaseFields\LongText;
 use Pingu\Field\BaseFields\ManyModel;
-use Pingu\Field\BaseFields\Media;
 use Pingu\Field\BaseFields\Model;
 use Pingu\Field\BaseFields\Password;
 use Pingu\Field\BaseFields\Text;
@@ -18,13 +17,13 @@ use Pingu\Field\BaseFields\_Float;
 use Pingu\Field\BaseFields\_List;
 use Pingu\Field\Entities\BundleField as BundleFieldModel;
 use Pingu\Field\Entities\FieldBoolean;
-use Pingu\Field\Entities\FieldDate;
 use Pingu\Field\Entities\FieldDatetime;
 use Pingu\Field\Entities\FieldEmail;
 use Pingu\Field\Entities\FieldFloat;
 use Pingu\Field\Entities\FieldInteger;
 use Pingu\Field\Entities\FieldText;
 use Pingu\Field\Entities\FieldTextLong;
+use Pingu\Field\Entities\FieldTime;
 use Pingu\Field\Entities\FieldUrl;
 use Pingu\Field\Field;
 use Pingu\Field\Validation\BundleFieldRules;
@@ -46,7 +45,6 @@ class FieldServiceProvider extends ModuleServiceProvider
         Integer::class,
         LongText::class,
         ManyModel::class,
-        Media::class,
         Model::class,
         Password::class,
         Text::class
@@ -58,14 +56,14 @@ class FieldServiceProvider extends ModuleServiceProvider
      */
     protected $bundleFields = [
         FieldBoolean::class,
-        FieldDate::class,
         FieldDatetime::class,
         FieldEmail::class,
         FieldFloat::class,
         FieldInteger::class,
         FieldText::class,
         FieldTextLong::class,
-        FieldUrl::class
+        FieldUrl::class,
+        FieldTime::class
     ];
     /**
      * Boot the application events.
@@ -96,6 +94,7 @@ class FieldServiceProvider extends ModuleServiceProvider
     protected function extendValidator()
     {
         \Validator::extend('unique_field', BundleFieldRules::class.'@unique');
+        \Validator::extend('valid_datetime_format', FormatFieldRules::class.'@validDatetimeFormat');
     }
 
     /**

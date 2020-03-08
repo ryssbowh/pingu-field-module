@@ -86,12 +86,11 @@ class Model extends BaseField
     /**
      * @inheritDoc
      */
-    public function formValue($value)
+    public function castToFormValue($value)
     {
         if ($value) {
             return (string)$value->getKey();
         }
-        return null;
     }
 
     /**
@@ -99,12 +98,10 @@ class Model extends BaseField
      */
     public function castValue($value)
     {
-        if (!$value) {
-            return null;
+        if ($value) {
+            $modelClass = $this->option('model');
+            return $modelClass::find($value);   
         }
-        
-        $modelClass = $this->option('model');
-        return $modelClass::findOrFail($value);
     }
 
     /**

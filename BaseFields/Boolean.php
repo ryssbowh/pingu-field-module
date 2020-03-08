@@ -31,16 +31,16 @@ class Boolean extends BaseField
     /**
      * @inheritDoc
      */
-    public function castValue($value)
+    public function castToFormValue($value)
     {
-        return $value;
+        return (bool)$value;
     }
 
     /**
      * @inheritDoc
      */
-    public function formValue($value)
+    public function castValue($value)
     {
-        return $value;
+        return (bool)$value;
     }
 }

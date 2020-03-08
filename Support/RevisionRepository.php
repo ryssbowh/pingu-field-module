@@ -206,7 +206,7 @@ class RevisionRepository
     protected function createBundleFieldModel(int $id, BundleFieldContract $field): Collection
     {
         $out = collect();
-        foreach ($field->value(false) as $value) {
+        foreach ($field->formValue() as $value) {
             $model = new Revision;
             $model->fill(
                 [
@@ -233,7 +233,7 @@ class RevisionRepository
         $model = new Revision;
         $model->fill(
             [
-            'value' => $field->value(false),
+            'value' => $field->formValue(),
             'revision' => $id,
             'field' => $field->machineName()
             ]

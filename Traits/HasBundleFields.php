@@ -92,6 +92,7 @@ trait HasBundleFields
      */
     public function isDirty($attributes = null)
     {
+        $attributes = is_array($attributes) ? $attributes : func_get_args();
         return (parent::isDirty($attributes) or $this->fieldValues->isDirty($attributes));
     }
 

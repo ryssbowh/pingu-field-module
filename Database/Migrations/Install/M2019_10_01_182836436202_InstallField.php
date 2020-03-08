@@ -58,15 +58,6 @@ class M2019_10_01_182836436202_InstallField extends Migration
         );
 
         Schema::create(
-            'field_date', function (Blueprint $table) {
-                $table->increments('id');
-                $table->boolean('required');
-                $table->boolean('setToCurrent');
-                $table->timestamps();
-            }
-        );
-
-        Schema::create(
             'field_emails', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('default');

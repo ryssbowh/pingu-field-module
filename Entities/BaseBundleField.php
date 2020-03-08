@@ -111,13 +111,10 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function value(bool $casted = true)
+    public function formValue()
     {
         $value = ($this->entity and $this->entity->exists) ? $this->entity->{$this->machineName()} : [];
-        if ($casted) {
-            return $value;
-        }
-        return $this->formValue($value);
+        return $this->castToFormValue($value);
     }
 
     /**
@@ -126,6 +123,34 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     public function fixedCardinality()
     {
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function castValueToDb($value)
+    {
+        $value = Arr::wrap($value);
+        $_this = $this;
+        return array_map( 
+            function ($item) use ($_this) {
+                return $_this->castSingleValueToDb($item);
+            }, $value
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function castToFormValue($value)
+    {
+        $value = Arr::wrap($value);
+        $_this = $this;
+        return array_map( 
+            function ($item) use ($_this) {
+                return $_this->castToSingleFormValue($item);
+            }, $value
+        );
     }
 
     /**
@@ -145,13 +170,13 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function formValue($value)
+    public function castValueFromDb($value)
     {
         $value = Arr::wrap($value);
         $_this = $this;
         return array_map( 
             function ($item) use ($_this) {
-                return $_this->singleFormValue($item);
+                return $_this->castSingleValueFromDb($item);
             }, $value
         );
     }
@@ -169,7 +194,7 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      */
     public function toFormElement(): FormElement
     {
-        $values = $this->value(false);
+        $values = $this->formValue();
         $fields = [];
         if ($values) {
             foreach ($values as $index => $value) {

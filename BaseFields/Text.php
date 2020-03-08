@@ -39,7 +39,7 @@ class Text extends BaseField
     /**
      * @inheritDoc
      */
-    public function formValue($value)
+    public function castToFormValue($value)
     {
         return $value;
     }

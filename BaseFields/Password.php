@@ -15,20 +15,4 @@ class Password extends Text
     {
         return [$this->machineName => 'min:8|string'];
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function castValue($value)
-    {
-        return $value;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function formValue($value)
-    {
-        return $value;
-    }
 }

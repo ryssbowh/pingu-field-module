@@ -20,7 +20,7 @@ class _Float extends BaseField
     /**
      * @inheritDoc
      */
-    public function castValue($value)
+    public function castToFormValue($value)
     {
         return $value;
     }
@@ -28,7 +28,7 @@ class _Float extends BaseField
     /**
      * @inheritDoc
      */
-    public function formValue($value)
+    public function castValue($value)
     {
         return $value;
     }

@@ -72,31 +72,22 @@ interface FieldContract
     public function defaultValue();
 
     /**
-     * Cast this field value, from a form value to a value usable on a model
-     * 
-     * @param mixed $value
-     * 
-     * @return mixed
-     */
-    public function castValue($value);
-
-    /**
      * Transfom a value on a format usable in a form
      * 
      * @param mixed $value
      * 
      * @return mixed
      */
-    public function formValue($value);
+    public function castToFormValue($value);
 
     /**
-     * Get this field value
+     * Cast a raw value
      * 
-     * @param bool $casted
+     * @param mixed $value
      * 
      * @return mixed
      */
-    public function value(bool $casted = true);
+    public function castValue($value);
 
     /**
      * List of form elements that are available to render this field

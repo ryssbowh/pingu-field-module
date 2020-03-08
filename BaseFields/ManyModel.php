@@ -2,6 +2,7 @@
 
 namespace Pingu\Field\BaseFields;
 
+use Illuminate\Database\Eloquent\Collection;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
@@ -59,15 +60,21 @@ class ManyModel extends Model
     /**
      * @inheritDoc
      */
-    public function formValue($value)
+    public function castToFormValue($value)
     {
-        if (!$value) {
-            return [];
-        }
-        return $value->map(
-            function ($model) {
-                return (string)$model->getKey();
-            }
-        )->toArray();
+        return array_map(function ($item) {
+            return (string)$item->getKey();
+        }, $value->all());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function castValue($value)
+    {
+        $model = $this->option('model');
+        return new Collection(array_map(function ($id) use ($model) {
+            return $model::find($id);
+        }, $value));
     }
 }

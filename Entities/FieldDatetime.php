@@ -10,14 +10,15 @@ class FieldDatetime extends BaseBundleField
 {
     protected static $availableWidgets = [Datetime::class];
 
-    protected $fillable = ['setToCurrent', 'required'];
+    protected $fillable = ['setToCurrent', 'required', 'format'];
 
     protected $casts = [
         'setToCurrent' => 'boolean',
         'required' => 'boolean'
     ];
 
-    protected $format = "Y-m-d H:i:s";
+    protected $defaultFormat = "Y-m-d H:i:s";
+    protected $dbFormat = 'Y-m-d H:i:s';
 
     /**
      * @inheritDoc
@@ -25,8 +26,16 @@ class FieldDatetime extends BaseBundleField
     public function defaultValue(bool $casted = false)
     {
         if ($this->setToCurrent) {
-            return Carbon::now()->format($this->format);
+            return Carbon::now()->format($this->getFormat());
         }
+    }
+
+    public function getFormat()
+    {
+        if (!$this->format) {
+            return $this->defaultFormat;
+        }
+        return $this->format;
     }
 
     /**
@@ -40,19 +49,41 @@ class FieldDatetime extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function castSingleValue($value)
+    public function castSingleValueToDb($value)
     {
         if ($value) {
-            return Carbon::createFromFormat($this->format, $value);
+            return $value->format($this->dbFormat);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function singleFormValue($value)
+    public function castToSingleFormValue($value)
     {
-        return $value->format($this->format);
+        if ($value) {
+            return $value->format($this->getFormat());
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function castSingleValue($value)
+    {
+        if ($value) {
+            return Carbon::createFromFormat($this->getFormat(), $value);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function castSingleValueFromDb($value)
+    {
+        if ($value) {
+            return Carbon::createFromFormat($this->dbFormat, $value)->format($this->getFormat());
+        }
     }
 
     /**
@@ -65,8 +96,8 @@ class FieldDatetime extends BaseBundleField
             [
                 'label' => $this->name(),
                 'showLabel' => false,
-                'default' => $value ?? $this->default,
-                'format' => $this->format,
+                'default' => $value ?? $this->defaultValue(),
+                'format' => $this->getFormat(),
                 'required' => $this->required
             ]
         );
@@ -77,7 +108,7 @@ class FieldDatetime extends BaseBundleField
      */
     public function defaultValidationRule(): string
     {
-        return $this->required ? 'required' : '';
+        return ($this->required ? 'required|' : '') . 'date_format:'.$this->getFormat();
     }
 
 }

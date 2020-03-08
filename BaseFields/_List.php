@@ -3,6 +3,7 @@
 namespace Pingu\Field\BaseFields;
 
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Arr;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
@@ -27,16 +28,19 @@ class _List extends BaseField
     /**
      * @inheritDoc
      */
-    public function castValue($value)
+    public function castToFormValue($value)
     {
-        return $value;
+        return $value ? $value : [];
     }
 
     /**
      * @inheritDoc
      */
-    public function formValue($value)
+    public function castValue($value)
     {
-        return $value;
+        if ($value) {
+            return implode(',', Arr::wrap($value));
+        }
+        return '';
     }
 }
