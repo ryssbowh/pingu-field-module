@@ -19,6 +19,7 @@ use Pingu\Field\Entities\BundleField as BundleFieldModel;
 use Pingu\Field\Entities\FieldBoolean;
 use Pingu\Field\Entities\FieldDatetime;
 use Pingu\Field\Entities\FieldEmail;
+use Pingu\Field\Entities\FieldEntity;
 use Pingu\Field\Entities\FieldFloat;
 use Pingu\Field\Entities\FieldInteger;
 use Pingu\Field\Entities\FieldText;
@@ -63,7 +64,8 @@ class FieldServiceProvider extends ModuleServiceProvider
         FieldText::class,
         FieldTextLong::class,
         FieldUrl::class,
-        FieldTime::class
+        FieldTime::class,
+        FieldEntity::class
     ];
     /**
      * Boot the application events.
