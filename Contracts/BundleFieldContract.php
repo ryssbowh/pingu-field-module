@@ -71,15 +71,6 @@ interface BundleFieldContract extends FieldContract, HasFields
     public function castSingleValueToDb($value);
 
     /**
-     * Turn a value of this field into a FormElement
-     *
-     * @param mixed $value
-     * 
-     * @return Field
-     */
-    public function toSingleFormField($value): Field;
-
-    /**
      * Default validation rules
      * 
      * @return string

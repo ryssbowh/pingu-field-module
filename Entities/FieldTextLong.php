@@ -3,11 +3,14 @@
 namespace Pingu\Field\Entities;
 
 use Pingu\Forms\Support\Field;
+use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Support\Fields\Textarea;
 
 class FieldTextLong extends BaseBundleField
 {
     protected static $availableWidgets = [Textarea::class];
+
+    protected static $availableFilterWidgets = [TextInput::class];
     
     protected $fillable = ['default', 'required'];
 
@@ -62,17 +65,12 @@ class FieldTextLong extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function toSingleFormField($value): Field
+    public function formFieldOptions(): array
     {
-        return new Textarea(
-            $this->machineName(),
-            [
-                'label' => $this->name(),
-                'showLabel' => false,
-                'default' => $value ?? $this->default,
-                'required' => $this->required
-            ]
-        );
+        return [
+            'default' => $value ?? $this->default,
+            'required' => $this->required
+        ];
     }
 
     /**

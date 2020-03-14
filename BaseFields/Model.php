@@ -10,6 +10,7 @@ use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Exceptions\FormFieldException;
 use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
+use Illuminate\Database\Eloquent\Builder;
 
 class Model extends BaseField
 {
@@ -20,33 +21,34 @@ class Model extends BaseField
         Checkboxes::class
     ];
 
+    protected static $availableFilterWidgets = [
+        Select::class,
+        Checkboxes::class
+    ];
+
     /**
      * @inheritDoc
      */
     protected function init(array $options)
     {   
-        if (isset($options['items']) and isset($options['items'][0])) {
-            $options['model'] = get_class($options['items'][0]);
-        } elseif (isset($options['model'])) {
-            $options['items'] = $options['model']::all();
-        } else {
-            throw FieldsException::missingOption($machineName, 'items or model');
+        if (!isset($options['items']) and !isset($options['model'])) {
+            throw FieldsException::missingOption($this->name, 'items or model');
         }
         parent::init($options);
-        $this->option('items', $this->buildItems());
     }
 
     /**
      * @inheritDoc
      */
-    protected function buildItems()
+    protected function buildItems(bool $includeNoValue, $noValueLabel = 'Select')
     {
         $textField = Arr::wrap($this->option('textField'));
         $values = [];
-        if (!$this->option('required')) {
-            $values[''] = $this->option('noValueLabel');
+        if ($includeNoValue) {
+            $values[''] = $noValueLabel;
         }
-        foreach ($this->option('items') as $model) {
+        $items = $this->option('items') ?? $this->option('model')::all();
+        foreach ($items as $model) {
             $values[''.$model->id] = implode($this->option('separator'), $model->only($textField));
         }
         return $values;
@@ -110,5 +112,26 @@ class Model extends BaseField
     public function defaultValidationRules(): array
     {
         return [$this->machineName => 'exists:'.$this->option('model')::tableName().',id'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function formFieldOptions(): array
+    {
+        $options = $this->options->toArray();
+        $options['items'] = $this->buildItems(!$options['required'], $options['noValueLabel']);
+        return $options;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function formFilterFieldOptions(): array
+    {
+        $options = parent::formFilterFieldOptions();
+        $options['items'] = $this->buildItems(false);
+        $options['multiple'] = true;
+        return $options;
     }
 }

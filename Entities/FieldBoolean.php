@@ -8,6 +8,8 @@ use Pingu\Forms\Support\Fields\Checkbox;
 class FieldBoolean extends BaseBundleField
 {
     protected static $availableWidgets = [Checkbox::class];
+
+    protected static $availableFilterWidgets = [Checkbox::class];
     
     protected $fillable = ['default'];
 
@@ -59,16 +61,11 @@ class FieldBoolean extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function toSingleFormField($value): Field
+    public function formFieldOptions(): array
     {
-        return new Checkbox(
-            $this->machineName(),
-            [
-                'label' => $this->name(),
-                'showLabel' => false,
-                'default' => $value ?? $this->default
-            ]
-        );
+        return [
+            'default' => $value ?? $this->default
+        ];
     }
 
     /**

@@ -125,11 +125,9 @@ abstract class FieldRepository
             $fields = $this->resolveFields();
         }
 
-        $out = [];
-        foreach ($fields as $field) {
-            $out[] = $field->toFormElement();
-        }
-        return $out;
+        return $fields->map(function ($field) {
+            return $field->toFormElement();
+        })->all();
     }
     
 }

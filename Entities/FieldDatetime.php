@@ -9,6 +9,8 @@ use Pingu\Forms\Support\Fields\Datetime;
 class FieldDatetime extends BaseBundleField
 {
     protected static $availableWidgets = [Datetime::class];
+    
+    protected static $availableFilterWidgets = [Datetime::class];
 
     protected $fillable = ['setToCurrent', 'required', 'format'];
 
@@ -89,18 +91,13 @@ class FieldDatetime extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function toSingleFormField($value): Field
+    public function formFieldOptions(): array
     {
-        return new Datetime(
-            $this->machineName(),
-            [
-                'label' => $this->name(),
-                'showLabel' => false,
-                'default' => $value ?? $this->defaultValue(),
-                'format' => $this->getFormat(),
-                'required' => $this->required
-            ]
-        );
+        return [
+            'default' => $value ?? $this->defaultValue(),
+            'format' => $this->getFormat(),
+            'required' => $this->required
+        ];
     }
 
     /**

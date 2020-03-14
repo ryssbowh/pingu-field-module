@@ -78,7 +78,7 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->extendValidator();
         \ModelRoutes::registerSlugFromObject(new BundleFieldModel);
         $this->registerBundleFields();
-        $this->registerBaseFieldWidgets();
+        $this->registerBaseFields();
     }
 
     /**
@@ -96,16 +96,15 @@ class FieldServiceProvider extends ModuleServiceProvider
     protected function extendValidator()
     {
         \Validator::extend('unique_field', BundleFieldRules::class.'@unique');
-        \Validator::extend('valid_datetime_format', FormatFieldRules::class.'@validDatetimeFormat');
     }
 
     /**
-     * Registers base fields widget in the form field facade
+     * Registers base fields
      */
-    protected function registerBaseFieldWidgets()
+    protected function registerBaseFields()
     {
         foreach ($this->baseFields as $field) {
-            $field::registerWidgets();
+            $field::register();
         }
     }
 

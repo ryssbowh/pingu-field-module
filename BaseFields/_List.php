@@ -17,6 +17,11 @@ class _List extends BaseField
         Checkboxes::class
     ];
 
+    protected static $availableFilterWidgets = [
+        Select::class,
+        Checkboxes::class
+    ];
+
     /**
      * @inheritDoc
      */

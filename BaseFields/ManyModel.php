@@ -6,10 +6,16 @@ use Illuminate\Database\Eloquent\Collection;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
+use Illuminate\Database\Eloquent\Builder;
 
 class ManyModel extends Model
 {
     protected static $availableWidgets = [
+        Checkboxes::class,
+        Select::class
+    ];
+
+    protected static $availableFilterWidgets = [
         Checkboxes::class,
         Select::class
     ];
@@ -62,6 +68,9 @@ class ManyModel extends Model
      */
     public function castToFormValue($value)
     {
+        if (!$value) {
+            return [];
+        }
         return array_map(function ($item) {
             return (string)$item->getKey();
         }, $value->all());

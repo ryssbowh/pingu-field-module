@@ -5,10 +5,13 @@ namespace Pingu\Field\Entities;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Email;
+use Pingu\Forms\Support\Fields\TextInput;
 
 class FieldEmail extends BaseBundleField
 {
     protected static $availableWidgets = [Email::class];
+
+    protected static $availableFilterWidgets = [TextInput::class];
 
     protected $fillable = ['default', 'required'];
 
@@ -63,17 +66,12 @@ class FieldEmail extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function toSingleFormField($value): Field
+    public function formFieldOptions(): array
     {
-        return new Email(
-            $this->machineName(),
-            [
-                'label' => $this->name(),
-                'showLabel' => false,
-                'default' => $value ?? $this->default,
-                'required' => $this->required
-            ]
-        );
+        return [
+            'default' => $value ?? $this->default,
+            'required' => $this->required
+        ];
     }
 
     /**

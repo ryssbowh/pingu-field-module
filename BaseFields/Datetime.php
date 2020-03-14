@@ -5,6 +5,7 @@ namespace Pingu\Field\BaseFields;
 use Carbon\Carbon;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Datetime as DatetimeField;
+use Illuminate\Database\Eloquent\Builder;
 
 class Datetime extends BaseField
 {
@@ -13,6 +14,8 @@ class Datetime extends BaseField
     protected $requiredOptions = ['format'];
 
     protected static $availableWidgets = [DatetimeField::class];
+    
+    protected static $availableFilterWidgets = [DatetimeField::class];
 
     public function getFormat()
     {

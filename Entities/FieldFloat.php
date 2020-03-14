@@ -8,6 +8,8 @@ use Pingu\Forms\Support\Fields\NumberInput;
 class FieldFloat extends BaseBundleField
 {
     protected static $availableWidgets = [NumberInput::class];
+    
+    protected static $availableFilterWidgets = [NumberInput::class];
 
     protected $fillable = ['precision', 'default', 'required'];
 
@@ -62,17 +64,12 @@ class FieldFloat extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function toSingleFormField($value): Field
+    public function formFieldOptions(): array
     {
-        return new NumberInput(
-            $this->machineName(),
-            [
-                'label' => $this->name(),
-                'showLabel' => false,
-                'default' => $value ?? $this->default,
-                'required' => $this->required
-            ]
-        );
+        return [
+            'default' => $value ?? $this->default,
+            'required' => $this->required
+        ];
     }
 
     /**

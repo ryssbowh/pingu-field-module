@@ -4,12 +4,24 @@ namespace Pingu\Field\Traits;
 
 trait HasWidgets
 {
+    /**
+     * Default available Form Field classes
+     * 
+     * @var array
+     */
     protected static $availableWidgets = [];
+
+    /**
+     * Form Field class for this Field
+     * 
+     * @var string
+     */
+    protected $widget;
 
     /**
      * Register widgets in form field facade
      */
-    public static function registerWidgets()
+    protected static function registerWidgets()
     {
         \FormField::registerWidgets(static::class, static::$availableWidgets);
     }
@@ -19,16 +31,7 @@ trait HasWidgets
      */
     public static function availableWidgets(): array
     {
-        $out = [];
-        foreach (static::$availableWidgets as $widget) {
-            $out[$widget] = $widget::friendlyName();
-        }
-        return $out;
-    }
-
-    public static function addWidget(string $widget)
-    {
-        static::$availableWidgets[] = $widget;
+        return \FormField::availableWidgets(static::class);
     }
 
     /**
@@ -52,6 +55,6 @@ trait HasWidgets
      */
     public function widget(): string
     {
-        return $this->widget;
+        return $this->widget ?? $this->defaultWidget();
     }
 }

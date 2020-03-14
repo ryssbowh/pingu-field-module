@@ -9,6 +9,8 @@ class FieldText extends BaseBundleField
 {
     protected static $availableWidgets = [TextInput::class];
     
+    protected static $availableFilterWidgets = [TextInput::class];
+    
     protected $fillable = ['default', 'required', 'maxLength'];
 
     protected $casts = [
@@ -63,18 +65,13 @@ class FieldText extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function toSingleFormField($value): Field
+    public function formFieldOptions(): array
     {
-        return new TextInput(
-            $this->machineName(),
-            [
-                'label' => $this->name(),
-                'showLabel' => false,
-                'default' => $value,
-                'required' => $this->required,
-                'maxlength' => $this->maxLength
-            ]
-        );
+        return [
+            'default' => $value,
+            'required' => $this->required,
+            'maxlength' => $this->maxLength
+        ];
     }
 
     /**

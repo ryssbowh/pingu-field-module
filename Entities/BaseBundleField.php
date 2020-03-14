@@ -9,14 +9,15 @@ use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Support\FormRepository\BundleFieldForms;
+use Pingu\Field\Traits\HasFilterWidgets;
 use Pingu\Field\Traits\HasWidgets;
+use Pingu\Forms\Contracts\FormRepositoryContract;
 use Pingu\Forms\Support\FieldGroup;
 use Pingu\Forms\Support\FormElement;
-use Pingu\Forms\Support\FormRepository;
 
 abstract class BaseBundleField extends BaseModel implements BundleFieldContract
 {
-    use HasWidgets;
+    use HasWidgets, HasFilterWidgets;
 
     protected $entity;
 
@@ -49,9 +50,9 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * Forms instance for this field
      * 
-     * @return FormRepository
+     * @return FormRepositoryContract
      */
-    public function forms(): FormRepository
+    public function forms(): FormRepositoryContract
     {
         return new BundleFieldForms($this);
     }
@@ -194,27 +195,53 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      */
     public function toFormElement(): FormElement
     {
+        $baseOptions = $this->entity->formLayout()->getField($this->machineName())->options->values();
+        $baseOptions['multiple'] = true;
+        $baseOptions['label'] = $this->name();
+        $baseOptions['showLabel'] = false;
+
         $values = $this->formValue();
         $fields = [];
         if ($values) {
             foreach ($values as $index => $value) {
-                $field = $this->toSingleFormField($value);
-                $field->option('multiple', true);
-                $field->option('id', $this->machineName().$index);
-                $field->setIndex($index);
-                $fields[] = $field;
+                $baseOptions['id'] = $this->machineName().$index;
+                $baseOptions['default'] = $value;
+                $baseOptions['index'] = $index;
+                $fields[] = $this->toSingleFormElement($baseOptions);
             }
         } else {
-            $field = $this->toSingleFormField(null);
-            $field->option('id', $this->machineName().'0');
-            $field->option('multiple', true);
-            $fields[] = $field;
+            $baseOptions['id'] = $this->machineName().'0';
+            $baseOptions['index'] = 0;
+            $fields[] = $this->toSingleFormElement($baseOptions);
         }
         $options = [
             'helper' => $this->field->helper,
             'label' => $this->name(),
         ];
         return new FieldGroup($this->machineName(), $options, $fields, $this->cardinality());
+    }
+
+    protected function toSingleFormElement(array $baseOptions)
+    {
+        $class = \FormField::getRegisteredField($this->widget());
+        $options = $baseOptions + $this->formFieldOptions();
+        $options['required'] = false;
+        $options['disabled'] = false;
+        $field = new $class($this->machineName(), $options);
+        return $field;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toFilterFormElement(): FormElement
+    {
+        $class = \FormField::getRegisteredField($this->filterWidget());
+        $options = $this->formFieldOptions();
+        $options['htmlName'] = 'filters['.$this->machineName().']';
+        $options['required'] = false;
+        $field = new $class($this->machineName(), $options);
+        return $field;
     }
 
     /**

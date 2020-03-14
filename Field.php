@@ -53,6 +53,7 @@ class Field
         }
         $this->bundleFields[$name] = $fieldClass;
         $fieldClass::registerWidgets();
+        $fieldClass::registerFilterWidgets();
     }
 
     /**
@@ -145,9 +146,9 @@ class Field
     {   
         if (config('field.useCache', false)) {
             $key = 'field.fields.'.object_to_class($object).'.'.$key;
-            return \ArrayCache::rememberForever($key, $callback($object));
+            return \ArrayCache::rememberForever($key, $callback);
         }
-        return $callback($object);
+        return $callback();
     }
 
     /**

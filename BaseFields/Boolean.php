@@ -4,10 +4,13 @@ namespace Pingu\Field\BaseFields;
 
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkbox;
+use Illuminate\Database\Eloquent\Builder;
 
 class Boolean extends BaseField
 {
     protected static $availableWidgets = [Checkbox::class];
+    
+    protected static $availableFilterWidgets = [Checkbox::class];
 
     /**
      * @inheritDoc

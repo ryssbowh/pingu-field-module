@@ -5,10 +5,13 @@ namespace Pingu\Field\Entities;
 use Carbon\Carbon;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Entity;
+use Pingu\Forms\Support\Fields\Select;
 
 class FieldEntity extends BaseBundleField
 {
-    protected static $availableWidgets = [Entity::class];
+    protected static $availableWidgets = [Select::class];
+    
+    protected static $availableFilterWidgets = [Select::class];
 
     protected $fillable = ['entity', 'required'];
 
@@ -33,7 +36,7 @@ class FieldEntity extends BaseBundleField
      */
     public function castSingleValueToDb($value)
     {
-        return $value;
+        return $value->getKey();
     }
 
     /**
@@ -49,7 +52,7 @@ class FieldEntity extends BaseBundleField
      */
     public function castSingleValue($value)
     {
-        return $this->entity::find($value);
+        return $this->getAttribute('entity')::find($value);
     }
 
     /**
@@ -63,17 +66,13 @@ class FieldEntity extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function toSingleFormField($value): Field
+    public function formFieldOptions(): array
     {
-        return new Entity(
-            $this->machineName(),
-            [
-                'label' => $this->name(),
-                'showLabel' => false,
-                'required' => $this->required, 
-                'entity' => $this->entity
-            ]
-        );
+        return [
+            'items' => $this->entity->pluck('name', 'id')->all(),
+            'required' => $this->required, 
+            'entity' => $this->entity
+        ];
     }
 
     /**

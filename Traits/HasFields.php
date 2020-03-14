@@ -12,6 +12,8 @@ use Pingu\Field\Support\FieldLayout;
 
 trait HasFields
 {
+    protected $filterable = [];
+
     /**
      * Gets the field repository for this model
      * 
@@ -56,5 +58,25 @@ trait HasFields
                 return $_this->getFieldsValidator();
             }
         );
+    }
+
+    /**
+     * Field names that can be filtered on
+     * 
+     * @return array
+     */
+    public function getFilterable(): array
+    {
+        return $this->filterable;
+    }
+
+    /**
+     * Set the field names that can be filtered on
+     * 
+     * @param array $filterable
+     */
+    public function setFilterable(array $filterable)
+    {
+        $this->filterable = $filterable;
     }
 }

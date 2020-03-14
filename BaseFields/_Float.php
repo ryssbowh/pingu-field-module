@@ -8,6 +8,8 @@ use Pingu\Forms\Support\Fields\NumberInput;
 class _Float extends BaseField
 {
     protected static $availableWidgets = [NumberInput::class];
+    
+    protected static $availableFilterWidgets = [NumberInput::class];
 
     /**
      * @inheritDoc

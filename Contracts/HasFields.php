@@ -7,20 +7,12 @@ use Pingu\Field\Contracts\FieldRepository;
 use Pingu\Field\Contracts\FieldsValidator;
 use Pingu\Field\Support\FieldLayout;
 
-interface HasFields
+interface HasFields extends DefinesFields
 {
-   
     /**
-     * Fields repository getter
+     * Field names that can be filtered on
      * 
-     * @return FieldRepository
+     * @return array
      */
-    public function fields(): FieldRepository;
-
-    /**
-     * FieldsValidator getter
-     * 
-     * @return FieldsValidator
-     */
-    public function validator(): FieldsValidator;
+    public function getFilterable(): array;
 }

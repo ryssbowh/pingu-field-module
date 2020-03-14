@@ -5,17 +5,17 @@ namespace Pingu\Field\Support;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Contracts\FieldContract;
 use Pingu\Field\Exceptions\FieldsException;
+use Pingu\Field\Traits\HasFilterWidgets;
 use Pingu\Field\Traits\HasWidgets;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\FormElement;
 
 abstract class BaseField implements FieldContract
 {
-    use HasWidgets;
+    use HasWidgets, HasFilterWidgets;
 
     protected $machineName;
     protected $options;
-    protected $widget;
     protected $model;
     protected $requiredOptions = [];
 
@@ -37,7 +37,6 @@ abstract class BaseField implements FieldContract
     protected function init(array $options)
     {
         $this->options = collect(array_merge($this->defaultOptions(), $options));
-        $this->widget = $widget ?? $this->defaultWidget();
     }
 
     /**
@@ -136,8 +135,19 @@ abstract class BaseField implements FieldContract
     {
         $class = \FormField::getRegisteredField($this->widget());
         $options = $this->formFieldOptions();
+        $options['default'] = $this->formValue();
         $field = new $class($this->machineName, $options);
-        $field->setValue($this->formValue());
+        return $field;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toFilterFormElement(): FormElement
+    {
+        $class = \FormField::getRegisteredField($this->filterWidget());
+        $options = $this->formFilterFieldOptions();
+        $field = new $class($this->machineName, $options);
         return $field;
     }
 
@@ -169,6 +179,15 @@ abstract class BaseField implements FieldContract
     }
 
     /**
+     * Registers this field
+     */
+    public static function register()
+    {
+        static::registerWidgets();
+        static::registerFilterWidgets();
+    }
+
+    /**
      * Default options for this field
      * 
      * @return array
@@ -186,8 +205,22 @@ abstract class BaseField implements FieldContract
      * 
      * @return array
      */
-    protected function formFieldOptions(): array
+    public function formFieldOptions(): array
     {
         return $this->options->toArray();
+    }
+
+    /**
+     * Field options to be passed to a FormElement for a filter form
+     * 
+     * @return array
+     */
+    public function formFilterFieldOptions(): array
+    {
+        $options = $this->options->toArray();
+        $options['htmlName'] = 'filters['.$this->machineName.']';
+        $options['required'] = false;
+        $options['disabled'] = false;
+        return $options;
     }
 }

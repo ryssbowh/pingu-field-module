@@ -9,6 +9,8 @@ class FieldUrl extends BaseBundleField
 {
     protected static $availableWidgets = [TextInput::class];
     
+    protected static $availableFilterWidgets = [TextInput::class];
+    
     protected $fillable = ['required', 'default'];
 
     protected $casts = [
@@ -62,17 +64,12 @@ class FieldUrl extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function toSingleFormField($value): Field
+    public function formFieldOptions(): array
     {
-        return new TextInput(
-            $this->machineName(),
-            [
-                'label' => $this->name(),
-                'showLabel' => false,
-                'default' => $value ?? $this->default,
-                'required' => $this->required
-            ]
-        );
+        return [
+            'default' => $value ?? $this->default,
+            'required' => $this->required
+        ];
     }
 
     /**

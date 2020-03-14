@@ -2,13 +2,15 @@
 
 namespace Pingu\Field\BaseFields;
 
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\TextInput;
 
 class Text extends BaseField
 {
     protected static $availableWidgets = [TextInput::class];
+
+    protected static $availableFilterWidgets = [TextInput::class];
 
     /**
      * @inheritDoc

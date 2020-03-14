@@ -4,7 +4,7 @@ namespace Pingu\Field\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Pingu\Field\Contracts\HasFields;
+use Pingu\Field\Contracts\DefinesFields;
 
 class FieldsRetrieved
 {
@@ -17,7 +17,7 @@ class FieldsRetrieved
      *
      * @return void
      */
-    public function __construct(Collection $fields, HasFields $object)
+    public function __construct(Collection $fields, DefinesFields $object)
     {
         $this->fields = $fields;
         $this->object = $object;

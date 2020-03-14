@@ -39,6 +39,17 @@ trait HasBundleFields
             }
         );
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public function getFilterable(): array
+    {
+        if ($bundle = $this->bundle()) {
+            return array_merge(parent::getFilterable(), $bundle->fields()->allNames());
+        }
+        return parent::getFilterable();
+    }
 
     /**
      * @inheritDoc
