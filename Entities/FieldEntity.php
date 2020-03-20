@@ -3,6 +3,8 @@
 namespace Pingu\Field\Entities;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Pingu\Entity\Entities\Entity as EntityModel;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Entity;
 use Pingu\Forms\Support\Fields\Select;
@@ -66,10 +68,10 @@ class FieldEntity extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function formFieldOptions(): array
+    public function formFieldOptions(int $index = 0): array
     {
         return [
-            'items' => $this->entity->pluck('name', 'id')->all(),
+            'items' => (new $this->entity)->pluck('name', 'id')->all(),
             'required' => $this->required, 
             'entity' => $this->entity
         ];
@@ -81,6 +83,14 @@ class FieldEntity extends BaseBundleField
     public function defaultValidationRule(): string
     {
         return ($this->required ? 'required|' : '');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function singleFilterQueryModifier(Builder $query, $value, EntityModel $entity)
+    {
+        $query->where('value', '=', $value);
     }
 
 }

@@ -30,6 +30,6 @@ class BundleFieldValue extends Model
      */
     public function entity()
     {
-        return $this->morphTo();
+        return $this->morphTo('entity');
     }
 }

@@ -122,6 +122,14 @@ class FieldValuesRepository
         return $this;
     }
 
+    public function createDefaultValue(BundleField $field)
+    {
+        $value = $this->createModel($field);
+        $instance = $field->instance;
+        $value->value = $instance->castSingleValueToDb($instance->defaultValue());
+        $value->save();
+    }
+
     /**
      * Determine if the revision or any of the given attribute(s) have been modified.
      *
@@ -346,7 +354,7 @@ class FieldValuesRepository
         $entity = $this->entity;
         return \Field::getBundleValuesCache(
             $this->entity, function () use ($entity) {
-                return $entity->morphMany(BundleFieldValue::class, 'entity')->get();   
+                return $entity->values;   
             }
         );
     }

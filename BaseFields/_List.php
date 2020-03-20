@@ -2,8 +2,9 @@
 
 namespace Pingu\Field\BaseFields;
 
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
@@ -47,5 +48,13 @@ class _List extends BaseField
             return implode(',', Arr::wrap($value));
         }
         return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function filterQueryModifier(Builder $query, $value, BaseModel $model)
+    {
+        $query->where($this->machineName, '=', $value);
     }
 }

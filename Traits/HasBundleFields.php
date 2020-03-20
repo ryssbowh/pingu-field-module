@@ -3,7 +3,9 @@
 namespace Pingu\Field\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
+use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Support\FieldValuesRepository;
 
@@ -38,6 +40,16 @@ trait HasBundleFields
                 }
             }
         );
+    }
+
+    /**
+     * value relation
+     * 
+     * @return MorphMany
+     */
+    public function values(): MorphMany
+    {
+        return $this->morphMany(BundleFieldValue::class, 'entity');
     }
     
     /**

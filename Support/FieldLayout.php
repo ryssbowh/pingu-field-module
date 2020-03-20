@@ -63,7 +63,8 @@ class FieldLayout
 
     protected function resolveCache()
     {
-        return \Field::getFormLayoutCache($this->getObjectAttribute(), function ($object) {
+        $object = $this->getObjectAttribute();
+        return \Field::getFormLayoutCache($object, function () use ($object) {
             return FormLayoutGroup::where('object', $object)
                 ->orderBy('weight')
                 ->get();

@@ -2,15 +2,16 @@
 
 namespace Pingu\Field\BaseFields;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Exceptions\FieldsException;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Exceptions\FormFieldException;
 use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
-use Illuminate\Database\Eloquent\Builder;
 
 class Model extends BaseField
 {
@@ -57,7 +58,7 @@ class Model extends BaseField
     /**
      * @inheritDoc
      */
-    public function filterQueryModifier(Builder $query, $value)
+    public function filterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         if (!$value) { return;
         }
@@ -117,7 +118,7 @@ class Model extends BaseField
     /**
      * @inheritDoc
      */
-    public function formFieldOptions(): array
+    public function formFieldOptions(int $index = 0): array
     {
         $options = $this->options->toArray();
         $options['items'] = $this->buildItems(!$options['required'], $options['noValueLabel']);

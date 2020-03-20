@@ -3,6 +3,7 @@
 namespace Pingu\Field\BaseFields;
 
 use Illuminate\Database\Eloquent\Builder;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\TextInput;
 
@@ -15,7 +16,7 @@ class Text extends BaseField
     /**
      * @inheritDoc
      */
-    public function filterQueryModifier(Builder $query, $value)
+    public function filterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         if ($value) {
             $query->where($this->machineName, 'like', '%'.$value.'%');

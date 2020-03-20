@@ -21,7 +21,7 @@ class BundleField extends BaseModel implements HasRouteSlugContract
 {
     use HasRouteSlug;
 
-    protected $fillable = ['machineName', 'bundle', 'helper', 'name', 'cardinality'];
+    protected $fillable = ['machineName', 'bundle', 'helper', 'name', 'cardinality', 'editable', 'deletable'];
 
     protected $attributes = [
         'editable' => true,
@@ -52,6 +52,9 @@ class BundleField extends BaseModel implements HasRouteSlugContract
         static::created(
             function ($field) {
                 \Field::getBundleFormLayout($field->bundle())->createForField($field->instance);
+                foreach ($field->bundle()->entities() as $entity) {
+                    $entity->fieldValues->createDefaultValue($field, $entity);
+                }
             }
         );
     }

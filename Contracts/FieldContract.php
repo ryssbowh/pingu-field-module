@@ -2,6 +2,8 @@
 
 namespace Pingu\Field\Contracts; 
 
+use Illuminate\Database\Eloquent\Builder;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\FormElement;
 
@@ -59,10 +61,12 @@ interface FieldContract extends HasWidgetsContracts, HasFilterWidgetsContracts
 
     /**
      * Get this field transformed into a form element
+     *
+     * @param BaseModel $model
      * 
      * @return FormElement
      */
-    public function toFormElement(): FormElement;
+    public function toFormElement(BaseModel $model): FormElement;
 
     /**
      * Get this field transformed into a form element
@@ -101,6 +105,14 @@ interface FieldContract extends HasWidgetsContracts, HasFilterWidgetsContracts
      * 
      * @return array
      */
-    public function formFieldOptions(): array;
+    public function formFieldOptions(int $index = 0): array;
+
+    /**
+     * Filter query modifier
+     * 
+     * @param Builder $query
+     * @param mixed  $value
+     */
+    public function filterQueryModifier(Builder $query, $value, BaseModel $model);
 
 }

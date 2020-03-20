@@ -30,7 +30,6 @@ abstract class BaseFieldRepository extends FieldRepository
     {
         $fields = collect();
         foreach ($this->fields() as $field) {
-            $field->setModel($this->object);
             $fields->put($field->machineName(), $field);
         }
         return $fields;

@@ -2,11 +2,12 @@
 
 namespace Pingu\Field\BaseFields;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkboxes;
 use Pingu\Forms\Support\Fields\Select;
-use Illuminate\Database\Eloquent\Builder;
 
 class ManyModel extends Model
 {
@@ -23,7 +24,7 @@ class ManyModel extends Model
     /**
      * @inheritDoc
      */
-    public function filterQueryModifier(Builder $query, $value)
+    public function filterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         if(!$value) { return;
         }

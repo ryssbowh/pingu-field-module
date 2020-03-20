@@ -14,7 +14,7 @@ class EditBundleFieldForm extends CreateBundleFieldForm
      */
     public function elements(): array
     {
-        $fields = $this->field->fields()->toFormElements();
+        $fields = $this->field->fields()->toFormElements($this->field);
         $fields[] = new Submit;
         return $fields;
     }

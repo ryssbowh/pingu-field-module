@@ -2,12 +2,16 @@
 
 namespace Pingu\Field\Entities;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
+use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Support\FormRepository\BundleFieldForms;
 use Pingu\Field\Traits\HasFilterWidgets;
 use Pingu\Field\Traits\HasWidgets;
@@ -18,18 +22,6 @@ use Pingu\Forms\Support\FormElement;
 abstract class BaseBundleField extends BaseModel implements BundleFieldContract
 {
     use HasWidgets, HasFilterWidgets;
-
-    protected $entity;
-
-    /**
-     * Sets the entity for this field
-     * 
-     * @param Entity $entity
-     */
-    public function setEntity(Entity $entity) 
-    {
-        $this->entity = $entity;
-    }
 
     /**
      * @inheritDoc
@@ -62,9 +54,19 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      * 
      * @return MorphOne
      */
-    public function field()
+    public function field(): MorphOne
     {
         return $this->morphOne(BundleField::class, 'instance');
+    }
+
+    /**
+     * value relation
+     * 
+     * @return HasOne
+     */
+    public function value(): HasOne
+    {
+        return $this->hasOne(BundleFieldValue::class, 'field_id');
     }
 
     /**
@@ -112,9 +114,9 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function formValue()
+    public function formValue(BaseModel $model)
     {
-        $value = ($this->entity and $this->entity->exists) ? $this->entity->{$this->machineName()} : [];
+        $value = $model->exists ? $model->{$this->machineName()} : [];
         return $this->castToFormValue($value);
     }
 
@@ -193,26 +195,22 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function toFormElement(): FormElement
+    public function toFormElement(BaseModel $model): FormElement
     {
-        $baseOptions = $this->entity->formLayout()->getField($this->machineName())->options->values();
-        $baseOptions['multiple'] = true;
+        $baseOptions = $model->formLayout()->getField($this->machineName())->options->values();
+        $widget = $model->formLayout()->getField($this->machineName())->widget;
         $baseOptions['label'] = $this->name();
         $baseOptions['showLabel'] = false;
 
-        $values = $this->formValue();
+        $values = $this->formValue($model);
         $fields = [];
         if ($values) {
             foreach ($values as $index => $value) {
-                $baseOptions['id'] = $this->machineName().$index;
                 $baseOptions['default'] = $value;
-                $baseOptions['index'] = $index;
-                $fields[] = $this->toSingleFormElement($baseOptions);
+                $fields[] = $this->toSingleFormElement($widget, $baseOptions, $index);
             }
         } else {
-            $baseOptions['id'] = $this->machineName().'0';
-            $baseOptions['index'] = 0;
-            $fields[] = $this->toSingleFormElement($baseOptions);
+            $fields[] = $this->toSingleFormElement($widget, $baseOptions, 0);
         }
         $options = [
             'helper' => $this->field->helper,
@@ -221,13 +219,13 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
         return new FieldGroup($this->machineName(), $options, $fields, $this->cardinality());
     }
 
-    protected function toSingleFormElement(array $baseOptions)
+    protected function toSingleFormElement(string $widget, array $baseOptions, int $index)
     {
-        $class = \FormField::getRegisteredField($this->widget());
-        $options = $baseOptions + $this->formFieldOptions();
-        $options['required'] = false;
-        $options['disabled'] = false;
-        $field = new $class($this->machineName(), $options);
+        $baseOptions['id'] = $this->machineName().$index;
+        $baseOptions['htmlName'] = $this->machineName().'['.$index.']';
+        $baseOptions['index'] = 0;
+        $options = array_merge($baseOptions, $this->formFieldOptions($index));
+        $field = new $widget($this->machineName(), $options);
         return $field;
     }
 
@@ -236,11 +234,11 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      */
     public function toFilterFormElement(): FormElement
     {
-        $class = \FormField::getRegisteredField($this->filterWidget());
+        $widget = \FormField::getRegisteredField($this->filterWidget());
         $options = $this->formFieldOptions();
         $options['htmlName'] = 'filters['.$this->machineName().']';
         $options['required'] = false;
-        $field = new $class($this->machineName(), $options);
+        $field = new $widget($this->machineName(), $options);
         return $field;
     }
 
@@ -263,5 +261,20 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     public function defaultValidationMessages(): array
     {
         return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function filterQueryModifier(Builder $query, $value, BaseModel $entity)
+    {
+        $fieldId = $this->field->id;
+        $_this = $this;
+        $query->leftJoin('bundle_field_values', function ($join) use ($entity, $fieldId) {
+            $join->on('bundle_field_values.entity_id', '=', $entity->getTable() . '.id')
+                ->where('bundle_field_values.entity_type', '=', get_class($entity))
+                ->where('bundle_field_values.field_id', '=', $fieldId);
+        });
+        $this->singleFilterQueryModifier($query, $value, $entity);
     }
 }

@@ -38,14 +38,7 @@ abstract class BundledEntityFieldRepository extends BaseFieldRepository
 
     protected function getBundleFields(BundleContract $bundle)
     {
-        $object = $this->object;
-        $bundleFields = $bundle->fields()->get();
-        $bundleFields->each(
-            function ($field) use ($object) {
-                $field->setEntity($object);
-            }
-        );
-        return $bundleFields;
+        return $bundle->fields()->get();
     }
 
     /**

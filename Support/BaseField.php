@@ -40,16 +40,6 @@ abstract class BaseField implements FieldContract
     }
 
     /**
-     * Set the model this field is attached to
-     * 
-     * @param BaseModel $model
-     */
-    public function setModel(BaseModel $model)
-    {
-        $this->model = $model;
-    }
-
-    /**
      * @inheritDoc
      */
     public function definesRelation()
@@ -131,11 +121,11 @@ abstract class BaseField implements FieldContract
     /**
      * @inheritDoc
      */
-    public function toFormElement(): FormElement
+    public function toFormElement(BaseModel $model): FormElement
     {
         $class = \FormField::getRegisteredField($this->widget());
         $options = $this->formFieldOptions();
-        $options['default'] = $this->formValue();
+        $options['default'] = $this->formValue($model);
         $field = new $class($this->machineName, $options);
         return $field;
     }
@@ -162,11 +152,9 @@ abstract class BaseField implements FieldContract
     /**
      * @inheritDoc
      */
-    public function formValue()
+    public function formValue(BaseModel $model)
     {
-        $value = ($this->model and $this->model->exists) ? 
-            $this->model->{$this->machineName} : 
-            $this->defaultValue();
+        $value = $model->exists ? $model->getFormValue($this->machineName) : $this->defaultValue();
         return $this->castToFormValue($value);
     }
 
@@ -205,7 +193,7 @@ abstract class BaseField implements FieldContract
      * 
      * @return array
      */
-    public function formFieldOptions(): array
+    public function formFieldOptions(int $index = 0): array
     {
         return $this->options->toArray();
     }

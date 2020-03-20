@@ -2,8 +2,10 @@
 
 namespace Pingu\Field\Contracts;
 
+use Illuminate\Database\Eloquent\Builder;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Forms\Support\Field;
 
 interface BundleFieldContract extends FieldContract, HasFields
@@ -76,4 +78,13 @@ interface BundleFieldContract extends FieldContract, HasFields
      * @return string
      */
     public function defaultValidationRule(): string;
+
+    /**
+     * Query filter modifier for a single value
+     * 
+     * @param Builder $query
+     * @param mixed  $value
+     * @param Entity  $entity
+     */
+    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity);
 }

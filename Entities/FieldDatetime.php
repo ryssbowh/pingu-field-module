@@ -3,6 +3,8 @@
 namespace Pingu\Field\Entities;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Datetime;
 
@@ -91,7 +93,7 @@ class FieldDatetime extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function formFieldOptions(): array
+    public function formFieldOptions(int $index = 0): array
     {
         return [
             'default' => $value ?? $this->defaultValue(),
@@ -106,6 +108,14 @@ class FieldDatetime extends BaseBundleField
     public function defaultValidationRule(): string
     {
         return ($this->required ? 'required|' : '') . 'date_format:'.$this->getFormat();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    {
+        $query->where('value', '=', $value);
     }
 
 }

@@ -2,9 +2,10 @@
 
 namespace Pingu\Field\BaseFields;
 
+use Illuminate\Database\Eloquent\Builder;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Checkbox;
-use Illuminate\Database\Eloquent\Builder;
 
 class Boolean extends BaseField
 {
@@ -15,7 +16,7 @@ class Boolean extends BaseField
     /**
      * @inheritDoc
      */
-    public function filterQueryModifier(Builder $query, $value)
+    public function filterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         if ($value) {
             $value = $value == 'true' ? 1 : 0;

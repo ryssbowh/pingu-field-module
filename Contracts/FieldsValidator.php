@@ -79,7 +79,6 @@ abstract class FieldsValidator
                 return $rules;
             }
         );
-
         return $rules;
     }
 
@@ -174,11 +173,12 @@ abstract class FieldsValidator
         } else {
             $fieldsToCheck = $this->object->fields()->allNames();
         }
+
         $this->ensureRulesExist($fieldsToCheck, $rules);
 
-        if ($updating) {
-            $rules = array_intersect_key($rules, $values);
-        }
+        // if ($updating) {
+        //     $rules = $this->intersectRuleKeys($rules, array_keys($values));
+        // }
 
         $validator = \Validator::make($values, $rules, $this->getMessages());
         $this->modifyValidator($validator, $values, $updating);
@@ -186,6 +186,18 @@ abstract class FieldsValidator
 
         return $validator;
     }
+
+    // protected function intersectRuleKeys($rules, $keys)
+    // {
+    //     $out = [];
+    //     foreach ($rules as $name => $rule) {
+    //         $elems = explode('.', $name);
+    //         if (in_array($elems[0], $keys)) {
+    //             $out[$name] = $rule;
+    //         }
+    //     }
+    //     return $out;
+    // }
 
     /**
      * Go through all the fields and make them upload the files

@@ -2,6 +2,7 @@
 
 namespace Pingu\Field\Entities;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Traits\Models\HasWeight;
@@ -15,6 +16,8 @@ class FormLayoutGroup extends BaseModel
     public $timestamps = false;
 
     protected $with = [];
+
+    protected $layoutInstance;
 
     public static function boot()
     {
@@ -46,6 +49,19 @@ class FormLayoutGroup extends BaseModel
     }
 
     /**
+     * Layout getter
+     * 
+     * @return Collection
+     */
+    public function getLayout(): Collection
+    {
+        if (is_null($this->layoutInstance)) {
+            $this->layoutInstance = $this->layout;
+        }
+        return $this->layoutInstance;
+    }
+
+    /**
      * Does this group has a $name field
      * 
      * @param  string  $name
@@ -54,7 +70,7 @@ class FormLayoutGroup extends BaseModel
      */
     public function hasField(string $name)
     {
-        return !is_null($this->layout()->where('field', $name)->first());
+        return !is_null($this->getLayout()->where('field', $name)->first());
     }
 
     /**
@@ -66,7 +82,7 @@ class FormLayoutGroup extends BaseModel
      */
     public function getField(string $name): ?FormLayout
     {
-        return $this->layout()->where('field', $name)->first();
+        return $this->getLayout()->where('field', $name)->first();
     }
 
     /**

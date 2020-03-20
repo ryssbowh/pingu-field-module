@@ -2,6 +2,8 @@
 
 namespace Pingu\Field\Entities;
 
+use Illuminate\Database\Eloquent\Builder;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\NumberInput;
 
@@ -64,7 +66,7 @@ class FieldFloat extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function formFieldOptions(): array
+    public function formFieldOptions(int $index = 0): array
     {
         return [
             'default' => $value ?? $this->default,
@@ -78,5 +80,13 @@ class FieldFloat extends BaseBundleField
     public function defaultValidationRule(): string
     {
         return ($this->required ? 'required|' : '') . 'numeric';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    {
+        $query->where('value', '=', $value);
     }
 }

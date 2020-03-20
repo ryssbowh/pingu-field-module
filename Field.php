@@ -264,9 +264,9 @@ class Field
     {
         if (config('field.useCache', false)) {
             $key = 'field.layout.'.$object;
-            return \ArrayCache::rememberForever($key, $callback($object));
+            return \ArrayCache::rememberForever($key, $callback);
         }
-        return $callback($object);
+        return $callback();
     }
 
     /**

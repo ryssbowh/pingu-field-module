@@ -113,11 +113,13 @@ abstract class FieldRepository
 
     /**
      * Transform all (or some) fields into FormElements
+     *
+     * @param BaseModel $model
+     * @param array|string $fields
      * 
-     * @param  array|string $fields
      * @return array
      */
-    public function toFormElements($fields = null): array
+    public function toFormElements(BaseModel $model, $fields = null): array
     {
         if (!is_null($fields)) {
             $fields = $this->resolveFields()->only(Arr::wrap($fields));
@@ -125,8 +127,8 @@ abstract class FieldRepository
             $fields = $this->resolveFields();
         }
 
-        return $fields->map(function ($field) {
-            return $field->toFormElement();
+        return $fields->map(function ($field) use ($model) {
+            return $field->toFormElement($model);
         })->all();
     }
     

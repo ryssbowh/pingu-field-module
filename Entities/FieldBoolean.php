@@ -2,6 +2,8 @@
 
 namespace Pingu\Field\Entities;
 
+use Illuminate\Database\Eloquent\Builder;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Checkbox;
 
@@ -61,7 +63,7 @@ class FieldBoolean extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function formFieldOptions(): array
+    public function formFieldOptions(int $index = 0): array
     {
         return [
             'default' => $value ?? $this->default
@@ -76,4 +78,11 @@ class FieldBoolean extends BaseBundleField
         return 'boolean';
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    {
+        $query->where('value', '=', (int)$value);
+    }
 }

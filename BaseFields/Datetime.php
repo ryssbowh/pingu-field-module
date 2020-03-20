@@ -3,9 +3,10 @@
 namespace Pingu\Field\BaseFields;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\Datetime as DatetimeField;
-use Illuminate\Database\Eloquent\Builder;
 
 class Datetime extends BaseField
 {
@@ -25,7 +26,7 @@ class Datetime extends BaseField
     /**
      * @inheritDoc
      */
-    public function filterQueryModifier(Builder $query, $value)
+    public function filterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         if (!$value) {
             return;

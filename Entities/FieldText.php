@@ -2,6 +2,8 @@
 
 namespace Pingu\Field\Entities;
 
+use Illuminate\Database\Eloquent\Builder;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\TextInput;
 
@@ -65,7 +67,7 @@ class FieldText extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function formFieldOptions(): array
+    public function formFieldOptions(int $index = 0): array
     {
         return [
             'default' => $value,
@@ -84,5 +86,13 @@ class FieldText extends BaseBundleField
             $rules[] = 'required';
         }
         return implode('|', $rules);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    {
+        $query->where('value', 'like', '%'.$value.'%');
     }
 }

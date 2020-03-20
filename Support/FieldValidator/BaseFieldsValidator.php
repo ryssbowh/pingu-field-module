@@ -30,7 +30,7 @@ abstract class BaseFieldsValidator extends FieldsValidator
     protected function buildRules(): array
     {
         $rules = $this->rules();
-        $default  =$this->defaultFieldsRules();
+        $default = $this->defaultFieldsRules();
         $out = [];
         $allRules = array_merge(array_keys($rules), array_keys($default));
         foreach ($allRules as $name) {
