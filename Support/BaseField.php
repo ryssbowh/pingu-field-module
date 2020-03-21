@@ -141,7 +141,7 @@ abstract class BaseField implements FieldContract
     protected function resolveValue($value)
     {
         if ($value instanceof BaseModel) {
-            $value = $value->getFormValue($this->machineName);
+            $value = $value->exists ? $value->getFormValue($this->machineName) : null;
         }
         if (is_null($value)) {
             return $this->defaultValue();

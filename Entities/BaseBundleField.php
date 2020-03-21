@@ -23,6 +23,8 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
 {
     use HasWidgets, HasFilterWidgets;
 
+    protected $with = ['field'];
+
     /**
      * @inheritDoc
      */
@@ -212,7 +214,7 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      */
     public function formValue(BaseModel $model)
     {
-        $value = $model->{$this->machineName()};
+        $value = $model->exists ? $model->{$this->machineName()} : null;
         return $this->castToFormValue($value);
     }
 
@@ -234,6 +236,7 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
                 $fields[] = $this->toSingleFormElement($widget, $baseOptions, $index);
             }
         } else {
+            $baseOptions['default'] = $this->defaultValue();
             $fields[] = $this->toSingleFormElement($widget, $baseOptions, 0);
         }
         $options = [
