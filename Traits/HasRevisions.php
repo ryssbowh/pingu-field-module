@@ -12,6 +12,10 @@ trait HasRevisions
      */
     protected $revisionRepository;
 
+    public function ignoreInRevisions(): array
+    {
+        return $this->ignoreInRevisions ?? [];
+    }
     /**
      * Boots trait. creates revision when model is created
      */

@@ -162,11 +162,15 @@ class RevisionRepository
      * 
      * @return FieldRevision
      */
-    public function createRevision(): FieldRevision
+    public function createRevision(): ?FieldRevision
     {
+        $fields = $this->gatherFieldsToSave();
+        if ($fields->isEmpty()) {
+            return null;
+        }
         $id = $this->getLastId() + 1;
         $models = collect();
-        foreach ($this->entity->fields()->get() as $field) {
+        foreach ($fields as $field) {
             $method = 'createBundleFieldModel';
             if ($field instanceof BaseField) {
                 $method = 'createBaseFieldModel';
@@ -180,6 +184,20 @@ class RevisionRepository
         $this->revisions->put($id, $revision);
         $this->deleteOldRevisions();
         return $revision;
+    }
+
+    /**
+     * Removes all fields that shouldn't be saved in a revision
+     * 
+     * @return Collection
+     */
+    protected function gatherFieldsToSave(): Collection
+    {
+        $fields = $this->entity->fields()->get();
+        foreach ($this->entity->ignoreInRevisions() as $name) {
+            $fields->forget($name);
+        }
+        return $fields;
     }
 
     /**
@@ -233,7 +251,7 @@ class RevisionRepository
         $model = new Revision;
         $model->fill(
             [
-            'value' => $field->formValue($this->entity),
+            'value' => $field->castToFormValue($this->entity->{$field->machineName()}),
             'revision' => $id,
             'field' => $field->machineName()
             ]
