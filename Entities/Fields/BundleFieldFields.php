@@ -2,6 +2,7 @@
 
 namespace Pingu\Field\Entities\Fields;
 
+use Illuminate\Support\Collection;
 use Pingu\Field\BaseFields\Integer;
 use Pingu\Field\BaseFields\Text;
 use Pingu\Field\BaseFields\_List;

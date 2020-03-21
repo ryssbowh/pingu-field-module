@@ -26,7 +26,7 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function name(): string
+    public function getNameAttribute(): string
     {
         return $this->field->name;
     }
@@ -34,9 +34,41 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function machineName(): string
+    public function getMachineNameAttribute(): string
     {
         return $this->field->machineName;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCardinalityAttribute(): string
+    {
+        return $this->field->cardinality;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function name(): string
+    {
+        return $this->getNameAttribute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function machineName(): string
+    {
+        return $this->getMachineNameAttribute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function cardinality(): int
+    {
+        return $this->getCardinalityAttribute();
     }
 
     /**
@@ -114,15 +146,6 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function formValue(BaseModel $model)
-    {
-        $value = $model->exists ? $model->{$this->machineName()} : [];
-        return $this->castToFormValue($value);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function fixedCardinality()
     {
         return false;
@@ -187,15 +210,16 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function cardinality(): int
+    public function formValue(BaseModel $model)
     {
-        return $this->field->cardinality;
+        $value = $model->{$this->machineName()};
+        return $this->castToFormValue($value);
     }
 
     /**
      * @inheritDoc
      */
-    public function toFormElement(BaseModel $model): FormElement
+    public function toFormElement($model): FormElement
     {
         $baseOptions = $model->formLayout()->getField($this->machineName())->options->values();
         $widget = $model->formLayout()->getField($this->machineName())->widget;
@@ -219,6 +243,15 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
         return new FieldGroup($this->machineName(), $options, $fields, $this->cardinality());
     }
 
+    /**
+     * Turns a single field into a form element
+     * 
+     * @param string $widget
+     * @param array  $baseOptions
+     * @param int    $index
+     * 
+     * @return FormElement
+     */
     protected function toSingleFormElement(string $widget, array $baseOptions, int $index)
     {
         $baseOptions['id'] = $this->machineName().$index;

@@ -39,9 +39,9 @@ abstract class BundleFieldFieldsValidator extends BaseFieldsValidator
     /**
      * @inheritDoc
      */
-    protected function buildRules(): array
+    protected function buildRules(bool $updating): array
     {
         $generic = $this->object->field;
-        return array_merge(parent::buildRules(), $this->getBundleFieldValidator()->buildRules());
+        return array_merge(parent::buildRules($updating), $this->getBundleFieldValidator()->buildRules($updating));
     }
 }

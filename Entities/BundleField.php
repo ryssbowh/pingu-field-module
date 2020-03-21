@@ -15,7 +15,6 @@ use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Contracts\FieldRepository;
 use Pingu\Field\Entities\Fields\BundleFieldFields;
 use Pingu\Forms\Support\Field;
-use Pingu\Forms\Support\FormRepository;
 
 class BundleField extends BaseModel implements HasRouteSlugContract
 {
@@ -30,34 +29,6 @@ class BundleField extends BaseModel implements HasRouteSlugContract
     ];
 
     protected $with = [];
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::deleted(
-            function ($field) {
-                \Field::forgetAllFieldCache();
-                \Field::forgetFormLayoutCache($field->bundle);
-            }
-        );
-
-        static::saved(
-            function ($field) {
-                \Field::forgetAllFieldCache();
-                \Field::forgetFormLayoutCache($field->bundle);
-            }
-        );
-
-        static::created(
-            function ($field) {
-                \Field::getBundleFormLayout($field->bundle())->createForField($field->instance);
-                foreach ($field->bundle()->entities() as $entity) {
-                    $entity->fieldValues->createDefaultValue($field, $entity);
-                }
-            }
-        );
-    }
 
     /**
      * Machinename getter

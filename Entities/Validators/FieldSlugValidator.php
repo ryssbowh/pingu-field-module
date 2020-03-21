@@ -9,7 +9,7 @@ class FieldSlugValidator extends BundleFieldFieldsValidator
     /**
      * @inheritDoc
      */
-    protected function rules(): array
+    protected function rules(bool $updating): array
     {
         return [
             'from' => 'string',

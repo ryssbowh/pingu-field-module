@@ -65,9 +65,7 @@ class FieldBoolean extends BaseBundleField
      */
     public function formFieldOptions(int $index = 0): array
     {
-        return [
-            'default' => $value ?? $this->default
-        ];
+        return [];
     }
 
     /**

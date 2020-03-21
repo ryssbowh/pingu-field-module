@@ -27,7 +27,7 @@ class BundleFieldsValidator extends FieldsValidator
     /**
      * @inheritDoc
      */
-    protected function buildRules(): array
+    protected function buildRules(bool $updating): array
     {
         return $this->defaultFieldsRules();
     }

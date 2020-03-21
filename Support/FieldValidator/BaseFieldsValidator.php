@@ -14,7 +14,7 @@ abstract class BaseFieldsValidator extends FieldsValidator
     /**
      * @inheritDoc
      */
-    abstract protected function rules(): array;
+    abstract protected function rules(bool $updating): array;
 
     /**
      * @inheritDoc
@@ -27,9 +27,9 @@ abstract class BaseFieldsValidator extends FieldsValidator
     /**
      * @inheritDoc
      */
-    protected function buildRules(): array
+    protected function buildRules(bool $updating): array
     {
-        $rules = $this->rules();
+        $rules = $this->rules($updating);
         $default = $this->defaultFieldsRules();
         $out = [];
         $allRules = array_merge(array_keys($rules), array_keys($default));

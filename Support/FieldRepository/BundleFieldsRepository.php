@@ -40,6 +40,11 @@ class BundleFieldsRepository extends FieldRepository
         return collect($fields);
     }
 
+    protected function getObjectCacheTarget()
+    {
+        return $this->object->bundleName();
+    }
+
     /**
      * Returns bundle fields, including the entity base fields
      * 
@@ -47,9 +52,9 @@ class BundleFieldsRepository extends FieldRepository
      */
     public function getAll(): Collection
     {
-        $this->resolveFields();
         $entity = $this->object->entityFor();
         $entity = new $entity;
-        return $this->fields->merge($entity->fields()->get());
+        $entity->setBundle($this->object);
+        return $entity->fields()->get();
     }
 }

@@ -33,7 +33,7 @@ class CreateBundleFieldForm extends Form
      */
     public function elements(): array
     {
-        $fields = $this->field->fields()->toFormElements($this->field);
+        $fields = $this->field->fields()->toFormElements($this->field, false);
 
         $fields[] = new Hidden(
             '_field',

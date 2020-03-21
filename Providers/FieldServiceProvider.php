@@ -16,6 +16,7 @@ use Pingu\Field\BaseFields\Text;
 use Pingu\Field\BaseFields\_Float;
 use Pingu\Field\BaseFields\_List;
 use Pingu\Field\Entities\BundleField as BundleFieldModel;
+use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Entities\FieldBoolean;
 use Pingu\Field\Entities\FieldDatetime;
 use Pingu\Field\Entities\FieldEmail;
@@ -27,6 +28,8 @@ use Pingu\Field\Entities\FieldTextLong;
 use Pingu\Field\Entities\FieldTime;
 use Pingu\Field\Entities\FieldUrl;
 use Pingu\Field\Field;
+use Pingu\Field\Observers\BundleFieldObserver;
+use Pingu\Field\Observers\BundleFieldValueObserver;
 use Pingu\Field\Validation\BundleFieldRules;
 use Pingu\User\Bundles\UserBundle;
 use Pingu\User\Entities\User;
@@ -79,6 +82,8 @@ class FieldServiceProvider extends ModuleServiceProvider
         \ModelRoutes::registerSlugFromObject(new BundleFieldModel);
         $this->registerBundleFields();
         $this->registerBaseFields();
+        BundleFieldModel::observe(BundleFieldObserver::class);
+        BundleFieldValue::observe(BundleFieldValueObserver::class);
     }
 
     /**

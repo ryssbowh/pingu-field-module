@@ -154,7 +154,7 @@ class Field
     /**
      * Clears cache for an object
      * 
-     * @param object $object
+     * @param object|string $object
      */
     public function forgetFieldCache($object)
     {

@@ -211,6 +211,11 @@ class FieldLayout
         return $layout;
     }
 
+    public function deleteForField(FieldContract $field)
+    {
+        FormLayout::where('object', $this->getObjectAttribute())->where('field', $field->machineName)->delete();
+    }
+
     /**
      * Does this layout have any field
      * 

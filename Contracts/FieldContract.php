@@ -62,11 +62,11 @@ interface FieldContract extends HasWidgetsContracts, HasFilterWidgetsContracts
     /**
      * Get this field transformed into a form element
      *
-     * @param BaseModel $model
+     * @param mixed $valueOrModel
      * 
      * @return FormElement
      */
-    public function toFormElement(BaseModel $model): FormElement;
+    public function toFormElement($valueOrModel): FormElement;
 
     /**
      * Get this field transformed into a form element

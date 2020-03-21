@@ -243,7 +243,6 @@ class FieldValuesRepository
         foreach ($this->values as $model) {
             $model->delete();
         }
-        \Field::forgetBundleValuesCache($this->entity);
     }
 
     /**
@@ -254,7 +253,6 @@ class FieldValuesRepository
         foreach ($this->values as $model) {
             $model->forceDelete();
         }
-        \Field::forgetBundleValuesCache($this->entity);
     }
 
     /**
@@ -270,7 +268,6 @@ class FieldValuesRepository
             $field = $fields[$name]->field;
             $this->saveField($field, $values);
         }
-        \Field::forgetBundleValuesCache($this->entity);
         return true;
     }
 

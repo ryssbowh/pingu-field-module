@@ -9,10 +9,10 @@ class BundleFieldValidator extends BaseFieldsValidator
     /**
      * @inheritDoc
      */
-    protected function rules(): array
+    protected function rules(bool $updating): array
     {
         return [
-            'machineName' => 'required|string',
+            'machineName' => $updating ? null : 'required|string',
             'name' => 'required|string',
             'cardinality' => 'integer',
             'helper' => 'string'

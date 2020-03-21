@@ -6,7 +6,7 @@ use Pingu\Field\Support\FieldValidator\BaseFieldsValidator;
 
 class $CLASS$ extends $EXTENDS$
 {
-    protected function rules(): array
+    protected function rules(bool $updating): array
     {
         return [
 

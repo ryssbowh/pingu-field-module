@@ -8,7 +8,7 @@ use Pingu\Field\Support\FieldValidator\BaseFieldsValidator;
 
 class FormLayoutGroupValidator extends BaseFieldsValidator
 {
-    protected function rules(): array
+    protected function rules(bool $updating): array
     {
         return [
             'name' => 'string|required',

@@ -9,7 +9,7 @@ class FieldFloatValidator extends BundleFieldFieldsValidator
     /**
      * @inheritDoc
      */
-    protected function rules(): array
+    protected function rules(bool $updating): array
     {
         return [
             'precision' => 'integer|min:1',

@@ -21,7 +21,7 @@ class StoreBundleFieldRequest extends FormRequest
      */
     public function rules()
     {
-        return $this->getField()->validator()->getRules();
+        return $this->getField()->validator()->getRules(false);
     }
 
     public function messages()

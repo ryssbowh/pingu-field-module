@@ -38,7 +38,7 @@ abstract class FieldsValidator
      * 
      * @return array
      */
-    abstract protected function buildRules(): array;
+    abstract protected function buildRules(bool $updating): array;
 
     /**
      * Validation messages
@@ -68,13 +68,13 @@ abstract class FieldsValidator
      * @see    https://laravel.com/docs/5.7/validation
      * @return array
      */
-    public function getRules($updating = true): array
+    public function getRules(bool $updating): array
     {
         $_this = $this;
         $key = $this->rulesCacheKey . ($updating ? '-updating' : '-creating');
         $rules = \Field::getFieldsCache(
             $this->rulesCacheKey, $this->object, function () use ($_this, $updating) {
-                $rules = $_this->buildRules();
+                $rules = $_this->buildRules($updating);
                 event(new FieldsValidationRulesRetrieved($rules, $_this->object, $updating));
                 return $rules;
             }
@@ -240,7 +240,6 @@ abstract class FieldsValidator
      */
     protected function ensureRulesExist(array $fields, array $rules)
     {
-        $rules = $this->getRules();
         foreach ($fields as $field) {
             if (!isset($rules[$field]) and !isset($rules[$field.'.*'])) {
                 throw FieldsException::missingRule($field, $this->object);
