@@ -9,7 +9,6 @@ class BundleFieldObserver
     public function saved(BundleField $field)
     {
         \Field::forgetAllFieldCache();
-        \Field::forgetFormLayoutCache($field->bundle);
     }
 
     public function created(BundleField $field)
@@ -23,11 +22,11 @@ class BundleFieldObserver
     public function deleting(BundleField $field)
     {
         \Field::getBundleFormLayout($field->bundle())->deleteForField($field->instance);
+        $field->instance->delete();
     }
 
     public function deleted(BundleField $field)
     {
         \Field::forgetAllFieldCache();
-        \Field::forgetFormLayoutCache($field->bundle);
     }
 }

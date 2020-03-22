@@ -121,31 +121,21 @@ abstract class BaseField implements FieldContract
     /**
      * @inheritDoc
      */
-    public function toFormElement($modelOrValue): FormElement
+    public function toFormElement($value): FormElement
     {
         $class = \FormField::getRegisteredField($this->widget());
         $options = $this->formFieldOptions();
-        $options['default'] = $this->resolveValue($modelOrValue);
+        $options['default'] = $value;
         $field = new $class($this->machineName, $options);
         return $field;
     }
 
     /**
-     * Resolve value from a model or a scalar value
-     * default to field default value if null
-     * 
-     * @param mixed $value
-     * 
-     * @return mixed
+     * @inheritDoc
      */
-    protected function resolveValue($value)
+    public function formValue(BaseModel $model)
     {
-        if ($value instanceof BaseModel) {
-            $value = $value->exists ? $value->getFormValue($this->machineName) : null;
-        }
-        if (is_null($value)) {
-            return $this->defaultValue();
-        }
+        $value = $model->exists ? $model->getFormValue($this->machineName()) : $this->defaultValue();
         return $this->castToFormValue($value);
     }
 

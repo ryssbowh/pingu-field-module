@@ -214,21 +214,20 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      */
     public function formValue(BaseModel $model)
     {
-        $value = $model->exists ? $model->{$this->machineName()} : null;
+        $value = $model->exists ? $model->{$this->machineName()} : $this->defaultValue();
         return $this->castToFormValue($value);
     }
 
     /**
      * @inheritDoc
      */
-    public function toFormElement($model): FormElement
+    public function toFormElement($values): FormElement
     {
-        $baseOptions = $model->formLayout()->getField($this->machineName())->options->values();
-        $widget = $model->formLayout()->getField($this->machineName())->widget;
+        $baseOptions = $this->bundle()->formLayout()->getField($this->machineName())->options->values();
+        $widget = $this->bundle()->formLayout()->getField($this->machineName())->widget;
         $baseOptions['label'] = $this->name();
         $baseOptions['showLabel'] = false;
 
-        $values = $this->formValue($model);
         $fields = [];
         if ($values) {
             foreach ($values as $index => $value) {

@@ -36,6 +36,27 @@ class FormLayoutGroup extends BaseModel
                 \Field::forgetFormLayoutCache($group->object);
             }
         );
+
+        static::saved(
+            function ($group) {
+                \Field::forgetFormLayoutCache($group->object);
+            }
+        );
+
+        static::deleting(
+            function ($group) {
+                foreach ($group->getLayout() as $layout) {
+                    $layout->delete();
+                }
+            }
+        );
+
+        static::deleted(
+            function ($group) {
+                \Field::forgetFormLayoutCache($group->object);
+                $group->resetLayout();
+            }
+        );
     }
 
     /**
@@ -61,10 +82,15 @@ class FormLayoutGroup extends BaseModel
         return $this->layoutInstance;
     }
 
+    public function resetLayout()
+    {
+        $this->layoutInstance = null;
+    }
+
     /**
      * Does this group has a $name field
      * 
-     * @param  string  $name
+     * @param string  $name
      * 
      * @return boolean
      */
@@ -92,6 +118,16 @@ class FormLayoutGroup extends BaseModel
      */
     public function addField(FormLayout $field)
     {
-        $this->layout->push($field);
+        $this->getlayout()->push($field);
+    }
+
+    /**
+     * Add a FormLayout to this group
+     * 
+     * @param FormLayout $field
+     */
+    public function deleteField(string $name)
+    {
+        $this->getLayout()->where('field', $name)->first()->delete();
     }
 }

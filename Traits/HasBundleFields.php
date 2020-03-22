@@ -190,4 +190,15 @@ trait HasBundleFields
         }
         return parent::resolveRouteBinding($value);
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected static function getDefaultFriendlyFieldName($key): string
+    {
+        if (Str::startsWith($key, 'field_')) {
+            $key = substr($key, 6);
+        }
+        return friendly_field_name($key);
+    }
 }

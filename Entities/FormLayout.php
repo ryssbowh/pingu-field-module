@@ -47,6 +47,12 @@ class FormLayout extends BaseModel implements HasRouteSlugContract
                 \Field::forgetFormLayoutCache($layout->object);
             }
         );
+
+        static::deleted(
+            function ($layout) {
+                \Field::forgetFormLayoutCache($layout->object);
+            }
+        );
     }
 
     /**

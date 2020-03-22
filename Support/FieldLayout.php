@@ -54,8 +54,8 @@ class FieldLayout
         }
         $this->layout = $this->resolveCache();
         if ($this->layout->isEmpty()) {
+            $this->layout = collect();
             $this->create();
-            $this->layout = $this->resolveCache();
         }
         $this->loaded = true;
         return $this;
@@ -63,12 +63,17 @@ class FieldLayout
 
     protected function resolveCache()
     {
-        $object = $this->getObjectAttribute();
-        return \Field::getFormLayoutCache($object, function () use ($object) {
-            return FormLayoutGroup::where('object', $object)
-                ->orderBy('weight')
-                ->get();
+        $_this = $this;
+        return \Field::getFormLayoutCache($this->getObjectAttribute(), function () use ($_this) {
+            return $_this->loadGroups();
         });
+    }
+
+    protected function loadGroups()
+    {
+        return FormLayoutGroup::where('object', $this->getObjectAttribute())
+            ->orderBy('weight')
+            ->get();
     }
 
     /**
@@ -187,12 +192,12 @@ class FieldLayout
      * @param FieldContract   $field
      * @param FormLayoutGroup $group
      * 
-     * @return FormLayout
+     * @return bool
      */
-    public function createForField(FieldContract $field, ?FormLayoutGroup $group = null): ?FormLayout
+    public function createForField(FieldContract $field, ?FormLayoutGroup $group = null): bool
     {
         if ($this->hasField($field->machineName())) {
-            return null;
+            return false;
         }
         if (is_null($group)) {
             $group = $this->getDefaultGroup();
@@ -208,12 +213,23 @@ class FieldLayout
         $layout->group()->associate($group);
         $layout->save();
         $group->addField($layout);
-        return $layout;
+        return true;
     }
 
     public function deleteForField(FieldContract $field)
     {
-        FormLayout::where('object', $this->getObjectAttribute())->where('field', $field->machineName)->delete();
+        foreach ($this->layout as $group) {
+            if ($group->hasField($field->machineName())) {
+                $group->deleteField($field->machineName());
+            }
+        }
+    }
+
+    public function delete()
+    {
+        foreach ($this->layout as $group) {
+            $group->delete();
+        }
     }
 
     /**

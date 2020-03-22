@@ -59,7 +59,7 @@ class Field
     /**
      * Registers multiple bundle fields
      * 
-     * @param array|srting $fieldClasses
+     * @param array|string $fieldClasses
      */
     public function registerBundleFields($fieldClasses)
     {
@@ -233,9 +233,9 @@ class Field
      * 
      * @param Entity $entity
      * 
-     * @return ?FormLayout
+     * @return FieldLayout
      */
-    public function getEntityFormLayout(Entity $entity)
+    public function getEntityFormLayout(Entity $entity): FieldLayout
     {
         $object = get_class($entity);
         return isset($this->formLayouts[$object]) ? $this->formLayouts[$object]->load() : null;
@@ -246,9 +246,9 @@ class Field
      * 
      * @param BundleContract $bundle
      * 
-     * @return ?FormLayout
+     * @return FieldLayout
      */
-    public function getBundleFormLayout(BundleContract $bundle)
+    public function getBundleFormLayout(BundleContract $bundle): FieldLayout
     {
         $object = $bundle->bundleName();
         return isset($this->formLayouts[$object]) ? $this->formLayouts[$object]->load() : null;

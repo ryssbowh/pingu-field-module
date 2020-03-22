@@ -151,7 +151,8 @@ abstract class FieldRepository
         $this->alterFieldsForForm($fields, $updating);
 
         return $fields->map(function ($field) use ($model) {
-            return $field->toFormElement($model);
+            $value = $field->formValue($model);
+            return $field->toFormElement($value);
         })->all();
     }
     
