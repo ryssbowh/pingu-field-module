@@ -4,6 +4,7 @@ namespace Pingu\Field\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Entity\Entities\Entity;
+use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Checkbox;
 
@@ -12,6 +13,8 @@ class FieldBoolean extends BaseBundleField
     protected static $availableWidgets = [Checkbox::class];
 
     protected static $availableFilterWidgets = [Checkbox::class];
+
+    protected static $displayers = [FakeDisplayer::class];
     
     protected $fillable = ['default'];
 

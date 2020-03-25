@@ -13,8 +13,11 @@ class S2019_09_30_184926941877_InstallField extends MigratableSeeder
      */
     public function run(): void
     {
-        Permission::findOrCreate(['name' => 'view revisions', 'section' => 'Core']);
-        Permission::findOrCreate(['name' => 'restore revisions', 'helper' => 'Will also need the create permission for each entity', 'section' => 'Core']);
+        $admin = Role::find(4);
+        $admin->givePermissionTo(
+            Permission::findOrCreate(['name' => 'view revisions', 'section' => 'Core']),
+            Permission::findOrCreate(['name' => 'restore revisions', 'helper' => 'Will also need the create permission for each entity', 'section' => 'Core'])
+        );
     }
 
     /**

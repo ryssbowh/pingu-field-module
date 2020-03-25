@@ -14,6 +14,7 @@ class BundleFieldObserver
     public function created(BundleField $field)
     {
         \Field::getBundleFormLayout($field->bundle())->createForField($field->instance);
+        \FieldDisplay::getBundleDisplay($field->bundle())->createForField($field->instance);
         foreach ($field->bundle()->entities() as $entity) {
             $entity->fieldValues->createDefaultValue($field, $entity);
         }
@@ -22,6 +23,7 @@ class BundleFieldObserver
     public function deleting(BundleField $field)
     {
         \Field::getBundleFormLayout($field->bundle())->deleteForField($field->instance);
+        \FieldDisplay::getBundleDisplay($field->bundle())->deleteForField($field->instance);
         $field->instance->delete();
     }
 

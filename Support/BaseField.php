@@ -4,7 +4,9 @@ namespace Pingu\Field\Support;
 
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Contracts\FieldContract;
+use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Field\Exceptions\FieldsException;
+use Pingu\Field\Traits\HasDisplayers;
 use Pingu\Field\Traits\HasFilterWidgets;
 use Pingu\Field\Traits\HasWidgets;
 use Pingu\Forms\Support\Field;
@@ -12,7 +14,7 @@ use Pingu\Forms\Support\FormElement;
 
 abstract class BaseField implements FieldContract
 {
-    use HasWidgets, HasFilterWidgets;
+    use HasWidgets, HasFilterWidgets, HasDisplayers;
 
     protected $machineName;
     protected $options;
@@ -173,6 +175,7 @@ abstract class BaseField implements FieldContract
     {
         static::registerWidgets();
         static::registerFilterWidgets();
+        static::registerDisplayers();
     }
 
     /**

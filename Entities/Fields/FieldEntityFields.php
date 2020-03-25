@@ -28,7 +28,7 @@ class FieldEntityFields extends BundleFieldFieldRepository
     {
         $out = [];
         foreach (\Entity::getRegisteredEntities() as $entity) {
-            $out[get_class($entity)] = $entity::friendlyName();
+            $out[$entity] = $entity::friendlyName();
         }
         ksort($out);
         return $out;

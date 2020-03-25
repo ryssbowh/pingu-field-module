@@ -11,8 +11,10 @@ use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
+use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Support\FormRepository\BundleFieldForms;
+use Pingu\Field\Traits\HasDisplayers;
 use Pingu\Field\Traits\HasFilterWidgets;
 use Pingu\Field\Traits\HasWidgets;
 use Pingu\Forms\Contracts\FormRepositoryContract;
@@ -21,7 +23,7 @@ use Pingu\Forms\Support\FormElement;
 
 abstract class BaseBundleField extends BaseModel implements BundleFieldContract
 {
-    use HasWidgets, HasFilterWidgets;
+    use HasWidgets, HasFilterWidgets, HasDisplayers;
 
     protected $with = ['field'];
 

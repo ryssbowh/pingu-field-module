@@ -4,6 +4,7 @@ namespace Pingu\Field\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Entity\Entities\Entity;
+use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Support\Fields\Textarea;
@@ -13,6 +14,8 @@ class FieldTextLong extends BaseBundleField
     protected static $availableWidgets = [Textarea::class];
 
     protected static $availableFilterWidgets = [TextInput::class];
+
+    protected static $displayers = [FakeDisplayer::class];
     
     protected $fillable = ['default', 'required'];
 

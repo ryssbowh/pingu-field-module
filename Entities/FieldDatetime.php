@@ -30,7 +30,7 @@ class FieldDatetime extends BaseBundleField
     public function defaultValue()
     {
         if ($this->setToCurrent) {
-            return Carbon::now()->format($this->getFormat());
+            return Carbon::now();
         }
     }
 

@@ -115,4 +115,11 @@ interface FieldContract extends HasWidgetsContracts, HasFilterWidgetsContracts
      */
     public function filterQueryModifier(Builder $query, $value, BaseModel $model);
 
+    /**
+     * Class for the default displayer of this field
+     * 
+     * @return string
+     */
+    public static function defaultDisplayer(): string;
+
 }

@@ -4,30 +4,13 @@ namespace Pingu\Field\Providers;
 
 use Illuminate\Database\Eloquent\Factory;
 use Pingu\Core\Support\ModuleServiceProvider;
-use Pingu\Field\BaseFields\Boolean;
-use Pingu\Field\BaseFields\Datetime;
-use Pingu\Field\BaseFields\Email;
-use Pingu\Field\BaseFields\Integer;
-use Pingu\Field\BaseFields\LongText;
-use Pingu\Field\BaseFields\ManyModel;
-use Pingu\Field\BaseFields\Model;
-use Pingu\Field\BaseFields\Password;
-use Pingu\Field\BaseFields\Text;
-use Pingu\Field\BaseFields\_Float;
-use Pingu\Field\BaseFields\_List;
-use Pingu\Field\Entities\BundleField as BundleFieldModel;
-use Pingu\Field\Entities\BundleFieldValue;
-use Pingu\Field\Entities\FieldBoolean;
-use Pingu\Field\Entities\FieldDatetime;
-use Pingu\Field\Entities\FieldEmail;
-use Pingu\Field\Entities\FieldEntity;
-use Pingu\Field\Entities\FieldFloat;
-use Pingu\Field\Entities\FieldInteger;
-use Pingu\Field\Entities\FieldText;
-use Pingu\Field\Entities\FieldTextLong;
-use Pingu\Field\Entities\FieldTime;
-use Pingu\Field\Entities\FieldUrl;
+use Pingu\Field\BaseFields\{Boolean, Datetime, Email, Integer, LongText, ManyModel, Model, Password, Text, _Float, _List};
+use Pingu\Field\Displayers\DefaultTextDisplayer;
+use Pingu\Field\Displayers\FakeDisplayer;
+use Pingu\Field\Displayers\TrimmedTextDisplayer;
+use Pingu\Field\Entities\{BundleField as BundleFieldModel, BundleFieldValue, FieldBoolean, FieldDatetime, FieldEmail, FieldEntity, FieldFloat, FieldInteger, FieldText, FieldTextLong, FieldTime, FieldUrl};
 use Pingu\Field\Field;
+use Pingu\Field\FieldDisplay;
 use Pingu\Field\Observers\BundleFieldObserver;
 use Pingu\Field\Observers\BundleFieldValueObserver;
 use Pingu\Field\Validation\BundleFieldRules;
@@ -70,6 +53,17 @@ class FieldServiceProvider extends ModuleServiceProvider
         FieldTime::class,
         FieldEntity::class
     ];
+
+    /**
+     * List of field displayer
+     * @var array
+     */
+    protected $fieldDisplayers = [
+        FakeDisplayer::class,
+        TrimmedTextDisplayer::class,
+        DefaultTextDisplayer::class
+    ];
+
     /**
      * Boot the application events.
      *
@@ -77,11 +71,12 @@ class FieldServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
+        \ModelRoutes::registerSlugFromObject(new BundleFieldModel);
         $this->registerConfig();
         $this->extendValidator();
-        \ModelRoutes::registerSlugFromObject(new BundleFieldModel);
         $this->registerBundleFields();
         $this->registerBaseFields();
+        $this->registerFieldDisplayers();
         BundleFieldModel::observe(BundleFieldObserver::class);
         BundleFieldValue::observe(BundleFieldValueObserver::class);
     }
@@ -96,6 +91,7 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->singleton('field.field', Field::class);
+        $this->app->singleton('field.display', FieldDisplay::class);
     }
 
     protected function extendValidator()
@@ -119,6 +115,14 @@ class FieldServiceProvider extends ModuleServiceProvider
     protected function registerBundleFields()
     {
         \Field::registerBundleFields($this->bundleFields);
+    }
+
+    /**
+     * Registers field displayers
+     */
+    protected function registerFieldDisplayers()
+    {
+        \FieldDisplay::registerDisplayers($this->fieldDisplayers);
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Pingu\Core\Entities\BaseModel;
+use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Field\Exceptions\FieldsException;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Exceptions\FormFieldException;
@@ -16,6 +17,8 @@ use Pingu\Forms\Support\Fields\Select;
 class Model extends BaseField
 {
     protected $requiredOptions = ['textField'];
+
+    protected static $displayers = [FakeDisplayer::class];
 
     protected static $availableWidgets = [
         Select::class,

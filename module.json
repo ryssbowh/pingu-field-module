@@ -10,7 +10,8 @@
         "Pingu\\Field\\Providers\\CommandServiceProvider"
     ],
     "aliases": {
-        "Field": "Pingu\\Field\\Facades\\Field"
+        "Field": "Pingu\\Field\\Facades\\Field",
+        "FieldDisplay": "Pingu\\Field\\Facades\\FieldDisplay"
     },
     "files": [
         "functions.php"

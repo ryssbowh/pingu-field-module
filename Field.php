@@ -15,6 +15,7 @@ use Pingu\Field\Contracts\FieldsValidator;
 use Pingu\Field\Contracts\HasFields;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Exceptions\BundleFieldException;
+use Pingu\Field\Support\FieldDisplay;
 use Pingu\Field\Support\FieldLayout;
 use Pingu\Forms\Contracts\Models\FormableContract;
 use Pingu\Forms\Exceptions\ModelNotFormable;
@@ -54,6 +55,7 @@ class Field
         $this->bundleFields[$name] = $fieldClass;
         $fieldClass::registerWidgets();
         $fieldClass::registerFilterWidgets();
+        $fieldClass::registerDisplayers();
     }
 
     /**
