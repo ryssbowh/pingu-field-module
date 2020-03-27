@@ -16,7 +16,7 @@ use Pingu\Forms\Support\Fields\Select;
 
 class Model extends BaseField
 {
-    protected $requiredOptions = ['textField'];
+    protected $requiredOptions = ['textField', 'model'];
 
     protected static $displayers = [FakeDisplayer::class];
 
@@ -29,17 +29,6 @@ class Model extends BaseField
         Select::class,
         Checkboxes::class
     ];
-
-    /**
-     * @inheritDoc
-     */
-    protected function init(array $options)
-    {   
-        if (!isset($options['items']) and !isset($options['model'])) {
-            throw FieldsException::missingOption($this->name, 'items or model');
-        }
-        parent::init($options);
-    }
 
     /**
      * @inheritDoc

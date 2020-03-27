@@ -5,7 +5,7 @@ namespace Pingu\Field\Traits;
 trait HasDisplayers
 {
     /**
-     * Displayers this Field
+     * Displayers for this Field
      * 
      * @var string
      */
@@ -16,7 +16,7 @@ trait HasDisplayers
      */
     protected static function registerDisplayers()
     {
-        \FieldDisplay::appendFieldDisplayer(static::class, static::$displayers);
+        \FieldDisplayer::append(static::class, static::$displayers);
     }
 
     /**
@@ -24,11 +24,11 @@ trait HasDisplayers
      */
     public static function availableDisplayers(): array
     {
-        return \FieldDisplay::getDisplayersForField(static::class);
+        return \FieldDisplayer::getForField(static::class);
     }
 
     public static function defaultDisplayer($asClass = true): string
     {
-        return \FieldDisplay::defaultDisplayerForField(static::class, $asClass);
+        return \FieldDisplayer::defaultDisplayer(static::class, $asClass);
     }
 }

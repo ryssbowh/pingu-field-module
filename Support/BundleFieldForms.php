@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace Pingu\Field\Support\FormRepository;
+namespace Pingu\Field\Support;
 
 use Pingu\Field\Forms\CreateBundleFieldForm;
 use Pingu\Field\Forms\EditBundleFieldForm;

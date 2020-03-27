@@ -2,23 +2,12 @@
 
 namespace Pingu\Field;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Exceptions\ClassException;
-use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Entities\Entity;
-use Pingu\Entity\Support\Bundle;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Contracts\FieldRepository;
-use Pingu\Field\Contracts\FieldsValidator;
-use Pingu\Field\Contracts\HasFields;
-use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Exceptions\BundleFieldException;
-use Pingu\Field\Support\FieldDisplay;
-use Pingu\Field\Support\FieldLayout;
-use Pingu\Forms\Contracts\Models\FormableContract;
-use Pingu\Forms\Exceptions\ModelNotFormable;
 
 class Field
 {
@@ -27,12 +16,6 @@ class Field
      * @var array
      */
     protected $bundleFields = [];
-
-    /**
-     * List of registered form layouts
-     * @var array
-     */
-    protected $formLayouts = [];
 
     /**
      * Registers a type of bundle field
@@ -217,67 +200,5 @@ class Field
             return \ArrayCache::rememberForever($key, $callback);
         }
         return $callback();
-    }
-
-    /**
-     * Registers a form layout for a class
-     * 
-     * @param string      $slug   class name
-     * @param FieldLayout $layout
-     */
-    public function registerFormLayout(string $slug, FieldLayout $layout)
-    {
-        $this->formLayouts[$slug] = $layout;
-    }
-
-    /**
-     * Get a FormLayout class for an Entity
-     * 
-     * @param Entity $entity
-     * 
-     * @return FieldLayout
-     */
-    public function getEntityFormLayout(Entity $entity): FieldLayout
-    {
-        $object = get_class($entity);
-        return isset($this->formLayouts[$object]) ? $this->formLayouts[$object]->load() : null;
-    }
-
-    /**
-     * Get a FormLayout class for a Bundle
-     * 
-     * @param BundleContract $bundle
-     * 
-     * @return FieldLayout
-     */
-    public function getBundleFormLayout(BundleContract $bundle): FieldLayout
-    {
-        $object = $bundle->bundleName();
-        return isset($this->formLayouts[$object]) ? $this->formLayouts[$object]->load() : null;
-    }
-
-    /**
-     * Load or save an object form layout
-     * 
-     * @param string   $object
-     * @param callable $callback
-     */
-    public function getFormLayoutCache(string $object, $callback)
-    {
-        if (config('field.useCache', false)) {
-            $key = 'field.layout.'.$object;
-            return \ArrayCache::rememberForever($key, $callback);
-        }
-        return $callback();
-    }
-
-    /**
-     * Forget the form layout cache for an object
-     * 
-     * @param string $object
-     */
-    public function forgetFormLayoutCache(string $object)
-    {
-        \ArrayCache::forget('field.layout.'.$object);
     }
 }

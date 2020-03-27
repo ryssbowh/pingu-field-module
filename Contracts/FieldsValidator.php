@@ -176,15 +176,22 @@ abstract class FieldsValidator
 
         $this->ensureRulesExist($fieldsToCheck, $rules);
 
-        // if ($updating) {
-        //     $rules = $this->intersectRuleKeys($rules, array_keys($values));
-        // }
+        if ($updating) {
+            $rules = $this->prependSometimesRule($rules);
+        }
 
         $validator = \Validator::make($values, $rules, $this->getMessages());
         $this->modifyValidator($validator, $values, $updating);
         event(new FieldsValidatorBuilt($validator, $this->object));
 
         return $validator;
+    }
+
+    protected function prependSometimesRule(array $rules)
+    {
+        return array_map(function ($rule) {
+            return $rule ? 'sometimes|'.$rule : '';
+        }, $rules);
     }
 
     // protected function intersectRuleKeys($rules, $keys)

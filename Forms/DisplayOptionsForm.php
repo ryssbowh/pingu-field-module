@@ -2,7 +2,7 @@
 
 namespace Pingu\Field\Forms;
 
-use Pingu\Field\Support\FieldDisplay\DisplayOptions;
+use Pingu\Field\Support\DisplayOptions;
 use Pingu\Forms\Support\Fields\Submit;
 use Pingu\Forms\Support\Form;
 

@@ -5,7 +5,7 @@ namespace Pingu\Field\Contracts;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\FormElement;
 
-interface HasWidgetsContracts
+interface HasWidgetsContract
 {
     /**
      * List of form elements that are available to render this field

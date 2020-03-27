@@ -7,7 +7,7 @@ use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\FormElement;
 
-interface FieldContract extends HasWidgetsContracts, HasFilterWidgetsContracts
+interface FieldContract extends HasWidgetsContract, HasFilterWidgetsContracts
 {
     /**
      * Name of the field

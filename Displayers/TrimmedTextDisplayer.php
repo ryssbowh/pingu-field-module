@@ -3,7 +3,7 @@
 namespace Pingu\Field\Displayers;
 
 use Pingu\Field\Displayers\Options\TrimmedTextOptions;
-use Pingu\Field\Support\FieldDisplay\FieldDisplayer;
+use Pingu\Field\Support\FieldDisplayer;
 
 class TrimmedTextDisplayer extends FieldDisplayer
 {

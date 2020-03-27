@@ -11,7 +11,7 @@
     ],
     "aliases": {
         "Field": "Pingu\\Field\\Facades\\Field",
-        "FieldDisplay": "Pingu\\Field\\Facades\\FieldDisplay"
+        "FieldDisplayer": "Pingu\\Field\\Facades\\FieldDisplayer"
     },
     "files": [
         "functions.php"

@@ -11,6 +11,7 @@ use Pingu\Field\Displayers\TrimmedTextDisplayer;
 use Pingu\Field\Entities\{BundleField as BundleFieldModel, BundleFieldValue, FieldBoolean, FieldDatetime, FieldEmail, FieldEntity, FieldFloat, FieldInteger, FieldText, FieldTextLong, FieldTime, FieldUrl};
 use Pingu\Field\Field;
 use Pingu\Field\FieldDisplay;
+use Pingu\Field\FieldDisplayer;
 use Pingu\Field\Observers\BundleFieldObserver;
 use Pingu\Field\Observers\BundleFieldValueObserver;
 use Pingu\Field\Validation\BundleFieldRules;
@@ -79,6 +80,13 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->registerFieldDisplayers();
         BundleFieldModel::observe(BundleFieldObserver::class);
         BundleFieldValue::observe(BundleFieldValueObserver::class);
+        //Binds displayer slug in Route system
+        \Route::bind(
+            'field_displayer', function ($value, $route) {
+                $class = \FieldDisplayer::getDisplayer($value);
+                return new $class;
+            }
+        );
     }
 
     /**
@@ -91,7 +99,7 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->singleton('field.field', Field::class);
-        $this->app->singleton('field.display', FieldDisplay::class);
+        $this->app->singleton('field.fieldDisplayer', FieldDisplayer::class);
     }
 
     protected function extendValidator()
@@ -122,7 +130,7 @@ class FieldServiceProvider extends ModuleServiceProvider
      */
     protected function registerFieldDisplayers()
     {
-        \FieldDisplay::registerDisplayers($this->fieldDisplayers);
+        \FieldDisplayer::register($this->fieldDisplayers);
     }
 
     /**

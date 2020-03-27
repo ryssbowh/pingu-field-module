@@ -2,7 +2,7 @@
 
 namespace Pingu\Field\Displayers;
 
-use Pingu\Field\Support\FieldDisplay\FieldDisplayer;
+use Pingu\Field\Support\FieldDisplayer;
 
 class FakeDisplayer extends FieldDisplayer
 {

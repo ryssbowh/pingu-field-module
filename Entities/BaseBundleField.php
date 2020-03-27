@@ -13,7 +13,7 @@ use Pingu\Entity\Entities\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Field\Entities\BundleFieldValue;
-use Pingu\Field\Support\FormRepository\BundleFieldForms;
+use Pingu\Field\Support\BundleFieldForms;
 use Pingu\Field\Traits\HasDisplayers;
 use Pingu\Field\Traits\HasFilterWidgets;
 use Pingu\Field\Traits\HasWidgets;

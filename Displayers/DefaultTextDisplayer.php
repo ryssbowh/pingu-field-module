@@ -1,9 +1,8 @@
-<?php 
+<?php
 
 namespace Pingu\Field\Displayers;
 
-use Pingu\Field\Displayers\Options\DefaultTextDisplayerOptions;
-use Pingu\Field\Support\FieldDisplay\FieldDisplayer;
+use Pingu\Field\Support\FieldDisplayer;
 
 class DefaultTextDisplayer extends FieldDisplayer
 {

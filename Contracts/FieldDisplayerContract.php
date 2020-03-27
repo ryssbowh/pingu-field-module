@@ -3,7 +3,7 @@
 namespace Pingu\Field\Contracts;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Pingu\Field\Support\FieldDisplay\DisplayOptions;
+use Pingu\Field\Support\DisplayOptions;
 
 interface FieldDisplayerContract extends Arrayable
 {

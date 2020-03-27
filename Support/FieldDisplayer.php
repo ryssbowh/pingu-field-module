@@ -1,8 +1,9 @@
 <?php
 
-namespace Pingu\Field\Support\FieldDisplay;
+namespace Pingu\Field\Support;
 
 use Pingu\Field\Contracts\FieldDisplayerContract;
+use Pingu\Field\Support\DisplayOptions;
 
 abstract class FieldDisplayer implements FieldDisplayerContract
 {
@@ -15,7 +16,12 @@ abstract class FieldDisplayer implements FieldDisplayerContract
      */
     public function __construct(?array $options = null)
     {
-        if ($this->hasOptions()) {
+        $this->setOptions($options);
+    }
+
+    public function setOptions(?array $options = null)
+    {
+        if ($this::hasOptions()) {
             $class = $this::optionsClass();
             $this->options = new $class($options);
         }

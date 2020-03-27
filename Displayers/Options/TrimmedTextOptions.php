@@ -2,7 +2,7 @@
 
 namespace Pingu\Field\Displayers\Options;
 
-use Pingu\Field\Support\FieldDisplay\DisplayOptions;
+use Pingu\Field\Support\DisplayOptions;
 use Pingu\Forms\Support\Fields\NumberInput;
 
 class TrimmedTextOptions extends DisplayOptions

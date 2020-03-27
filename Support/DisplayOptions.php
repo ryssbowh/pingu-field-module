@@ -1,6 +1,6 @@
 <?php
 
-namespace Pingu\Field\Support\FieldDisplay;
+namespace Pingu\Field\Support;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
