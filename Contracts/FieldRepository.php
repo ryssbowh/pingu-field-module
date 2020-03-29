@@ -52,7 +52,7 @@ abstract class FieldRepository
         if (is_null($this->fields)) {
             $_this = $this;
             $this->fields = \Field::getFieldsCache(
-                $this->fieldsCacheKey, $this->getObjectCacheTarget(), function () use ($_this) {
+                $this->fieldsCacheKey, $this->object->identifier(), function () use ($_this) {
                     $fields = $_this->buildFields();
                     event(new FieldsRetrieved($fields, $_this->object));
                     return $fields;
@@ -60,11 +60,6 @@ abstract class FieldRepository
             );
         }
         return $this->fields;
-    }
-
-    protected function getObjectCacheTarget()
-    {
-        return $this->object;
     }
 
     /**

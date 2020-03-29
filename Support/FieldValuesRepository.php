@@ -5,7 +5,7 @@ namespace Pingu\Field\Support;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Pingu\Entity\Entities\BundledEntity;
+use Pingu\Entity\Support\BundledEntity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\BundleFieldValue;
@@ -222,9 +222,9 @@ class FieldValuesRepository
      * 
      * @return array
      */
-    public function getOriginal(): array
+    public function getOriginal($key = null, $default = null): array
     {
-        return $this->original;
+        return Arr::get($this->original, $key, $default);
     }
 
     /**

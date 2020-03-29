@@ -5,12 +5,17 @@ namespace Pingu\Field\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
+use Pingu\Entity\Traits\HasFieldDisplay;
+use Pingu\Entity\Traits\HasFieldLayout;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Support\FieldValuesRepository;
 
 trait HasBundleFields
 {
+    use HasFieldLayout, 
+        HasFieldDisplay;
+
     public $fieldValues;
 
     public function initializeHasBundleFields()
@@ -51,17 +56,6 @@ trait HasBundleFields
     {
         return $this->morphMany(BundleFieldValue::class, 'entity');
     }
-    
-    /**
-     * @inheritDoc
-     */
-    public function getFilterable(): array
-    {
-        if ($bundle = $this->bundle()) {
-            return array_merge(parent::getFilterable(), $bundle->fields()->allNames());
-        }
-        return parent::getFilterable();
-    }
 
     /**
      * @inheritDoc
@@ -77,17 +71,17 @@ trait HasBundleFields
     /**
      * @inheritDoc
      */
-    public function getAllAttributes()
+    public function getAttributes()
     {
-        return array_merge($this->getAttributes(), $this->fieldValues->getRawValues());
+        return array_merge(parent::getAttributes(), $this->fieldValues->getRawValues());
     }
 
     /**
      * @inheritDoc
      */
-    public function getAllOriginal()
+    public function getOriginal($key = null, $default = null)
     {
-        return array_merge($this->getOriginal(), $this->fieldValues->getOriginal());
+        return array_merge(parent::getOriginal($key, $default), $this->fieldValues->getOriginal($key, $default));
     }
 
     /**

@@ -4,7 +4,7 @@ namespace Pingu\Field\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 
 class CreatingRevision
 {

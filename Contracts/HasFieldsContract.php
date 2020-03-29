@@ -2,7 +2,9 @@
 
 namespace Pingu\Field\Contracts;
 
-interface HasFieldsContract
+use Pingu\Core\Contracts\HasIdentifierContract;
+
+interface HasFieldsContract extends HasIdentifierContract
 {
     /**
      * Fields repository getter

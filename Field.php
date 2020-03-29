@@ -4,7 +4,7 @@ namespace Pingu\Field;
 
 use Illuminate\Support\Arr;
 use Pingu\Core\Exceptions\ClassException;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Contracts\FieldRepository;
 use Pingu\Field\Exceptions\BundleFieldException;

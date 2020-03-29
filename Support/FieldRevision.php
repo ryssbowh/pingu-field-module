@@ -5,7 +5,7 @@ namespace Pingu\Field\Support;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Events\CreatingRevision;

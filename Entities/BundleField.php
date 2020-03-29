@@ -10,7 +10,7 @@ use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Traits\Models\HasRouteSlug;
 use Pingu\Core\Traits\Models\HasWeight;
 use Pingu\Entity\Contracts\BundleContract;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Contracts\FieldRepository;
 use Pingu\Field\Entities\Fields\BundleFieldFields;
@@ -58,7 +58,7 @@ class BundleField extends BaseModel implements HasRouteSlugContract
         if ($fixedCardinality = $bundleField->fixedCardinality() !== false) {
             $genericValues['cardinality'] = $fixedCardinality;
         }
-        $generic->bundle = $bundle->bundleName();
+        $generic->bundle = $bundle->name();
         $generic->instance()->associate($bundleField);
         $generic->saveWithRelations($genericValues);
         return $generic;

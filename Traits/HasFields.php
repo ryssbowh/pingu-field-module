@@ -67,7 +67,12 @@ trait HasFields
      */
     public function getFilterable(): array
     {
-        return $this->filterable;
+        return array_keys(array_filter(
+            $this->fields()->get()->all(),
+            function ($field) {
+                return $field->filterable();
+            }
+        ));
     }
 
     /**

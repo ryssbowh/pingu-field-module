@@ -10,6 +10,12 @@ use Pingu\Forms\Support\FormElement;
 interface FieldContract extends HasWidgetsContract, HasFilterWidgetsContracts
 {
     /**
+     * Is this filterable on
+     * 
+     * @return bool
+     */
+    public function filterable(): bool;
+    /**
      * Name of the field
      * 
      * @return string

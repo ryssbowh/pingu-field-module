@@ -36,6 +36,14 @@ abstract class BaseField implements FieldContract
         $this->init($options);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function filterable(): bool
+    {
+        return true;
+    }
+
     protected function init(array $options)
     {
         $this->options = collect(array_merge($this->defaultOptions(), $options));

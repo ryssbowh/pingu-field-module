@@ -38,4 +38,9 @@ class BundleFieldException extends \Exception
         return new static("bundle field slug (".BundleField::routeSlug().") must be set in route");
     }
 
+    public static function cantDelete()
+    {
+        return new static('You can\'t delete this instance, delete its related field instead ($field->field->delete())');
+    }
+
 }

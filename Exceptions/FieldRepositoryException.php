@@ -2,7 +2,7 @@
 
 namespace Pingu\Field\Exceptions;
 
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 
 class FieldRepositoryException extends \Exception
 {

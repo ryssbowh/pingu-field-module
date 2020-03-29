@@ -9,10 +9,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Field\Entities\BundleFieldValue;
+use Pingu\Field\Exceptions\BundleFieldException;
 use Pingu\Field\Support\BundleFieldForms;
 use Pingu\Field\Traits\HasDisplayers;
 use Pingu\Field\Traits\HasFilterWidgets;
@@ -26,6 +27,27 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     use HasWidgets, HasFilterWidgets, HasDisplayers;
 
     protected $with = ['field'];
+
+    /**
+     * @inheritDoc
+     */
+    public function filterable(): bool
+    {
+        return true;
+    }
+    
+    /**
+     * Restrict deleting to force developers to delete the BundleField instead
+     * 
+     * @throws BundleFieldException
+     */
+    public function delete($force = false)
+    {
+        if ($force) {
+            return parent::delete();
+        }
+        throw BundleFieldException::cantDelete();
+    }
 
     /**
      * @inheritDoc

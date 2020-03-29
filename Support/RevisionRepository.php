@@ -5,7 +5,7 @@ namespace Pingu\Field\Support;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\BundleFieldValue;

@@ -3,7 +3,7 @@
 namespace Pingu\Field\Events;
 
 use Illuminate\Queue\SerializesModels;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 use Pingu\Field\Support\FieldRevision;
 
 class RevisionCreated

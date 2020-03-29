@@ -4,7 +4,7 @@ namespace Pingu\Field\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 
 class FieldTime extends FieldDatetime
 {
