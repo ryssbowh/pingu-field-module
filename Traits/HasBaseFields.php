@@ -137,13 +137,8 @@ trait HasBaseFields
         $this->fill($fieldTypes['attributes'] ?? []);
         $this->fillSingleRelations($fieldTypes['relations']['single'] ?? []);
 
-        try{
-            if (!$this->save()) {
-                return false;
-            } 
-            $changesRelation = $this->syncMultipleRelations($fieldTypes['relations']['multiple'] ?? []);
-        } catch(\Exception $e){
-            return false;
+        if ($this->save()) {
+            $this->syncMultipleRelations($fieldTypes['relations']['multiple'] ?? []);
         }
 
         return true;

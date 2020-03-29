@@ -4,7 +4,6 @@ namespace Pingu\Field\Support\FieldRepository;
 
 use Illuminate\Support\Collection;
 use Pingu\Field\Contracts\FieldRepository;
-use Pingu\Field\Contracts\HasFields;
 use Pingu\Field\Support\FieldLayout;
 
 /**

@@ -89,12 +89,11 @@ class FieldValuesRepository
         }
         $this->values = $this->resolveValues();
         $fields = $this->entity->bundle()->fields()->get();
-        foreach ($fields as $field) {
+        foreach ($fields as $name => $field) {
             $values = $this->values->where('field_id', $field->field->id);
             $fieldValue = $values->pluck('value')->toArray();
             $rawValue = $field->castValueFromDb($fieldValue);
-            $this->rawValues[$field->machineName()] = $rawValue;
-            $this->castedValues[$field->machineName()] = $field->castValue($rawValue);
+            $this->rawValues[$name] = $rawValue;
         }
         $this->syncOriginal();
         $this->loaded = true;
@@ -113,20 +112,30 @@ class FieldValuesRepository
     {
         $field = $this->entity->fields()->get($name);
         $value = Arr::wrap($value);
-        $rawValue = $field->castValueToDb($value);
+        $rawValue = $field->uncastValue($value);
+        // dump($name);
+        // dump($value);
+        // dump($this->rawValues[$name] ?? null);
+        // dump($rawValue);
         if (!isset($this->rawValues[$name]) or !$this->originalIsEquivalent($this->rawValues[$name], $rawValue)) {
-            $this->castedValues[$name] = $value;
             $this->rawValues[$name] = $rawValue;
             $this->dirty[$name] = $rawValue;
         }
+        // dump($this->dirty);
+        // dump('----------------------');
         return $this;
     }
 
+    /**
+     * Create a default value for a field
+     * 
+     * @param BundleField $field
+     */
     public function createDefaultValue(BundleField $field)
     {
         $value = $this->createModel($field);
         $instance = $field->instance;
-        $value->value = $instance->castSingleValueToDb($instance->defaultValue());
+        $value->value = $instance->uncastSingleValue($instance->defaultValue());
         $value->save();
     }
 
@@ -140,7 +149,7 @@ class FieldValuesRepository
     public function isDirty($attributes = null): bool
     {
         return $this->hasChanges(
-            $this->getDirty(), is_array($attributes) ? $attributes : func_get_args()
+            $this->getDirty(), is_array($attributes) ? $attributes : []
         );
     }
 
@@ -154,7 +163,7 @@ class FieldValuesRepository
     public function wasChanged($attributes = null): bool
     {
         return $this->hasChanges(
-            $this->getChanges(), is_array($attributes) ? $attributes : func_get_args()
+            $this->getChanges(), is_array($attributes) ? $attributes : []
         );
     }
 
@@ -201,7 +210,11 @@ class FieldValuesRepository
      */
     public function getValue(string $name)
     {
-        return $this->castedValues[$name] ?? [];
+        if (!isset($this->castedValues[$name])) {
+            $field = $this->entity->fields()->get($name);
+            $this->castedValues[$name] = $field->castValue($this->rawValues[$name]);
+        }
+        return $this->castedValues[$name];
     }
 
     /**
@@ -223,6 +236,14 @@ class FieldValuesRepository
     {
         $this->original = $this->rawValues;
         return $this;
+    }
+
+    /**
+     * Sync changes with dirty attributes
+     */
+    public function syncChanges()
+    {
+        $this->changes = $this->getDirty();
     }
 
     /**
@@ -268,6 +289,8 @@ class FieldValuesRepository
             $field = $fields[$name]->field;
             $this->saveField($field, $values);
         }
+        $this->syncChanges();
+        $this->dirty = [];
         return true;
     }
 
@@ -288,7 +311,7 @@ class FieldValuesRepository
         }
         $values = array_values($values);
         foreach ($models as $index => $model) {
-            $model->value = $values[$index];
+            $model->value = $field->instance->toSingleDbValue($values[$index]);
             $model->save();
         }
     }
@@ -351,7 +374,7 @@ class FieldValuesRepository
         $entity = $this->entity;
         return \Field::getBundleValuesCache(
             $this->entity, function () use ($entity) {
-                return $entity->values;   
+                return $entity->values; 
             }
         );
     }

@@ -2,69 +2,32 @@
 
 namespace Pingu\Field\Entities;
 
-use Illuminate\Database\Eloquent\Builder;
-use Pingu\Entity\Entities\Entity;
-use Pingu\Field\Displayers\FakeDisplayer;
-use Pingu\Forms\Support\Field;
-use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Support\Fields\Textarea;
 
-class FieldTextLong extends BaseBundleField
+class FieldTextLong extends FieldText
 {
     protected static $availableWidgets = [Textarea::class];
 
-    protected static $availableFilterWidgets = [TextInput::class];
-
-    protected static $displayers = [FakeDisplayer::class];
-    
-    protected $fillable = ['default', 'required'];
+    protected $fillable = ['default', 'required', 'maxLength', 'allowHtml'];
 
     protected $casts = [
-        'required' => 'boolean'
+        'required' => 'boolean',
+        'allowHtml' => 'boolean',
     ];
 
     protected $attributes = [
-        'default' => ''
+        'maxLength' => 16380
     ];
 
     /**
      * @inheritDoc
      */
-    public function defaultValue()
+    public function toSingleDbValue($value)
     {
-        return $this->default;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function castSingleValueToDb($value)
-    {
-        return $value;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function castToSingleFormValue($value)
-    {
-        return $value;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function castSingleValue($value)
-    {
-        return $value;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function castSingleValueFromDb($value)
-    {
-        return $value;
+        if ($this->allowHtml) {
+            return $value;
+        }
+        return strip_tags($value);
     }
 
     /**
@@ -73,24 +36,9 @@ class FieldTextLong extends BaseBundleField
     public function formFieldOptions(int $index = 0): array
     {
         return [
-            'default' => $value ?? $this->default,
-            'required' => $this->required
+            'required' => $this->required,
+            'maxlength' => $this->maxLength,
+            'allowHtml' => $this->allowHtml
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function defaultValidationRule(): string
-    {
-        return ($this->required ? 'required|' : '') . 'string';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
-    {
-        $query->where('value', 'like', '%'.$value.'%');
     }
 }

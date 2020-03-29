@@ -153,6 +153,7 @@ trait HasBundleFields
 
     /**
      * Get the value of the model's route key taking into account bundle fields
+     * will always return the first value of the bundle field
      *
      * @return mixed
      */

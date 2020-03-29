@@ -44,7 +44,7 @@ class FieldEmail extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function castSingleValueToDb($value)
+    public function uncastSingleValue($value)
     {
         return $value;
     }
@@ -61,6 +61,14 @@ class FieldEmail extends BaseBundleField
      * @inheritDoc
      */
     public function castSingleValueFromDb($value)
+    {
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toSingleDbValue($value)
     {
         return $value;
     }
@@ -87,7 +95,7 @@ class FieldEmail extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    public function singleFilterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         $query->where('value', '=', $value);
     }

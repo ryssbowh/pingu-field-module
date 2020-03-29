@@ -5,10 +5,12 @@ namespace Pingu\Field\Contracts;
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
-use Pingu\Entity\Entities\Entity;
-use Pingu\Forms\Support\Field;
+use Pingu\Field\Contracts\FieldContract;
+use Pingu\Field\Contracts\HasFieldsContract;
 
-interface BundleFieldContract extends FieldContract, HasFields
+interface BundleFieldContract extends 
+    FieldContract,
+    HasFieldsContract
 {
    
     /**
@@ -61,16 +63,24 @@ interface BundleFieldContract extends FieldContract, HasFields
      * 
      * @return mixed
      */
-    public function castValueToDb($value);
+    public function uncastValue($value);
 
     /**
-     * Cast a single value to a database valid format
+     * Transform a value into a db saveable value
+     * 
+     * @param  mixed $value
+     * @return mixed
+     */
+    public function toSingleDbValue($value);
+
+    /**
+     * Cast a single value to a base type (int, string, bool, array)
      * 
      * @param mixed $value
      * 
      * @return mixed
      */
-    public function castSingleValueToDb($value);
+    public function uncastSingleValue($value);
 
     /**
      * Default validation rules
@@ -84,7 +94,7 @@ interface BundleFieldContract extends FieldContract, HasFields
      * 
      * @param Builder $query
      * @param mixed  $value
-     * @param Entity  $entity
+     * @param BaseModel  $model
      */
-    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity);
+    public function singleFilterQueryModifier(Builder $query, $value, BaseModel $model);
 }

@@ -12,8 +12,7 @@ class FieldTextLongValidator extends BundleFieldFieldsValidator
     protected function rules(bool $updating): array
     {
         return [
-            'default' => 'string',
-            'required' => 'boolean'
+            'maxLength' => 'max:16380'
         ];
     }
 

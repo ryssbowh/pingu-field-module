@@ -16,7 +16,7 @@ abstract class FieldRepository
     protected $fieldsCacheKey = 'fields';
 
     /**
-     * @var HasFields
+     * @var HasFieldsContract
      */
     protected $object;
 
@@ -28,9 +28,9 @@ abstract class FieldRepository
     /**
      * Constructor, will build the fields and saves them in Cache
      * 
-     * @param HasFields $object
+     * @param HasFieldsContract $object
      */
-    public function __construct(HasFields $object)
+    public function __construct(HasFieldsContract $object)
     {
         $this->object = $object;
     }
@@ -77,18 +77,17 @@ abstract class FieldRepository
      */
     public function get($only = null)
     {
-        $fields = $this->resolveFields();
-        if (!is_null($only)) {
-            if (is_array($only)) {
-                return $fields->only($only);
-            } else {
-                if (!$fields->has($only)) {
-                    throw FieldsException::undefined($only, $this->object);
-                }
-                return $fields->get($only);
+        if (!empty($only)) {
+            $fields = $this->resolveFields()->only(Arr::wrap($only));
+            if ($fields->isEmpty()) {
+                throw FieldsException::undefined($only, $this->object);
             }
+            if (is_array($only)) {
+                return $fields;
+            }
+            return $fields->first();
         }
-        return $fields;
+        return $this->resolveFields();
     }
 
     /**
@@ -111,14 +110,6 @@ abstract class FieldRepository
     public function allNames(): array
     {
         return $this->resolveFields()->keys()->all();
-    }
-
-    /**
-     * Clear the fields cache
-     */
-    public function clearCache()
-    {
-        \Field::clearCache($this->object);
     }
 
     /**

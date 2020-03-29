@@ -4,7 +4,7 @@ namespace Pingu\Field\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Validation\Validator;
-use Pingu\Field\Contracts\HasFields;
+use Pingu\Field\Contracts\HasFieldsContract;
 
 class FieldsValidatorBuilt
 {
@@ -17,7 +17,7 @@ class FieldsValidatorBuilt
      *
      * @return void
      */
-    public function __construct(Validator $validator, HasFields $model)
+    public function __construct(Validator $validator, HasFieldsContract $model)
     {
         $this->validator = $validator;
         $this->model = $model;

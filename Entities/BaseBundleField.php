@@ -158,13 +158,13 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function castValueToDb($value)
+    public function uncastValue($value)
     {
         $value = Arr::wrap($value);
         $_this = $this;
         return array_map( 
             function ($item) use ($_this) {
-                return $_this->castSingleValueToDb($item);
+                return $_this->uncastSingleValue($item);
             }, $value
         );
     }
@@ -225,8 +225,8 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      */
     public function toFormElement($values): FormElement
     {
-        $baseOptions = $this->bundle()->formLayout()->getField($this->machineName())->options->values();
-        $widget = $this->bundle()->formLayout()->getField($this->machineName())->widget;
+        $baseOptions = $this->bundle()->fieldLayout()->getField($this->machineName())->options->values();
+        $widget = $this->bundle()->fieldLayout()->getField($this->machineName())->widget;
         $baseOptions['label'] = $this->name();
         $baseOptions['showLabel'] = false;
 
@@ -303,15 +303,15 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function filterQueryModifier(Builder $query, $value, BaseModel $entity)
+    public function filterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         $fieldId = $this->field->id;
         $_this = $this;
-        $query->leftJoin('bundle_field_values', function ($join) use ($entity, $fieldId) {
-            $join->on('bundle_field_values.entity_id', '=', $entity->getTable() . '.id')
-                ->where('bundle_field_values.entity_type', '=', get_class($entity))
+        $query->leftJoin('bundle_field_values', function ($join) use ($model, $fieldId) {
+            $join->on('bundle_field_values.entity_id', '=', $model->getTable() . '.id')
+                ->where('bundle_field_values.entity_type', '=', get_class($model))
                 ->where('bundle_field_values.field_id', '=', $fieldId);
         });
-        $this->singleFilterQueryModifier($query, $value, $entity);
+        $this->singleFilterQueryModifier($query, $value, $model);
     }
 }

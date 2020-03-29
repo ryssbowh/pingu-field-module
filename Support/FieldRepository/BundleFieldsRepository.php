@@ -16,7 +16,7 @@ class BundleFieldsRepository extends FieldRepository
     /**
      * Constructor, will build the fields and saves them in Cache
      * 
-     * @param HasFields $object
+     * @param BundleContract $object
      */
     public function __construct(BundleContract $object)
     {

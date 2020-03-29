@@ -4,6 +4,7 @@ namespace Pingu\Field\Entities;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Datetime;
@@ -21,7 +22,6 @@ class FieldDatetime extends BaseBundleField
         'required' => 'boolean'
     ];
 
-    protected $defaultFormat = "Y-m-d H:i:s";
     protected $dbFormat = 'Y-m-d H:i:s';
 
     /**
@@ -37,7 +37,7 @@ class FieldDatetime extends BaseBundleField
     public function getFormat()
     {
         if (!$this->format) {
-            return $this->defaultFormat;
+            return $this->dbFormat;
         }
         return $this->format;
     }
@@ -53,11 +53,12 @@ class FieldDatetime extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function castSingleValueToDb($value)
+    public function uncastSingleValue($value)
     {
-        if ($value) {
-            return $value->format($this->dbFormat);
+        if ($value instanceof Carbon) {
+            return $value->format($this->getFormat());
         }
+        return $value;
     }
 
     /**
@@ -83,10 +84,29 @@ class FieldDatetime extends BaseBundleField
     /**
      * @inheritDoc
      */
+    public function toSingleDbValue($value)
+    {
+        if ($value) {
+            return Carbon::createFromFormat($this->getFormat(), $value)->format($this->dbFormat);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function castSingleValueFromDb($value)
     {
         if ($value) {
             return Carbon::createFromFormat($this->dbFormat, $value)->format($this->getFormat());
+        }
+    }
+
+    protected function tryCastingIntoFormat($value, $format)
+    {
+        try {
+            return Carbon::createFromFormat($format, $value);
+        } catch (InvalidArgumentException $e) {
+            return false;
         }
     }
 
@@ -96,7 +116,6 @@ class FieldDatetime extends BaseBundleField
     public function formFieldOptions(int $index = 0): array
     {
         return [
-            'default' => $value ?? $this->defaultValue(),
             'format' => $this->getFormat(),
             'required' => $this->required
         ];
@@ -113,7 +132,7 @@ class FieldDatetime extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    public function singleFilterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         $query->where('value', '=', $value);
     }

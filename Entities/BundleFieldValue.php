@@ -2,10 +2,10 @@
 
 namespace Pingu\Field\Entities;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Pingu\Core\Entities\BaseModel;
 
-class BundleFieldValue extends Model
+class BundleFieldValue extends BaseModel
 {
     use SoftDeletes;
 
@@ -31,5 +31,10 @@ class BundleFieldValue extends Model
     public function entity()
     {
         return $this->morphTo('entity');
+    }
+
+    public static function forField(BundleField $field)
+    {
+        return static::where('field_id', $field->id)->get();
     }
 }

@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Illuminate\Validation\ValidatorContract;
 use Pingu\Field\Contracts\FieldContract;
-use Pingu\Field\Contracts\HasFields;
 use Pingu\Field\Events\FieldsValidationMessagesRetrieved;
 use Pingu\Field\Events\FieldsValidationRulesRetrieved;
 use Pingu\Field\Events\FieldsValidatorBuilt;
@@ -21,7 +20,7 @@ abstract class FieldsValidator
     protected $rulesCacheKey = 'rules';
     protected $messagesCacheKey = 'messages';
 
-    public function __construct(HasFields $object)
+    public function __construct(HasFieldsContract $object)
     {
         $this->object = $object;
     }

@@ -3,7 +3,7 @@
 namespace Pingu\Field\Events;
 
 use Illuminate\Queue\SerializesModels;
-use Pingu\Field\Contracts\HasFields;
+use Pingu\Field\Contracts\HasFieldsContract;
 
 class FieldsValidationMessagesRetrieved
 {
@@ -16,7 +16,7 @@ class FieldsValidationMessagesRetrieved
      *
      * @return void
      */
-    public function __construct(array &$messages, HasFields $object)
+    public function __construct(array &$messages, HasFieldsContract $object)
     {
         $this->messages = $messages;
         $this->object = $object;

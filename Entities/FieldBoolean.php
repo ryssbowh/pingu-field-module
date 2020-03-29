@@ -3,6 +3,7 @@
 namespace Pingu\Field\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Forms\Support\Field;
@@ -37,9 +38,9 @@ class FieldBoolean extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function castSingleValueToDb($value)
+    public function uncastSingleValue($value)
     {
-        return (int)$value;
+        return (bool)$value;
     }
 
     /**
@@ -60,7 +61,15 @@ class FieldBoolean extends BaseBundleField
      */
     public function castSingleValue($value)
     {
-        return (bool)$value;
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toSingleDbValue($value)
+    {
+        return (int)$value;
     }
     
     /**
@@ -82,7 +91,7 @@ class FieldBoolean extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    public function singleFilterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         $query->where('value', '=', (int)$value);
     }

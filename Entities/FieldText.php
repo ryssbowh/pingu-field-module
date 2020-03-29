@@ -3,7 +3,9 @@
 namespace Pingu\Field\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Entities\Entity;
+use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\TextInput;
 
@@ -12,6 +14,8 @@ class FieldText extends BaseBundleField
     protected static $availableWidgets = [TextInput::class];
     
     protected static $availableFilterWidgets = [TextInput::class];
+
+    protected static $displayers = [FakeDisplayer::class];
     
     protected $fillable = ['default', 'required', 'maxLength'];
 
@@ -35,7 +39,7 @@ class FieldText extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function castSingleValueToDb($value)
+    public function uncastSingleValue($value)
     {
         return $value;
     }
@@ -67,6 +71,14 @@ class FieldText extends BaseBundleField
     /**
      * @inheritDoc
      */
+    public function toSingleDbValue($value)
+    {
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function formFieldOptions(int $index = 0): array
     {
         return [
@@ -90,7 +102,7 @@ class FieldText extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    public function singleFilterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         $query->where('value', 'like', '%'.$value.'%');
     }

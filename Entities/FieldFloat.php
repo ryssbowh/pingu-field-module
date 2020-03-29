@@ -3,6 +3,7 @@
 namespace Pingu\Field\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\NumberInput;
@@ -34,7 +35,7 @@ class FieldFloat extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function castSingleValueToDb($value)
+    public function uncastSingleValue($value)
     {
         return $value;
     }
@@ -66,6 +67,14 @@ class FieldFloat extends BaseBundleField
     /**
      * @inheritDoc
      */
+    public function toSingleDbValue($value)
+    {
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function formFieldOptions(int $index = 0): array
     {
         return [
@@ -85,7 +94,7 @@ class FieldFloat extends BaseBundleField
     /**
      * @inheritDoc
      */
-    public function singleFilterQueryModifier(Builder $query, $value, Entity $entity)
+    public function singleFilterQueryModifier(Builder $query, $value, BaseModel $model)
     {
         $query->where('value', '=', $value);
     }

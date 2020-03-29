@@ -3,7 +3,6 @@
 namespace Pingu\Field\Exceptions;
 
 use Pingu\Entity\Entities\Entity;
-use Pingu\Field\Contracts\HasFields;
 
 class RevisionException extends \Exception
 {

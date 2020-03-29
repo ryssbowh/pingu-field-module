@@ -13,24 +13,25 @@ class BundleFieldObserver
 
     public function created(BundleField $field)
     {
-        \FieldLayout::getBundleFormLayout($field->bundle())->createForField($field->instance);
-        \FieldDisplay::getBundleDisplay($field->bundle())->createForField($field->instance);
+        \Field::forgetAllFieldCache();
+        \FieldLayout::getFieldLayout($field->bundle()->bundleName())->createForField($field->instance);
+        \FieldDisplay::getFieldDisplay($field->bundle()->bundleName())->createForField($field->instance);
         foreach ($field->bundle()->entities() as $entity) {
-            $entity->fieldValues->createDefaultValue($field, $entity);
+            $entity->fieldValues->createDefaultValue($field);
         }
     }
 
     public function deleting(BundleField $field)
     {
-        \FieldLayout::getBundleFormLayout($field->bundle())->deleteForField($field->instance);
-        \FieldDisplay::getBundleDisplay($field->bundle())->deleteForField($field->instance);
+        \FieldLayout::getFieldLayout($field->bundle()->bundleName())->deleteForField($field->instance);
+        \FieldDisplay::getFieldDisplay($field->bundle()->bundleName())->deleteForField($field->instance);
         $field->instance->delete();
     }
 
     public function deleted(BundleField $field)
     {
-        \FieldLayout::forgetCache();
-        \FieldDisplay::forgetCache();
+        \FieldLayout::forgetCache($field->bundle()->bundleName());
+        \FieldDisplay::forgetCache($field->bundle()->bundleName());
         \Field::forgetAllFieldCache();
     }
 }

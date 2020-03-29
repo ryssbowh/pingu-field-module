@@ -2,18 +2,18 @@
 
 namespace Pingu\Field\Exceptions;
 
-use Pingu\Field\Contracts\HasFields;
+use Pingu\Field\Contracts\HasFieldsContract;
 
 class FieldsException extends \Exception
 {
-    public static function missingRule(string $name, HasFields $model)
+    public static function missingRule(string $name, HasFieldsContract $model)
     {
         return new static("model ".get_class($model)." : missing a validation rule for '$name'");
     }
 
-    public static function undefined(string $name, $object)
+    public static function undefined(array $names, $object)
     {
-        return new static("Field '$name' not defined in ".get_class($object));
+        return new static("Field(s) ".implode(', ', $names)." is/are not defined in ".get_class($object));
     }
 
     public static function missingOption($name, $option)

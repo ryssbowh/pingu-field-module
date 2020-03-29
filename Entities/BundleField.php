@@ -28,8 +28,6 @@ class BundleField extends BaseModel implements HasRouteSlugContract
         'helper' => ''
     ];
 
-    protected $with = [];
-
     /**
      * Machinename getter
      * 
@@ -55,7 +53,7 @@ class BundleField extends BaseModel implements HasRouteSlugContract
         $generic = new static();
         $bundleValues = array_intersect_key($values, array_flip($bundleField->getFillable()));
         $genericValues = array_intersect_key($values, array_flip($generic->getFillable()));
-        $bundleField->saveWithRelations($bundleValues);
+        $res = $bundleField->saveWithRelations($bundleValues);
 
         if ($fixedCardinality = $bundleField->fixedCardinality() !== false) {
             $genericValues['cardinality'] = $fixedCardinality;
