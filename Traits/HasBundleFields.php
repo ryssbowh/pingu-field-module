@@ -71,7 +71,7 @@ trait HasBundleFields
     /**
      * @inheritDoc
      */
-    public function getAttributes()
+    public function getAllAttributes()
     {
         return array_merge(parent::getAttributes(), $this->fieldValues->getRawValues());
     }
@@ -79,9 +79,9 @@ trait HasBundleFields
     /**
      * @inheritDoc
      */
-    public function getOriginal($key = null, $default = null)
+    public function getAllOriginal()
     {
-        return array_merge(parent::getOriginal($key, $default), $this->fieldValues->getOriginal($key, $default));
+        return array_merge(parent::getOriginal(), $this->fieldValues->getOriginal());
     }
 
     /**

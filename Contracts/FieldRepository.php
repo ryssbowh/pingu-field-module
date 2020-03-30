@@ -75,7 +75,7 @@ abstract class FieldRepository
         if (!empty($only)) {
             $fields = $this->resolveFields()->only(Arr::wrap($only));
             if ($fields->isEmpty()) {
-                throw FieldsException::undefined($only, $this->object);
+                throw FieldsException::undefined(Arr::wrap($only), $this->object);
             }
             if (is_array($only)) {
                 return $fields;

@@ -92,11 +92,11 @@ class FieldText extends BaseBundleField
      */
     public function defaultValidationRule(): string
     {
-        $rules = ['string|max:'.$this->maxLength];
+        $rules = 'string'.$this->maxLength ? '|max:'.$this->maxLength : '';
         if ($this->required) {
-            $rules[] = 'required';
+            $rules .= '|required';
         }
-        return implode('|', $rules);
+        return $rules;
     }
 
     /**

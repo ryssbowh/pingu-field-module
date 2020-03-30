@@ -15,10 +15,6 @@ class FieldTextLong extends FieldText
         'allowHtml' => 'boolean',
     ];
 
-    protected $attributes = [
-        'maxLength' => 16380
-    ];
-
     /**
      * @inheritDoc
      */
@@ -37,8 +33,19 @@ class FieldTextLong extends FieldText
     {
         return [
             'required' => $this->required,
-            'maxlength' => $this->maxLength,
             'allowHtml' => $this->allowHtml
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function defaultValidationRule(): string
+    {
+        $rules = 'string'.($this->maxLength ? '|max:'.$this->maxLength : '');
+        if ($this->required) {
+            $rules .= '|required';
+        }
+        return $rules;
     }
 }

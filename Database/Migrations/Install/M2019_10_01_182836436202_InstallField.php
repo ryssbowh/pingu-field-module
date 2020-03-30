@@ -91,7 +91,7 @@ class M2019_10_01_182836436202_InstallField extends Migration
                 $table->increments('id');
                 $table->string('default');
                 $table->boolean('required');
-                $table->integer('maxLength')->unsigned();
+                $table->unsignedInteger('maxLength');
                 $table->timestamps();
             }
         );
@@ -100,7 +100,7 @@ class M2019_10_01_182836436202_InstallField extends Migration
             'field_text_longs', function (Blueprint $table) {
                 $table->increments('id');
                 $table->text('default');
-                $table->int('maxLength');
+                $table->unsignedInteger('maxLength');
                 $table->boolean('required');
                 $table->boolean('allowHtml');
                 $table->timestamps();
