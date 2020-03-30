@@ -12,7 +12,12 @@ use Pingu\Field\Support\FieldLayout;
 
 trait HasFields
 {
-    protected $filterable = [];
+    /**
+     * Fields that are not filterable
+     * 
+     * @var array
+     */
+    protected $notFilterable = [];
 
     /**
      * Gets the field repository for this model
@@ -67,12 +72,13 @@ trait HasFields
      */
     public function getFilterable(): array
     {
-        return array_keys(array_filter(
+        $filterable = array_keys(array_filter(
             $this->fields()->get()->all(),
             function ($field) {
                 return $field->filterable();
             }
         ));
+        return array_diff($filterable, $this->notFilterable);
     }
 
     /**
