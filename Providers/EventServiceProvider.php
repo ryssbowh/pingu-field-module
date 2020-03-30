@@ -9,6 +9,5 @@ use Pingu\Forms\Events\FormBuilt;
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        FormBuilt::class => [DashifyMachineNameField::class],
     ];
 }

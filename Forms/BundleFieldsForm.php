@@ -80,7 +80,7 @@ class BundleFieldsForm extends Form
      */
     public function name(): string
     {
-        return 'add-entity-field';
+        return 'add-bundle-field';
     }
 
 }
