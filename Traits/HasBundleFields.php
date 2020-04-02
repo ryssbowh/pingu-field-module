@@ -101,6 +101,7 @@ trait HasBundleFields
      */
     public function wasChanged($attributes = null)
     {
+        $attributes = is_array($attributes) ? $attributes : func_get_args();
         return (parent::wasChanged($attributes) or $this->fieldValues->wasChanged($attributes));
     }
 
