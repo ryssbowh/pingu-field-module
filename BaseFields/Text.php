@@ -5,6 +5,7 @@ namespace Pingu\Field\BaseFields;
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Displayers\DefaultTextDisplayer;
+use Pingu\Field\Displayers\TitleTextDisplayer;
 use Pingu\Field\Displayers\TrimmedTextDisplayer;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Support\Fields\TextInput;
@@ -15,7 +16,7 @@ class Text extends BaseField
 
     protected static $availableFilterWidgets = [TextInput::class];
 
-    protected static $displayers = [DefaultTextDisplayer::class, TrimmedTextDisplayer::class];
+    protected static $displayers = [DefaultTextDisplayer::class, TrimmedTextDisplayer::class, TitleTextDisplayer::class];
 
     /**
      * @inheritDoc

@@ -3,9 +3,10 @@
 namespace Pingu\Field\Displayers;
 
 use Pingu\Entity\Support\Entity;
-use Pingu\Field\Support\FieldDisplayer;
+use Pingu\Field\Displayers\Options\DefaultBooleanOptions;
+use Pingu\Field\Support\FieldDisplayerWithOptions;
 
-class DefaultTextDisplayer extends FieldDisplayer
+class DefaultBooleanDisplayer extends FieldDisplayerWithOptions
 {
     /**
      * @ineritDoc
@@ -20,7 +21,15 @@ class DefaultTextDisplayer extends FieldDisplayer
      */
     public static function machineName(): string
     {
-        return 'text-default';
+        return 'boolean-default';
+    }
+
+    /**
+     * @ineritDoc
+     */
+    public static function optionsClass(): string
+    {
+        return DefaultBooleanOptions::class;
     }
 
     /**
@@ -28,7 +37,7 @@ class DefaultTextDisplayer extends FieldDisplayer
      */
     public function systemView(): string
     {
-        return 'field@fields.text-default';
+        return 'field@fields.boolean-default';
     }
 
     /**
@@ -36,6 +45,6 @@ class DefaultTextDisplayer extends FieldDisplayer
      */
     public function getFieldValue($value)
     {
-        return $value;
+        return $value ? $this->options()->yesLabel : $this->options()->noLabel;
     }
 }

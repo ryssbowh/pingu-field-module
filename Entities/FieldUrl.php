@@ -2,15 +2,12 @@
 
 namespace Pingu\Field\Entities;
 
-use Illuminate\Database\Eloquent\Builder;
-use Pingu\Core\Entities\BaseModel;
-use Pingu\Entity\Support\Entity;
-use Pingu\Forms\Support\Field;
-use Pingu\Forms\Support\Fields\TextInput;
+use Pingu\Field\Displayers\DefaultUrlDisplayer;
 
 class FieldUrl extends FieldText
 {
-   
+    protected static $displayers = [DefaultUrlDisplayer::class];
+
     protected $fillable = ['required', 'default'];
 
     protected $attributes = [
@@ -32,6 +29,6 @@ class FieldUrl extends FieldText
      */
     public function defaultValidationRule(): string
     {
-        return 'string'.($this->required ? '|required' : '');
+        return 'string|valid_url'.($this->required ? '|required' : '');
     }
 }

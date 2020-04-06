@@ -3,6 +3,7 @@
 namespace Pingu\Field\Forms;
 
 use Pingu\Field\Support\DisplayOptions;
+use Pingu\Forms\Support\Fields\Hidden;
 use Pingu\Forms\Support\Fields\Submit;
 use Pingu\Forms\Support\Form;
 
@@ -30,6 +31,9 @@ class DisplayOptionsForm extends Form
     public function elements(): array
     {
         $fields = $this->displayOptions->toFormElements();
+        $fields[] = new Hidden('_display', [
+            'default' => $this->displayOptions->getDisplayField()->id
+        ]);
         $fields [] = new Submit('_submit');
         return $fields;
     }

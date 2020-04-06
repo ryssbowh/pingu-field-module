@@ -4,7 +4,6 @@ namespace Pingu\Field\Support;
 
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Field\Contracts\FieldContract;
-use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Field\Exceptions\FieldsException;
 use Pingu\Field\Traits\HasDisplayers;
 use Pingu\Field\Traits\HasFilterWidgets;

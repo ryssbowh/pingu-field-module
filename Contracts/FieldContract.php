@@ -124,8 +124,8 @@ interface FieldContract extends HasWidgetsContract, HasFilterWidgetsContracts
     /**
      * Class for the default displayer of this field
      * 
-     * @return string
+     * @return string|FieldDisplayerContract
      */
-    public static function defaultDisplayer(): string;
+    public static function defaultDisplayer();
 
 }

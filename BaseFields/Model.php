@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Field\Displayers\FakeDisplayer;
+use Pingu\Field\Displayers\DefaultModelDisplayer;
+use Pingu\Field\Displayers\DefaultTextDisplayer;
 use Pingu\Field\Exceptions\FieldsException;
 use Pingu\Field\Support\BaseField;
 use Pingu\Forms\Exceptions\FormFieldException;
@@ -18,7 +19,7 @@ class Model extends BaseField
 {
     protected $requiredOptions = ['textField', 'model'];
 
-    protected static $displayers = [FakeDisplayer::class];
+    protected static $displayers = [DefaultModelDisplayer::class];
 
     protected static $availableWidgets = [
         Select::class,
@@ -52,7 +53,8 @@ class Model extends BaseField
      */
     public function filterQueryModifier(Builder $query, $value, BaseModel $model)
     {
-        if (!$value) { return;
+        if (!$value) { 
+            return;
         }
         $query->where($this->machineName.'_id', '=', $value);
     }

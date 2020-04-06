@@ -5,7 +5,7 @@ namespace Pingu\Field\Displayers;
 use Pingu\Entity\Support\Entity;
 use Pingu\Field\Support\FieldDisplayer;
 
-class DefaultTextDisplayer extends FieldDisplayer
+class DefaultFloatDisplayer extends FieldDisplayer
 {
     /**
      * @ineritDoc
@@ -20,20 +20,14 @@ class DefaultTextDisplayer extends FieldDisplayer
      */
     public static function machineName(): string
     {
-        return 'text-default';
+        return 'float-default';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function systemView(): string
     {
-        return 'field@fields.text-default';
+        return 'field@fields.float-default';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getFieldValue($value)
     {
         return $value;

@@ -26,7 +26,8 @@ class BundleFieldFields extends BaseFieldRepository
                 'machineName',
                 [
                     'helper' => 'Unique machine name, cannot be edited',
-                    'required' => true
+                    'required' => true,
+                    'dashifyFrom' => 'name'
                 ]
             ),
             new Text(

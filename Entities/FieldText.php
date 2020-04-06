@@ -5,7 +5,9 @@ namespace Pingu\Field\Entities;
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Support\Entity;
-use Pingu\Field\Displayers\FakeDisplayer;
+use Pingu\Field\Displayers\DefaultTextDisplayer;
+use Pingu\Field\Displayers\TitleTextDisplayer;
+use Pingu\Field\Displayers\TrimmedTextDisplayer;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\TextInput;
 
@@ -15,7 +17,7 @@ class FieldText extends BaseBundleField
     
     protected static $availableFilterWidgets = [TextInput::class];
 
-    protected static $displayers = [FakeDisplayer::class];
+    protected static $displayers = [DefaultTextDisplayer::class, TrimmedTextDisplayer::class, TitleTextDisplayer::class];
     
     protected $fillable = ['default', 'required', 'maxLength'];
 

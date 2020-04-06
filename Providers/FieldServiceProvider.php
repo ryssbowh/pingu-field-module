@@ -5,15 +5,14 @@ namespace Pingu\Field\Providers;
 use Illuminate\Database\Eloquent\Factory;
 use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Field\BaseFields\{Boolean, Datetime, Email, Integer, LongText, ManyModel, Model, Password, Text, _Float, _List};
-use Pingu\Field\Displayers\DefaultTextDisplayer;
-use Pingu\Field\Displayers\FakeDisplayer;
-use Pingu\Field\Displayers\TrimmedTextDisplayer;
-use Pingu\Field\Entities\{BundleField as BundleFieldModel, BundleFieldValue, FieldBoolean, FieldDatetime, FieldEmail, FieldEntity, FieldFloat, FieldInteger, FieldText, FieldTextLong, FieldTime, FieldUrl};
+use Pingu\Field\Displayers\{DefaultBooleanDisplayer, DefaultDateDisplayer, DefaultEmailDisplayer, DefaultTextDisplayer, TitleTextDisplayer, TrimmedTextDisplayer, DefaultFloatDisplayer, DefaultIntegerDisplayer, DefaultUrlDisplayer, DefaultModelDisplayer};
+use Pingu\Field\Entities\{BundleField as BundleFieldModel, BundleFieldValue, FieldBoolean, FieldDatetime, FieldEmail, FieldEntity, FieldFloat, FieldInteger, FieldText, FieldTextLong, FieldUrl};
 use Pingu\Field\Field;
 use Pingu\Field\FieldDisplay;
 use Pingu\Field\FieldDisplayer;
 use Pingu\Field\Observers\BundleFieldObserver;
 use Pingu\Field\Observers\BundleFieldValueObserver;
+use Pingu\Field\Support\FieldDisplayer as FieldDisplayerSupport;
 use Pingu\Field\Validation\BundleFieldRules;
 use Pingu\User\Bundles\UserBundle;
 use Pingu\User\Entities\User;
@@ -51,7 +50,6 @@ class FieldServiceProvider extends ModuleServiceProvider
         FieldText::class,
         FieldTextLong::class,
         FieldUrl::class,
-        FieldTime::class,
         FieldEntity::class
     ];
 
@@ -60,9 +58,16 @@ class FieldServiceProvider extends ModuleServiceProvider
      * @var array
      */
     protected $fieldDisplayers = [
-        FakeDisplayer::class,
         TrimmedTextDisplayer::class,
-        DefaultTextDisplayer::class
+        DefaultTextDisplayer::class,
+        TitleTextDisplayer::class,
+        DefaultDateDisplayer::class,
+        DefaultBooleanDisplayer::class,
+        DefaultEmailDisplayer::class,
+        DefaultFloatDisplayer::class,
+        DefaultIntegerDisplayer::class,
+        DefaultUrlDisplayer::class,
+        DefaultModelDisplayer::class
     ];
 
     /**
@@ -72,6 +77,7 @@ class FieldServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
+        $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'field');
         \ModelRoutes::registerSlugFromObject(new BundleFieldModel);
         $this->registerConfig();
         $this->extendValidator();
@@ -80,13 +86,6 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->registerFieldDisplayers();
         BundleFieldModel::observe(BundleFieldObserver::class);
         BundleFieldValue::observe(BundleFieldValueObserver::class);
-        //Binds displayer slug in Route system
-        \Route::bind(
-            'field_displayer', function ($value, $route) {
-                $class = \FieldDisplayer::getDisplayer($value);
-                return new $class;
-            }
-        );
     }
 
     /**

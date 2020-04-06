@@ -2,11 +2,15 @@
 
 namespace Pingu\Field\Entities;
 
+use Pingu\Field\Displayers\DefaultTextDisplayer;
+use Pingu\Field\Displayers\TrimmedTextDisplayer;
 use Pingu\Forms\Support\Fields\Textarea;
 
 class FieldTextLong extends FieldText
 {
     protected static $availableWidgets = [Textarea::class];
+
+    protected static $displayers = [DefaultTextDisplayer::class, TrimmedTextDisplayer::class];
 
     protected $fillable = ['default', 'required', 'maxLength', 'allowHtml'];
 

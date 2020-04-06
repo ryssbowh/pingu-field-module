@@ -5,6 +5,7 @@ namespace Pingu\Field\Entities;
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Support\Entity;
+use Pingu\Field\Displayers\DefaultIntegerDisplayer;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\NumberInput;
 
@@ -13,6 +14,8 @@ class FieldInteger extends BaseBundleField
     protected static $availableWidgets = [NumberInput::class];
     
     protected static $availableFilterWidgets = [NumberInput::class];
+
+    protected static $displayers = [DefaultIntegerDisplayer::class];
     
     protected $fillable = ['default', 'required'];
 
@@ -61,7 +64,7 @@ class FieldInteger extends BaseBundleField
      */
     public function castSingleValueFromDb($value)
     {
-        return (int)$value;
+        return $value === '' ? null : (int)$value;
     }
 
     /**

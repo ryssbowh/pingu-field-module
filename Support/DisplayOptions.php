@@ -4,6 +4,9 @@ namespace Pingu\Field\Support;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
+use Pingu\Entity\Entities\DisplayField;
+use Pingu\Field\Contracts\FieldContract;
+use Pingu\Field\Contracts\FieldDisplayerContract;
 use Pingu\Field\Forms\DisplayOptionsForm;
 use Pingu\Forms\Support\Form;
 
@@ -33,15 +36,48 @@ class DisplayOptions implements Arrayable
     protected $casts = [];
 
     /**
+     * @var FieldDisplayerContract
+     */
+    protected $displayer;
+
+    /**
      * Constructor
      * 
      * @param array  $values
      */
-    public function __construct(?array $values = null)
+    public function __construct(FieldDisplayerContract $displayer)
     {
-        if (!is_null($values)) {
-            $this->values = $values;
-        }
+        $this->displayer = $displayer;
+    }
+
+    /**
+     * Display field getter 
+     * 
+     * @return FieldDisplayerContract
+     */
+    public function getDisplayer(): FieldDisplayerContract
+    {
+        return $this->displayer;
+    }
+
+    /**
+     * Display field getter
+     * 
+     * @return DisplayField
+     */
+    public function getDisplayField(): DisplayField
+    {
+        return $this->displayer->getDisplayField();
+    }
+
+    /**
+     * Field getter
+     * 
+     * @return FieldContract
+     */
+    public function getField(): FieldContract
+    {
+        return $this->displayer->getField();
     }
 
     /**
@@ -118,7 +154,7 @@ class DisplayOptions implements Arrayable
      * 
      * @return mixed
      */
-    public function value(string $name)
+    public function get(string $name)
     {
         return $this->values[$name] ?? null;
     }
@@ -132,7 +168,10 @@ class DisplayOptions implements Arrayable
      */
     public function friendlyValue(string $name)
     {
-        return $this->values[$name] ?? null;
+        if (!isset($this->values[$name])) {
+            return '';
+        }
+        return $this->castFriendlyValue($name, $this->values[$name]);
     }
 
     /**
@@ -154,7 +193,7 @@ class DisplayOptions implements Arrayable
      */
     public function validate(Request $request)
     {
-        $values = $request->except(['_token']);
+        $values = $request->except(['_token', '_theme']);
         $rules = $this->getValidationRules();
         $messages = $this->getValidationMessages();
         $validator = \Validator::make($values, $rules, $messages);
@@ -206,6 +245,9 @@ class DisplayOptions implements Arrayable
                 case 'bool':
                     $values[$name] = (bool)$value;
                     break;
+                case 'boolean':
+                    $values[$name] = (bool)$value;
+                    break;
                 case 'int':
                     $values[$name] = (int)$value;
                     break;
@@ -233,10 +275,44 @@ class DisplayOptions implements Arrayable
                 case 'bool':
                     $values[$name] = (int)$value;
                     break;
+                case 'boolean':
+                    $values[$name] = (int)$value;
+                    break;
                 default:
                     break;
             }
         }
         return $values;
+    }
+
+    /**
+     * Cast a friendly value
+     * 
+     * @param string $name
+     * @param mixed $value
+     * 
+     * @return mixed
+     */
+    protected function castFriendlyValue(string $name, $value)
+    {
+        switch ($this->casts[$name] ?? '') {
+            case 'bool':
+                return $value ? 'Yes' : 'No';
+            case 'boolean':
+                return $value ? 'Yes' : 'No';
+        }
+        return $value;
+    }
+
+    /**
+     * Forward getter to option vaue
+     * 
+     * @param $name
+     * 
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->get($name);
     }
 }

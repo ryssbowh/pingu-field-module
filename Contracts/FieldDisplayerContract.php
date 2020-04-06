@@ -3,17 +3,11 @@
 namespace Pingu\Field\Contracts;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Pingu\Entity\Support\Entity;
 use Pingu\Field\Support\DisplayOptions;
 
 interface FieldDisplayerContract extends Arrayable
-{
-    /**
-     * Class used to handle options
-     * 
-     * @return string
-     */
-    public static function optionsClass(): string;
-        
+{       
     /**
      * Machine name for this displayer
      * 
@@ -35,10 +29,7 @@ interface FieldDisplayerContract extends Arrayable
      */
     public static function hasOptions(): bool;
 
-    /**
-     * Get the options instance
-     * 
-     * @return DisplayOptions
-     */
-    public function options(): ?DisplayOptions;
+    public function systemView(): string;
+
+    public function getFieldValues(Entity $entity): array;
 }

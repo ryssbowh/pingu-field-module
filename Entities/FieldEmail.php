@@ -4,8 +4,7 @@ namespace Pingu\Field\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Entity\Support\Entity;
-use Pingu\Forms\Support\Field;
+use Pingu\Field\Displayers\DefaultEmailDisplayer;
 use Pingu\Forms\Support\Fields\Email;
 use Pingu\Forms\Support\Fields\TextInput;
 
@@ -14,6 +13,8 @@ class FieldEmail extends BaseBundleField
     protected static $availableWidgets = [Email::class];
 
     protected static $availableFilterWidgets = [TextInput::class];
+
+    protected static $displayers = [DefaultEmailDisplayer::class];
 
     protected $fillable = ['default', 'required'];
 

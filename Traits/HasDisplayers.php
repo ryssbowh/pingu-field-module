@@ -27,7 +27,10 @@ trait HasDisplayers
         return \FieldDisplayer::getForField(static::class);
     }
 
-    public static function defaultDisplayer($asClass = true): string
+    /**
+     * @inheritDoc
+     */
+    public static function defaultDisplayer($asClass = true)
     {
         return \FieldDisplayer::defaultDisplayer(static::class, $asClass);
     }

@@ -52,6 +52,7 @@ class M2019_10_01_182836436202_InstallField extends Migration
             'field_datetimes', function (Blueprint $table) {
                 $table->increments('id');
                 $table->boolean('required');
+                $table->string('format');
                 $table->boolean('setToCurrent');
                 $table->timestamps();
             }

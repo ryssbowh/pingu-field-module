@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Support\Entity;
+use Pingu\Field\Displayers\DefaultDateDisplayer;
 use Pingu\Forms\Support\Field;
 use Pingu\Forms\Support\Fields\Datetime;
 
@@ -14,6 +15,8 @@ class FieldDatetime extends BaseBundleField
     protected static $availableWidgets = [Datetime::class];
     
     protected static $availableFilterWidgets = [Datetime::class];
+
+    protected static $displayers = [DefaultDateDisplayer::class];
 
     protected $fillable = ['setToCurrent', 'required', 'format'];
 
@@ -34,6 +37,11 @@ class FieldDatetime extends BaseBundleField
         }
     }
 
+    /**
+     * Get format for the date
+     * 
+     * @return string
+     */
     public function getFormat()
     {
         if (!$this->format) {

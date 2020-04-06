@@ -23,7 +23,6 @@ class FieldUrlValidator extends BundleFieldFieldsValidator
     protected function messages(): array
     {
         return [
-            'default.valid_url' => 'Default is not a valid url'
         ];
     }
 }

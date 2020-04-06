@@ -1,19 +1,19 @@
-<?php 
+<?php
 
 namespace Pingu\Field\Displayers;
 
 use Pingu\Entity\Support\Entity;
-use Pingu\Field\Displayers\Options\TrimmedTextOptions;
+use Pingu\Field\Displayers\Options\DefaultUrlOptions;
 use Pingu\Field\Support\FieldDisplayerWithOptions;
 
-class TrimmedTextDisplayer extends FieldDisplayerWithOptions
+class DefaultUrlDisplayer extends FieldDisplayerWithOptions
 {
     /**
      * @ineritDoc
      */
     public static function friendlyName(): string
     {
-        return 'Trimmed';
+        return 'Default';
     }
 
     /**
@@ -21,7 +21,7 @@ class TrimmedTextDisplayer extends FieldDisplayerWithOptions
      */
     public static function machineName(): string
     {
-        return 'text-trimmed';
+        return 'url-default';
     }
 
     /**
@@ -29,16 +29,22 @@ class TrimmedTextDisplayer extends FieldDisplayerWithOptions
      */
     public static function optionsClass(): string
     {
-        return TrimmedTextOptions::class;
+        return DefaultUrlOptions::class;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function systemView(): string
     {
-        return 'field@fields.text-trimmed';
+        return 'field@fields.url-default';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getFieldValue($value)
     {
-        return \Str::limit($value, $this->options->value('limit'));
+        return '<a href="'.$value.'"'.($this->options()->newWindow ? ' target="_blank"' : '').'>'.$value.'</a>';
     }
 }

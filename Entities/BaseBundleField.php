@@ -11,7 +11,6 @@ use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Support\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
-use Pingu\Field\Displayers\FakeDisplayer;
 use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Exceptions\BundleFieldException;
 use Pingu\Field\Support\BundleFieldForms;
