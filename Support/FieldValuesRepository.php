@@ -113,16 +113,10 @@ class FieldValuesRepository
         $field = $this->entity->fields()->get($name);
         $value = Arr::wrap($value);
         $rawValue = $field->uncastValue($value);
-        // dump($name);
-        // dump($value);
-        // dump($this->rawValues[$name] ?? null);
-        // dump($rawValue);
         if (!isset($this->rawValues[$name]) or !$this->originalIsEquivalent($this->rawValues[$name], $rawValue)) {
             $this->rawValues[$name] = $rawValue;
             $this->dirty[$name] = $rawValue;
         }
-        // dump($this->dirty);
-        // dump('----------------------');
         return $this;
     }
 

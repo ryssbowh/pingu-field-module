@@ -17,9 +17,6 @@ abstract class FieldsValidator
 {
     public $object;
 
-    protected $rulesCacheKey = 'rules';
-    protected $messagesCacheKey = 'messages';
-
     public function __construct(HasFieldsContract $object)
     {
         $this->object = $object;
@@ -47,14 +44,9 @@ abstract class FieldsValidator
      */
     public function getMessages(): array
     {
-        $_this = $this;
-        return \Field::getFieldsCache(
-            $this->messagesCacheKey, $this->object, function () use ($_this) {
-                $messages = $_this->buildMessages();
-                event(new FieldsValidationMessagesRetrieved($messages, $_this->object));
-                return $messages;
-            }
-        );
+        $messages = $this->buildMessages();
+        event(new FieldsValidationMessagesRetrieved($messages, $this->object));
+        return $messages;
     }
 
     /**
@@ -69,15 +61,8 @@ abstract class FieldsValidator
      */
     public function getRules(bool $updating): array
     {
-        $_this = $this;
-        $key = $this->rulesCacheKey . ($updating ? '-updating' : '-creating');
-        $rules = \Field::getFieldsCache(
-            $this->rulesCacheKey, $this->object, function () use ($_this, $updating) {
-                $rules = $_this->buildRules($updating);
-                event(new FieldsValidationRulesRetrieved($rules, $_this->object, $updating));
-                return $rules;
-            }
-        );
+        $rules = $this->buildRules($updating);
+        event(new FieldsValidationRulesRetrieved($rules, $this->object, $updating));
         return $rules;
     }
 

@@ -86,6 +86,7 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->registerFieldDisplayers();
         BundleFieldModel::observe(BundleFieldObserver::class);
         BundleFieldValue::observe(BundleFieldValueObserver::class);
+        \PinguCaches::register('field', 'Field', config('field.cache-keys'));
     }
 
     /**

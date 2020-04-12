@@ -92,7 +92,7 @@ class Field
      */
     public function getFieldRepository($object, $callback): FieldRepository
     {
-        $key = 'field.repository.'.object_to_class($object);
+        $key = config('field.cache-keys.repositories').'.'.object_to_class($object);
         if (!app()->bound($key)) {
             app()->instance($key, $callback());
         }
@@ -110,7 +110,7 @@ class Field
      */
     public function getFieldsValidator($object, $callback)
     {
-        $key = 'field.validator.'.object_to_class($object);
+        $key = config('field.cache-keys.validators').'.'.object_to_class($object);
         if (!app()->bound($key)) {
             app()->instance($key, $callback());
         }
@@ -130,7 +130,7 @@ class Field
     public function getFieldsCache(string $key, $object, $callback)
     {   
         if (config('field.useCache', false)) {
-            $key = 'field.fields.'.object_to_class($object).'.'.$key;
+            $key = config('field.cache-keys.fields').'.'.object_to_class($object).'.'.$key;
             return \ArrayCache::rememberForever($key, $callback);
         }
         return $callback();
@@ -144,7 +144,7 @@ class Field
     public function forgetFieldCache($object)
     {
         $object = object_to_class($object);
-        $key = 'field.fields.'.$object;
+        $key = config('field.cache-keys.fields').'.'.$object;
         \ArrayCache::forget($key);
     }
 
@@ -153,7 +153,7 @@ class Field
      */
     public function forgetAllFieldCache()
     {
-        \ArrayCache::forget('field.fields');
+        \ArrayCache::forget(config('field.cache-keys.fields'));
     }
 
     /**
@@ -168,7 +168,7 @@ class Field
     public function getBundleValuesCache(Entity $entity, $callback)
     {   
         if (config('field.useCache', false)) {
-            $key = 'field.values.'.get_class($entity).'.'.$entity->getKey();
+            $key = config('field.cache-keys.values').'.'.get_class($entity).'.'.$entity->getKey();
             return \ArrayCache::rememberForever($key, $callback);
         }
         return $callback();
@@ -181,7 +181,7 @@ class Field
      */
     public function forgetBundleValuesCache(Entity $entity)
     {
-        $key = 'field.values.'.get_class($entity).'.'.$entity->getKey();
+        $key = config('field.cache-keys.values').'.'.get_class($entity).'.'.$entity->getKey();
         \ArrayCache::forget($key);
     }
 
@@ -196,7 +196,7 @@ class Field
     public function getRevisionCache(Entity $entity, $callback)
     {
         if (config('field.useCache', false)) {
-            $key = 'field.revisions.'.get_class($entity).'.'.$entity->getKey();
+            $key = config('field.cache-keys.revisions').'.'.get_class($entity).'.'.$entity->getKey();
             return \ArrayCache::rememberForever($key, $callback);
         }
         return $callback();
