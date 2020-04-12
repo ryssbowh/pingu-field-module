@@ -41,7 +41,7 @@ class DefaultUrlOptions extends DisplayOptions
     {
         return [
             new Checkbox('newWindow', [
-                'default' => $this->value('newWindow'),
+                'default' => $this->newWindow,
                 'label' => $this->label('newWindow')
             ])
         ];

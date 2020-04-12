@@ -35,7 +35,7 @@ class TrimmedTextOptions extends DisplayOptions
         return [
             new NumberInput('limit', [
                 'min' => 0,
-                'default' => $this->value('limit')
+                'default' => $this->limit
             ])
         ];
     }

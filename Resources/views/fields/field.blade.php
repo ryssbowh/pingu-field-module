@@ -1,7 +1,7 @@
 @extends('field@field')
 
 @section('inner')
-    @foreach($values as $value)
+    @foreach($data['values'] as $value)
         <div class="field-item">
             {!! $value !!}
         </div>

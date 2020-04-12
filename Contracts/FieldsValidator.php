@@ -145,7 +145,7 @@ abstract class FieldsValidator
         $validated = $validator->validated();
         $validated = $this->uploadMedias($validated);
         if ($cast) {
-            return $this->castValues($validated);
+            $validated = $this->castValues($validated);
         }
         return $validated;
     }
@@ -300,12 +300,12 @@ abstract class FieldsValidator
         }
         $rulesByName  = [];
 
-        foreach (explode('|', $rule) as $rule) {
-            $elems = explode(':', $rule);
-            $rulesByName[$elems[0]] = $elems[1] ?? '';
-        }
         foreach (explode('|', $default) as $default) {
             $elems = explode(':', $default);
+            $rulesByName[$elems[0]] = $elems[1] ?? '';
+        }
+        foreach (explode('|', $rule) as $rule) {
+            $elems = explode(':', $rule);
             $rulesByName[$elems[0]] = $elems[1] ?? '';
         }
 

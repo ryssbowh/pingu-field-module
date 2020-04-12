@@ -24,7 +24,9 @@ abstract class FieldDisplayerWithOptions extends FieldDisplayer
         parent::__construct($field);
         $class = $this::optionsClass();
         $this->options = new $class($this);
-        $this->options->setvalues($field->options);
+        if ($field->options) {
+            $this->options->setvalues($field->options);
+        }
     }
 
     /**

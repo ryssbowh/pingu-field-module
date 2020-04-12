@@ -4,7 +4,6 @@ namespace Pingu\Field\Contracts;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Pingu\Entity\Support\Entity;
-use Pingu\Field\Support\DisplayOptions;
 
 interface FieldDisplayerContract extends Arrayable
 {       
@@ -31,5 +30,5 @@ interface FieldDisplayerContract extends Arrayable
 
     public function systemView(): string;
 
-    public function getFieldValues(Entity $entity): array;
+    public function getViewData(Entity $entity): array;
 }

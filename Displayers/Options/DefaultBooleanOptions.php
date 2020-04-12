@@ -36,10 +36,10 @@ class DefaultBooleanOptions extends DisplayOptions
     {
         return [
             new TextInput('yesLabel', [
-                'default' => $this->value('yesLabel')
+                'default' => $this->yesLabel
             ]),
             new TextInput('noLabel', [
-                'default' => $this->value('noLabel')
+                'default' => $this->noLabel
             ])
         ];
     }

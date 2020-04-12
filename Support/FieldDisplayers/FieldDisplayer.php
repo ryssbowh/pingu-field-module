@@ -75,6 +75,13 @@ abstract class FieldDisplayer implements FieldDisplayerContract
         ];
     }
 
+    public function getViewData(Entity $entity): array
+    {
+        return [
+            'values' => $this->getFieldValues($entity)
+        ];
+    }
+
     /**
      * Get the field values for an entity
      * 

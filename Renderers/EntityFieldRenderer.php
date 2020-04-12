@@ -79,7 +79,9 @@ class EntityFieldRenderer extends ViewModeRenderer
             'displayer' => $this->displayer,
             'showLabel' => $this->display->label,
             'label' => $this->field->name(),
-            'values' => $this->displayer->getFieldValues($this->entity)
+            'field' => $this->field,
+            'options' => $this->displayer::hasOptions() ? $this->displayer->options() : null,
+            'data' => $this->displayer->getViewData($this->entity)
         ]);
     }
 

@@ -41,7 +41,7 @@ class DefaultEmailOptions extends DisplayOptions
     {
         return [
             new Checkbox('linked', [
-                'default' => $this->value('linked'),
+                'default' => $this->linked,
                 'label' => 'Turn into a linked email'
             ])
         ];

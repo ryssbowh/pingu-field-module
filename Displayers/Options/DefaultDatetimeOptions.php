@@ -38,7 +38,7 @@ class DefaultDatetimeOptions extends DisplayOptions
             new Select(
                 'format',
                 [
-                    'default' => $this->value('format'),
+                    'default' => $this->format,
                     'required' => true,
                     'items' => $this->getFormats()
                 ]
@@ -46,7 +46,7 @@ class DefaultDatetimeOptions extends DisplayOptions
             new TextInput(
                 'custom',
                 [
-                    'default' => $this->value('custom')
+                    'default' => $this->custom
                 ]
             )
         ];

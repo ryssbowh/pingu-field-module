@@ -45,6 +45,6 @@ class DefaultBooleanDisplayer extends FieldDisplayerWithOptions
      */
     public function getFieldValue($value)
     {
-        return $value ? $this->options()->yesLabel : $this->options()->noLabel;
+        return $value ? $this->options->yesLabel : $this->options->noLabel;
     }
 }
