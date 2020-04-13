@@ -150,13 +150,7 @@ abstract class FieldsValidator
         // $values = $this->removeNonFormableValues($values);
         $rules = $this->getRules($updating);
 
-        //if updating a object, making sure a validation rule exist for all posted fields
-        //if creating a object, making sure a validation rule exist for all defined fields
-        if ($updating) {
-            $fieldsToCheck = array_keys($values);
-        } else {
-            $fieldsToCheck = $this->object->fields()->allNames();
-        }
+        $fieldsToCheck = $this->object->fields()->allNames();
 
         $this->ensureRulesExist($fieldsToCheck, $rules);
 

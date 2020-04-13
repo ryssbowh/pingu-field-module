@@ -133,7 +133,6 @@ trait HasBaseFields
             $values = $this->validator()->castValues($values);
         }
         $fieldTypes = $this->sortFieldTypes($values);
-
         $this->fill($fieldTypes['attributes'] ?? []);
         $this->fillSingleRelations($fieldTypes['relations']['single'] ?? []);
 

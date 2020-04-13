@@ -45,6 +45,9 @@ class DefaultDateDisplayer extends FieldDisplayerWithOptions
      */
     public function getFieldValue($value)
     {
+        if (!$value) {
+            return '';
+        }
         $format = $this->options()->format;
         if ($format == 'custom') {
             $format = $this->options()->custom;

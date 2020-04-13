@@ -16,7 +16,7 @@ class BundleFieldObserver
         $bundle = $field->bundle();
         \Field::forgetAllFieldCache();
         \FieldLayout::getFieldLayout($bundle)->createForField($field->instance);
-        \FieldDisplay::getFieldDisplay($bundle)->createForField($field->instance, \ViewMode::getDefault());
+        \FieldDisplay::getFieldDisplay($bundle)->createForField($field->instance);
         foreach ($bundle->entities() as $entity) {
             $entity->fieldValues->createDefaultValue($field);
         }
