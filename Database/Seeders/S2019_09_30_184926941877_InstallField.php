@@ -3,6 +3,7 @@
 use Pingu\Core\Seeding\DisableForeignKeysTrait;
 use Pingu\Core\Seeding\MigratableSeeder;
 use Pingu\Permissions\Entities\Permission;
+use Pingu\User\Entities\Role;
 
 class S2019_09_30_184926941877_InstallField extends MigratableSeeder
 {
@@ -13,11 +14,8 @@ class S2019_09_30_184926941877_InstallField extends MigratableSeeder
      */
     public function run(): void
     {
-        $admin = Role::find(4);
-        $admin->givePermissionTo(
-            Permission::findOrCreate(['name' => 'view revisions', 'section' => 'Core']),
-            Permission::findOrCreate(['name' => 'restore revisions', 'helper' => 'Will also need the create permission for each entity', 'section' => 'Core'])
-        );
+        Permission::findOrCreate(['name' => 'view revisions', 'section' => 'Core']);
+        Permission::findOrCreate(['name' => 'restore revisions', 'helper' => 'Will also need the create permission for each entity', 'section' => 'Core']);
     }
 
     /**

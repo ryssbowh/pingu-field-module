@@ -91,6 +91,6 @@ class BundleField extends BaseModel implements HasRouteSlugContract
      */
     public function bundle(): BundleContract
     {
-        return \Bundle::get($this->bundle);
+        return \Bundle::getByName($this->bundle);
     }
 }

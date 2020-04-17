@@ -2,7 +2,7 @@
 
 return [
     'name' => 'Field',
-    'useCache' => true,//!env('APP_DEBUG'),
+    'useCache' => true,
     'cache-keys' => [
         'repositories' => 'field.repository',
         'validators' => 'field.validator',
