@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factory;
 use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Field\BaseFields\{Boolean, Datetime, Email, Integer, LongText, ManyModel, Model, Password, Text, _Float, _List};
 use Pingu\Field\Displayers\{DefaultBooleanDisplayer, DefaultDateDisplayer, DefaultEmailDisplayer, DefaultTextDisplayer, TitleTextDisplayer, TrimmedTextDisplayer, DefaultFloatDisplayer, DefaultIntegerDisplayer, DefaultUrlDisplayer, DefaultModelDisplayer};
+use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\{BundleField as BundleFieldModel, BundleFieldValue, FieldBoolean, FieldDatetime, FieldEmail, FieldEntity, FieldFloat, FieldInteger, FieldText, FieldTextLong, FieldUrl};
 use Pingu\Field\Field;
 use Pingu\Field\FieldDisplay;
@@ -41,7 +42,7 @@ class FieldServiceProvider extends ModuleServiceProvider
      * List of bundle fields defined by this module
      * @var array
      */
-    protected $bundleFields = [
+    protected $entities = [
         FieldBoolean::class,
         FieldDatetime::class,
         FieldEmail::class,
@@ -50,7 +51,8 @@ class FieldServiceProvider extends ModuleServiceProvider
         FieldText::class,
         FieldTextLong::class,
         FieldUrl::class,
-        FieldEntity::class
+        FieldEntity::class,
+        BundleField::class
     ];
 
     /**
@@ -72,27 +74,23 @@ class FieldServiceProvider extends ModuleServiceProvider
 
     /**
      * Boot the application events.
-     *
-     * @return void
      */
     public function boot()
     {
         $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'field');
-        \ModelRoutes::registerSlugFromObject(new BundleFieldModel);
         $this->registerConfig();
         $this->extendValidator();
-        $this->registerBundleFields();
         $this->registerBaseFields();
         $this->registerFieldDisplayers();
         BundleFieldModel::observe(BundleFieldObserver::class);
         BundleFieldValue::observe(BundleFieldValueObserver::class);
         \PinguCaches::register('field', 'Field', config('field.cache-keys'));
+        $this->registerEntities($this->entities);
+
     }
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
@@ -102,9 +100,13 @@ class FieldServiceProvider extends ModuleServiceProvider
         $this->app->singleton('field.fieldDisplayer', FieldDisplayer::class);
     }
 
+    /**
+     * Extends laravel validator with custom rules
+     */
     protected function extendValidator()
     {
         \Validator::extend('unique_field', BundleFieldRules::class.'@unique');
+        \Validator::extend('unique_bundle_field', BundleFieldRules::class.'@uniqueMachineName');
     }
 
     /**
@@ -115,14 +117,6 @@ class FieldServiceProvider extends ModuleServiceProvider
         foreach ($this->baseFields as $field) {
             $field::register();
         }
-    }
-
-    /**
-     * Registers bundle fields in Field facade
-     */
-    protected function registerBundleFields()
-    {
-        \Field::registerBundleFields($this->bundleFields);
     }
 
     /**

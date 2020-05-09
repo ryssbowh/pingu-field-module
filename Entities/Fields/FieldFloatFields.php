@@ -31,4 +31,26 @@ class FieldFloatFields extends BundleFieldFieldRepository
             new Boolean('required')
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [
+            'precision' => 'integer|min:1',
+            'default' => 'numeric',
+            'required' => 'boolean'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [
+            'precision.required' => 'Precision is required'
+        ];
+    }
 }

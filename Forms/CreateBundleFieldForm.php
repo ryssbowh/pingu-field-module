@@ -1,8 +1,10 @@
 <?php
 namespace Pingu\Field\Forms;
 
+use Illuminate\Support\Collection;
 use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Field\Contracts\BundleFieldContract;
+use Pingu\Field\Contracts\FieldContextContract;
 use Pingu\Field\Entities\BundleField;
 use Pingu\Forms\Support\Fields\Hidden;
 use Pingu\Forms\Support\Fields\Link;
@@ -12,8 +14,20 @@ use Pingu\Forms\Support\Form;
 
 class CreateBundleFieldForm extends Form
 {
+    /**
+     * @var BundleFieldContract
+     */
     protected $field;
+
+    /**
+     * @var array
+     */
     protected $action;
+
+    /**
+     * @var Collection
+     */
+    protected $fields;
 
     /**
      * Bring variables in your form through the constructor :
@@ -21,10 +35,11 @@ class CreateBundleFieldForm extends Form
      * @param BundleFieldContract $field
      * @param array               $url
      */
-    public function __construct(BundleFieldContract $field, array $action = [])
+    public function __construct(BundleFieldContract $field, Collection $fields, array $action)
     {
         $this->field = $field;
         $this->action = $action;
+        $this->fields = $fields;
         parent::__construct();
     }
 
@@ -33,7 +48,11 @@ class CreateBundleFieldForm extends Form
      */
     public function elements(): array
     {
-        $fields = $this->field->fields()->toFormElements($this->field, false);
+        $bundleField = $this->field;
+        $fields = $this->fields->map(function ($field) use ($bundleField) {
+            $value = $field->formValue($bundleField);
+            return $field->toFormElement($value);
+        })->all();
 
         $fields[] = new Hidden(
             '_field',

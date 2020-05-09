@@ -14,6 +14,7 @@ use Pingu\Entity\Support\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Contracts\FieldRepository;
 use Pingu\Field\Entities\Fields\BundleFieldFields;
+use Pingu\Field\Http\Contexts\UpdateBundleFieldContext;
 use Pingu\Forms\Support\Field;
 
 class BundleField extends BaseModel implements HasRouteSlugContract
@@ -24,9 +25,29 @@ class BundleField extends BaseModel implements HasRouteSlugContract
 
     protected $attributes = [
         'editable' => true,
-        'deletable' => true,
-        'helper' => ''
+        'deletable' => true
     ];
+
+    public static $routeContexts = [UpdateBundleFieldContext::class];
+
+    /**
+     * Creates a new field for a bundle
+     * 
+     * @param array                 $attributes
+     * @param BundleContract|string $bundle
+     * @param BundleFieldContract   $field
+     * 
+     * @return BundleField
+     */
+    public static function create(array $attributes, $bundle, BundleFieldContract $field): BundleField
+    {   
+        $field->saveFields($attributes);
+        $new = $field->field;
+        $new->bundle = $bundle instanceof BundleContract ? $bundle->identifier() : $bundle;
+        $new->instance()->associate($field)->save();
+        $field->load('field');
+        return $new;
+    }
 
     /**
      * Machinename getter
@@ -35,33 +56,7 @@ class BundleField extends BaseModel implements HasRouteSlugContract
      */
     public function getMachineNameAttribute()
     {
-        $name = $this->attributes['machineName'];
-        return 'field_' . $name;
-    }
-
-    /**
-     * Creates an instance of BundleField, and an instance of the BundleFieldContract passed in argument
-     * 
-     * @param array               $values
-     * @param BundleContract      $bundle
-     * @param BundleFieldContract $bundleField
-     * 
-     * @return BundleField
-     */
-    public static function create(array $values, BundleContract $bundle, BundleFieldContract $bundleField): BundleField
-    {
-        $generic = new static();
-        $bundleValues = array_intersect_key($values, array_flip($bundleField->getFillable()));
-        $genericValues = array_intersect_key($values, array_flip($generic->getFillable()));
-        $res = $bundleField->saveWithRelations($bundleValues);
-
-        if ($fixedCardinality = $bundleField->fixedCardinality() !== false) {
-            $genericValues['cardinality'] = $fixedCardinality;
-        }
-        $generic->bundle = $bundle->name();
-        $generic->instance()->associate($bundleField);
-        $generic->saveWithRelations($genericValues);
-        return $generic;
+        return 'field_' . $this->attributes['machineName'];
     }
 
     /**
@@ -91,6 +86,6 @@ class BundleField extends BaseModel implements HasRouteSlugContract
      */
     public function bundle(): BundleContract
     {
-        return \Bundle::getByName($this->bundle);
+        return \Bundle::get($this->bundle);
     }
 }

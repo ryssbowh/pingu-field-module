@@ -3,34 +3,50 @@
 namespace Pingu\Field\Support\FieldRepository;
 
 use Illuminate\Support\Collection;
-use Pingu\Field\Contracts\FieldRepository;
-use Pingu\Field\Support\FieldLayout;
+use Illuminate\Support\Traits\ForwardsCalls;
+use Pingu\Core\Contracts\HasIdentifierContract;
+use Pingu\Field\Contracts\FieldRepositoryContract;
+use Pingu\Field\Traits\FieldRepository\HasFields;
+use Pingu\Field\Traits\FieldRepository\HasValidationMessages;
+use Pingu\Field\Traits\FieldRepository\HasValidationRules;
 
-/**
- * Defines a field repository for a model. Designed to list
- * fields belonging to a model
- */
-abstract class BaseFieldRepository extends FieldRepository
+abstract class BaseFieldRepository implements FieldRepositoryContract
 {
+    use HasFields, HasValidationMessages, HasValidationRules, ForwardsCalls;
+    
     /**
-     * Fields defined in this repository.
-     * Must return an aray of BaseField
-     * 
-     * @return array
+     * @var HasIdentifierContract
      */
-    abstract protected function fields(): array;
+    protected $object;
+ 
+    /**
+     * Constructor
+     * 
+     * @param HasIdentifierContract $object
+     */
+    public function __construct(HasIdentifierContract $object)
+    {
+        $this->object = $object;
+    }
+
+    public function __call($name, $arguments)
+    {
+        return $this->forwardCallTo($this->resolveFields(), $name, $arguments);
+    }
 
     /**
-     * Build fields
-     * 
-     * @return Collection
+     * @inheritDoc
      */
-    protected function buildFields(): Collection
+    public function validationRules(): Collection
     {
-        $fields = collect();
-        foreach ($this->fields() as $field) {
-            $fields->put($field->machineName(), $field);
-        }
-        return $fields;
+        return $this->resolveRules();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validationMessages(): Collection
+    {
+        return $this->resolveMessages();
     }
 }

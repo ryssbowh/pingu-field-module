@@ -34,6 +34,15 @@ class Model extends BaseField
     /**
      * @inheritDoc
      */
+    public function saveOnModel(BaseModel $model, $value): bool
+    {
+        $model->{$this->machineName}()->associate($value);
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function buildItems(bool $includeNoValue, $noValueLabel = 'Select')
     {
         $textField = Arr::wrap($this->option('textField'));
@@ -57,14 +66,6 @@ class Model extends BaseField
             return;
         }
         $query->where($this->machineName.'_id', '=', $value);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function definesRelation()
-    {
-        return 'single';
     }
 
     /**

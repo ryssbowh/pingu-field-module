@@ -32,4 +32,23 @@ class FieldDatetimeFields extends BundleFieldFieldRepository
             new Boolean('required')
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [
+            'required' => 'boolean',
+            'setToCurrent' => 'boolean',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [];
+    }
 }

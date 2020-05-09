@@ -32,7 +32,7 @@ class BundleFieldsForm extends Form
     {
         return [
             new Select(
-                'type', 
+                '_field', 
                 [
                     'label' => 'Add new field',
                     'items' => $this->availableFields,

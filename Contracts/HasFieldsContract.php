@@ -2,21 +2,31 @@
 
 namespace Pingu\Field\Contracts;
 
+use Illuminate\Support\Collection;
 use Pingu\Core\Contracts\HasIdentifierContract;
+use Pingu\Field\Contracts\FieldRepositoryContract;
+use Pingu\Field\Contracts\HasFieldContextContract;
 
 interface HasFieldsContract extends HasIdentifierContract
 {
     /**
      * Fields repository getter
      * 
-     * @return FieldRepository
+     * @return FieldRepositoryContract
      */
-    public function fields(): FieldRepository;
+    public function fieldRepository(): FieldRepositoryContract;
 
     /**
-     * FieldsValidator getter
+     * Field names that can be filtered on
      * 
-     * @return FieldsValidator
+     * @return array
      */
-    public function validator(): FieldsValidator;
+    public function getFilterable(): array;
+
+    /**
+     * Fields getter
+     * 
+     * @return Collection
+     */
+    public function getFields(): Collection;
 }

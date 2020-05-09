@@ -3,12 +3,7 @@
 namespace Pingu\Field\Traits;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Pingu\Field\Contracts\FieldContract;
-use Pingu\Field\Contracts\FieldRepository;
-use Pingu\Field\Contracts\FieldsValidator;
-use Pingu\Field\Entities\BundleField;
-use Pingu\Field\Support\FieldLayout;
+use Pingu\Field\Contracts\FieldRepositoryContract;
 
 trait HasFields
 {
@@ -24,43 +19,20 @@ trait HasFields
      * 
      * @return FieldRepository
      */
-    abstract protected function getFieldRepository(): FieldRepository;
-
-    /**
-     * Gets the field validator for this model
-     * 
-     * @return FieldsValidator
-     */
-    abstract protected function getFieldsValidator(): FieldsValidator;
+    abstract protected function fieldRepositoryInstance(): FieldRepositoryContract;
 
     /**
      * Gets the field repository for this model by loading it through the Field Facade
      * 
      * @return FieldRepository
      */
-    public function fields(): FieldRepository
+    public function fieldRepository(): FieldRepositoryContract
     {
         $_this = $this;
         return \Field::getFieldRepository(
-            $this,
+            $this->identifier(),
             function () use ($_this) {
-                return $_this->getFieldRepository();
-            }
-        );
-    }
-
-    /**
-     * Gets the field validator for this model by loading it through the Field Facade
-     * 
-     * @return FieldRepository
-     */
-    public function validator(): FieldsValidator
-    {
-        $_this = $this;
-        return \Field::getFieldsValidator(
-            $this,
-            function () use ($_this) {
-                return $_this->getFieldsValidator();
+                return $_this->fieldRepositoryInstance();
             }
         );
     }
@@ -73,7 +45,7 @@ trait HasFields
     public function getFilterable(): array
     {
         $filterable = array_keys(array_filter(
-            $this->fields()->get()->all(),
+            $this->fieldRepository()->all()->all(),
             function ($field) {
                 return $field->filterable();
             }
@@ -89,5 +61,13 @@ trait HasFields
     public function setFilterable(array $filterable)
     {
         $this->filterable = $filterable;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFields(): Collection
+    {
+        return $this->fieldRepository()->all();
     }
 }

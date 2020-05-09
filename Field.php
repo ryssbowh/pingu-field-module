@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Pingu\Core\Exceptions\ClassException;
 use Pingu\Entity\Support\Entity;
 use Pingu\Field\Contracts\BundleFieldContract;
-use Pingu\Field\Contracts\FieldRepository;
+use Pingu\Field\Contracts\FieldRepositoryContract;
 use Pingu\Field\Exceptions\BundleFieldException;
 
 class Field
@@ -20,25 +20,17 @@ class Field
     /**
      * Registers a type of bundle field
      * 
-     * @param string $field
+     * @param BundleFieldContract $field
      * 
-     * @throws BundleFieldException
      * @throws ClassException
      */
-    public function registerBundleField(string $fieldClass)
+    public function registerBundleField(BundleFieldContract $field)
     {
-        $impl = class_implements($fieldClass);
-        if (!isset($impl[BundleFieldContract::class])) {
-            throw ClassException::missingInterface($fieldClass, BundleFieldContract::class);
-        }
-        $name = $fieldClass::uniqueName();
+        $name = $field::uniqueName();
         if (isset($this->bundleFields[$name])) {
             throw BundleFieldException::registered($name, $field, $this->bundleFields[$name]);
         }
-        $this->bundleFields[$name] = $fieldClass;
-        $fieldClass::registerWidgets();
-        $fieldClass::registerFilterWidgets();
-        $fieldClass::registerDisplayers();
+        $this->bundleFields[$name] = get_class($field);
     }
 
     /**
@@ -50,7 +42,7 @@ class Field
     {
         $fieldClasses = Arr::wrap($fieldClasses);
         foreach ($fieldClasses as $fieldClass) {
-            $this->registerBundleField($fieldClass);
+            $this->registerBundleField(new $fieldClass);
         }
     }
 
@@ -90,50 +82,13 @@ class Field
      * 
      * @return FieldRepository
      */
-    public function getFieldRepository($object, $callback): FieldRepository
+    public function getFieldRepository($object, $callback): FieldRepositoryContract
     {
         $key = config('field.cache-keys.repositories').'.'.object_to_class($object);
         if (!app()->bound($key)) {
             app()->instance($key, $callback());
         }
         return app()[$key];
-    }
-
-    /**
-     * Gets a field validator instance for an object.
-     * Will register it in the IOC
-     * 
-     * @param object|string $model
-     * @param Closure       $callback
-     * 
-     * @return FieldRepository
-     */
-    public function getFieldsValidator($object, $callback)
-    {
-        $key = config('field.cache-keys.validators').'.'.object_to_class($object);
-        if (!app()->bound($key)) {
-            app()->instance($key, $callback());
-        }
-        return app()[$key];
-    }
-
-    /**
-     * Retrieves a cache content for a object and a key.
-     * Uses ArrayCache so all cache related to this object can be cleared at once.
-     * 
-     * @param string        $key
-     * @param object|string $object
-     * @param Closure       $callback
-     * 
-     * @return array
-     */
-    public function getFieldsCache(string $key, $object, $callback)
-    {   
-        if (config('field.useCache', false)) {
-            $key = config('field.cache-keys.fields').'.'.object_to_class($object).'.'.$key;
-            return \ArrayCache::rememberForever($key, $callback);
-        }
-        return $callback();
     }
 
     /**

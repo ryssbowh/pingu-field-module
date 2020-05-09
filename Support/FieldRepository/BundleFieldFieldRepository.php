@@ -5,6 +5,7 @@ namespace Pingu\Field\Support\FieldRepository;
 use Illuminate\Support\Collection;
 use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Entities\BundleField;
+use Pingu\Field\Exceptions\BundleFieldException;
 use Pingu\Field\Support\FieldRepository\BaseFieldRepository;
 
 /**
@@ -22,11 +23,29 @@ abstract class BundleFieldFieldRepository extends BaseFieldRepository
      */
     protected function buildFields(): Collection
     {
-        if ($this->object->field) {
-            $fields = $this->object->field->fields()->get();
-        } else {
-            $fields = (new BundleField)->fields()->get();
+        $genericFields = (new BundleField)->fieldRepository()->all();
+        $fields = parent::buildFields();
+        foreach ($genericFields as $field) {
+            if ($fields->has($field->machineName())) {
+                throw BundleFieldException::nameReserved($field->machineName(), $this->object);
+            }
         }
-        return $fields->merge(parent::buildFields());
+        return $genericFields->merge($fields);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function buildMessages(): Collection
+    {
+        return parent::buildMessages()->merge((new BundleField)->fieldRepository()->validationMessages());
+    }
+        
+    /**
+     * @inheritDoc
+     */
+    protected function buildRules(): Collection
+    {
+        return parent::buildRules()->merge((new BundleField)->fieldRepository()->validationRules());
     }
 }

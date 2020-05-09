@@ -56,4 +56,27 @@ class BundleFieldFields extends BaseFieldRepository
             ),
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [
+            'machineName' => 'required|string|unique_bundle_field',
+            'name' => 'required|string',
+            'cardinality' => 'integer',
+            'helper' => 'string|nullable'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [
+            'machineName.unique_bundle_field' => 'This machine name already exists for this bundle'
+        ];
+    }
 }

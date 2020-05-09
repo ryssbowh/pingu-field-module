@@ -24,4 +24,24 @@ class FieldSlugFields extends BundleFieldFieldRepository
             ),
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [
+            'from' => 'string',
+            'default' => 'string',
+            'required' => 'boolean'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [];
+    }
 }

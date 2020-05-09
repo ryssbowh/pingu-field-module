@@ -132,7 +132,7 @@ trait HasBundleFields
     public function getFillable()
     {
         if ($bundle = $this->bundle()) {
-            return array_merge(parent::getFillable(), $bundle->fields()->allNames());
+            return array_merge(parent::getFillable(), $bundle->fieldRepository()->names());
         }
         return parent::getFillable();
     }

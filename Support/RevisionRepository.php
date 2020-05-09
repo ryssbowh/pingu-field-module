@@ -193,7 +193,7 @@ class RevisionRepository
      */
     protected function gatherFieldsToSave(): Collection
     {
-        $fields = $this->entity->fields()->get();
+        $fields = $this->entity->fieldRepository()->all();
         foreach ($this->entity->ignoreInRevisions() as $name) {
             $fields->forget($name);
         }

@@ -3,14 +3,15 @@
 namespace Pingu\Field\Exceptions;
 
 use Pingu\Entity\Contracts\BundleContract;
+use Pingu\Field\Contracts\BundleFieldContract;
 use Pingu\Field\Entities\BundleField;
 
 class BundleFieldException extends \Exception
 {
 
-    public static function registered(string $name, string $class, string $class2)
+    public static function registered(string $name, BundleFieldContract $field, string $class2)
     {
-        return new static("Can't register $class as bundle : '$name' is already registered by $class2");
+        return new static("Can't register ".get_class($field)." as bundle : '$name' is already registered by $class2");
     }
 
     public static function notRegistered(string $name)
@@ -41,6 +42,11 @@ class BundleFieldException extends \Exception
     public static function cantDelete()
     {
         return new static('You can\'t delete this instance, delete its related field instead ($field->field->delete())');
+    }
+
+    public static function nameReserved(string $name, BundleFieldContract $field)
+    {
+        return new static(get_class($field)." can't have a field called $name, this name is reserved by the system.")
     }
 
 }

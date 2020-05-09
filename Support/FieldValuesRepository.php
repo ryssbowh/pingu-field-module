@@ -88,7 +88,7 @@ class FieldValuesRepository
             return $this;
         }
         $this->values = $this->resolveValues();
-        $fields = $this->entity->bundle()->fields()->get();
+        $fields = $this->entity->bundle()->fieldRepository()->all();
         foreach ($fields as $name => $field) {
             $values = $this->values->where('field_id', $field->field->id);
             $fieldValue = $values->pluck('value')->toArray();
@@ -205,7 +205,7 @@ class FieldValuesRepository
     public function getValue(string $name)
     {
         if (!isset($this->castedValues[$name])) {
-            $field = $this->entity->fields()->get($name);
+            $field = $this->entity->fieldRepository()->get($name);
             $this->castedValues[$name] = $field->castValue($this->rawValues[$name]);
         }
         return $this->castedValues[$name];
@@ -278,7 +278,7 @@ class FieldValuesRepository
     public function save(): bool
     {
         $models = collect();
-        $fields = $this->entity->bundle()->fields()->get();
+        $fields = $this->entity->bundle()->fields()->all();
         foreach ($this->getDirty() as $name => $values) {
             $field = $fields[$name]->field;
             $this->saveField($field, $values);

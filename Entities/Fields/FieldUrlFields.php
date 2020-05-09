@@ -18,4 +18,24 @@ class FieldUrlFields extends BundleFieldFieldRepository
             new Boolean('required')
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [
+            'default' => 'valid_url',
+            'required' => 'boolean'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [
+        ];
+    }
 }

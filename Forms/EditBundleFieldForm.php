@@ -14,8 +14,14 @@ class EditBundleFieldForm extends CreateBundleFieldForm
      */
     public function elements(): array
     {
-        $fields = $this->field->fields()->toFormElements($this->field, true);
+        $bundleField = $this->field;
+        $fields = $this->fields->map(function ($field) use ($bundleField) {
+            $value = $field->formValue($bundleField);
+            return $field->toFormElement($value);
+        })->all();
+
         $fields[] = new Submit('_submit');
+
         return $fields;
     }
     /**

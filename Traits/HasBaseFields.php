@@ -2,12 +2,7 @@
 
 namespace Pingu\Field\Traits;
 
-use Illuminate\Support\Str;
-use Pingu\Core\Entities\BaseModel;
-use Pingu\Field\Contracts\FieldContract;
-use Pingu\Field\Contracts\FieldRepository;
-use Pingu\Field\Contracts\FieldsValidator;
-use Pingu\Field\Entities\BundleField;
+use Pingu\Field\Contracts\FieldRepositoryContract;
 
 trait HasBaseFields
 {
@@ -20,158 +15,84 @@ trait HasBaseFields
      * 
      * @return FieldRepository
      */
-    protected function getFieldRepository(): FieldRepository
+    protected function fieldRepositoryInstance(): FieldRepositoryContract
     {
         $fieldsClass = 'Fields\\'.class_basename(get_class($this)).'Fields';
-        $class = Str::replaceLast(class_basename(get_class($this)), $fieldsClass, get_class($this));
+        $class = \Str::replaceLast(class_basename(get_class($this)), $fieldsClass, get_class($this));
         return new $class($this);
     }
 
     /**
-     * Gets the field validator for this entity.
-     * Will look for a class called {EntityClass}Validator situated in
-     * the Validators folder of the Entities Folder
-     * 
-     * @return FieldsValidator
-     */
-    protected function getFieldsValidator(): FieldsValidator
-    {
-        $validatorClass = 'Validators\\'.class_basename(get_class($this)).'Validator';
-        $class = Str::replaceLast(class_basename(get_class($this)), $validatorClass, get_class($this));
-        return new $class($this);
-    }
-
-    /**
-     * Gets the field repository for this entity by loading it from the Field Facade
-     * 
-     * @return FieldRepository
-     */
-    public function fields(): FieldRepository
-    {
-        $_this = $this;
-        return \Field::getFieldRepository(
-            $this,
-            function () use ($_this) {
-                return $_this->getFieldRepository();
-            }
-        );
-    }
-
-    /**
-     * Gets the field validator for this entity by loading it from the Field Facade
-     * 
-     * @return FieldsValidator
-     */
-    public function validator(): FieldsValidator
-    {
-        $_this = $this;
-        return \Field::getFieldsValidator(
-            $this,
-            function () use ($_this) {
-                return $_this->getFieldsValidator();
-            }
-        );
-    }
-    
-    /**
-     * Syncs all values for fields that define 'multiple' relations
-     * 
-     * @param  array $relations
-     * @return bool
-     */
-    protected function syncMultipleRelations(array $relations): bool
-    {
-        $changes = false;
-        foreach ($relations as $name => $value) {
-            if ($this->$name()->sync($value)) {
-                $changes = true;
-                $this->load($name);
-            }
-        }
-        return $changes;
-    }
-
-    /**
-     * Fill all values for fields that define 'single' relations
-     * 
-     * @param array $relations
-     * 
-     * @return bool           
-     */
-    protected function fillSingleRelations(array $relations): bool
-    {
-        $changes = false;
-        foreach ($relations as $name => $value) {
-            $oldValue = $this->$name;
-
-            if ($value) {
-                $this->$name()->associate($value);
-            } else {
-                $this->$name()->dissociate();
-            }
-
-            $value = $this->$name;
-            
-            if ($oldValue != $value) {
-                $changes = true;
-            }
-        }
-        return $changes;
-    }
-
-    /**
-     * Fill a model with values and saves it.
-     * Will fill the model's attribute according to the field
+     * Fills a model with values and saves it, according to its fields.
+     * Will also save the relationships if the fields define some
      * 
      * @param  array        $values
      * @param  bool|boolean $casted
      * @return bool
      */
-    public function saveWithRelations(array $values, bool $casted = true): bool
+    public function saveFields(array $values): bool
     {
-        if (!$casted) {
-            $values = $this->validator()->castValues($values);
+        if ($this->exists) {
+            /**
+             * If the model exists we can save all the attributes and relations at once.
+             */
+            $changed = $this->fillAllFields($values);
+            $saved = $this->save();
+        } else {
+            /**
+             * If the model doesn't exist we can't save the syncable relations (HasMany, BelongsToMany)
+             * until the model has an id. So we'll save the attributes and simple relations (HasOne, BelongsTo)
+             * first and then sync the syncable relations.
+             */
+            $this->fillAllFields($values, true);
+            $saved = $this->save();
+            $changed = $this->syncSyncableFields($values);
         }
-        $fieldTypes = $this->sortFieldTypes($values);
-        $this->fill($fieldTypes['attributes'] ?? []);
-        $this->fillSingleRelations($fieldTypes['relations']['single'] ?? []);
 
-        if ($this->save()) {
-            $this->syncMultipleRelations($fieldTypes['relations']['multiple'] ?? []);
-        }
-
-        return true;
+        return ($saved or $changed);
     }
 
     /**
-     * Sort field values, will return an array of this type :
-     * [
-     *     'attributes' => ['attribute1' => 'value1', 'attribute2' => 'value2'],
-     *     'relations' => [
-     *         'single' => ['attribute3' => 'value3'],
-     *         'multiple' => ['attribute4' => ['value4', 'value5']]
-     *     ]
-     * ]
+     * Syncs all values for fields that define syncable relations (HasMany, BelongsToMany)
      * 
-     * @param  array $values
-     * @return array
+     * @param array $values
+     * 
+     * @return bool Has a syncable relation changed
      */
-    protected function sortFieldTypes(array $values): array
+    protected function syncSyncableFields(array $values): bool
     {
-        $types = [];
-        $fields = $this->fields();
+        $changed = false;
         foreach ($values as $name => $value) {
-            if (!$fields->has($name)) {
-                continue;
-            }
-            $field = $fields->get($name);
-            $relation = $field->definesRelation();
-            if ($relation === false) {
-                $types['attributes'][$name] = $value;
-            } else {
-                $types['relations'][$relation][$name] = $value;
+            $field = $this->fieldRepository()->get($name);
+            if ($field->definesSyncableRelation()) {
+                $syncedChanged = $field->saveOnModel($this, $value);
+                $changed = ($changed or $syncChanged);
             }
         }
-        return $types;
+        return $changed;
+    }
+
+    /**
+     * Fill attributes, simple and syncable relations.
+     * 
+     * @param array  $values
+     * 
+     * @return bool Has a syncable relation changed
+     */
+    protected function fillAllFields(array $values, bool $skipSyncable = false)
+    {
+        $changed = false;
+        foreach ($values as $name => $value) {
+            $field = $this->fieldRepository()->get($name);
+            $definesSyncable = $field->definesSyncableRelation();
+            if ($skipSyncable and $definesSyncable) {
+                continue;
+            }
+            $syncedChanged = $field->saveOnModel($this, $value);
+            if ($definesSyncable) {
+                $changed = ($changed or $syncChanged);
+            }
+        }
+        return $changed;
     }
 }

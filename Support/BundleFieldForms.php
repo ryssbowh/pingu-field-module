@@ -14,7 +14,7 @@ class BundleFieldForms extends BaseForms
      */
     public function create(array $args): Form
     {
-        return new CreateBundleFieldForm($this->model, ...$args);
+        return new CreateBundleFieldForm(...$args);
     }
 
     /**
@@ -22,6 +22,6 @@ class BundleFieldForms extends BaseForms
      */
     public function edit(array $args): Form
     {
-        return new EditBundleFieldForm($this->model, ...$args);
+        return new EditBundleFieldForm(...$args);
     }
 }

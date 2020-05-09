@@ -38,6 +38,23 @@ abstract class BaseField implements FieldContract
     /**
      * @inheritDoc
      */
+    public function saveOnModel(BaseModel $model, $value): bool
+    {
+        $model->{$this->machineName} = $value;
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function definesSyncableRelation(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function filterable(): bool
     {
         return true;
@@ -46,14 +63,6 @@ abstract class BaseField implements FieldContract
     protected function init(array $options)
     {
         $this->options = collect(array_merge($this->defaultOptions(), $options));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function definesRelation()
-    {
-        return false;
     }
 
     /**

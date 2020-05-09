@@ -10,7 +10,9 @@ use Illuminate\Support\Str;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Support\Entity;
+use Pingu\Field\Context\UpdateBundleFieldContext;
 use Pingu\Field\Contracts\BundleFieldContract;
+use Pingu\Field\Entities\BundleField;
 use Pingu\Field\Entities\BundleFieldValue;
 use Pingu\Field\Exceptions\BundleFieldException;
 use Pingu\Field\Support\BundleFieldForms;
@@ -26,6 +28,96 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     use HasWidgets, HasFilterWidgets, HasDisplayers;
 
     protected $with = ['field'];
+
+    public static $routeContexts = [UpdateBundleFieldContext::class];
+
+    protected $genericFields = ['machineName', 'bundle', 'helper', 'name', 'cardinality', 'editable', 'deletable'];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::registered(function ($field) {
+            \Field::registerBundleField($field);
+            $field::registerWidgets();
+            $field::registerFilterWidgets();
+            $field::registerDisplayers();
+        });
+
+        static::updated(function ($field) {
+            $field->field->save();
+        });
+    }
+
+    /**
+     * Field mutator. Instanciate an empty field relation
+     * 
+     * @return BundleField
+     */
+    public function getFieldAttribute()
+    {
+        if (!$field = $this->getRelationValue('field')) {
+            $field = new BundleField;
+            $this->setRelation('field', $field);
+        }
+        return $field;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setAttribute($key, $value) {
+        if (in_array($key, $this->field->getFillable())) {
+            return $this->field->setAttribute($key, $value);
+        }
+        return parent::setAttribute($key, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAttribute($key)
+    {
+        if (in_array($key, $this->genericFields)) {
+            return $this->field->getAttribute($key);
+        }
+        return parent::getAttribute($key);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function wasChanged($attributes = null)
+    {
+        $attributes = is_array($attributes) ? $attributes : func_get_args();
+        return (parent::wasChanged($attributes) or $this->field->wasChanged($attributes));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isDirty($attributes = null)
+    {
+        $attributes = is_array($attributes) ? $attributes : func_get_args();
+        return (parent::isDirty($attributes) or $this->field->isDirty($attributes));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function saveOnModel(BaseModel $model, $value): bool
+    {
+        $model->{$this->machineName} = $value;
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function definesSyncableRelation(): bool
+    {
+        return false;
+    }
 
     /**
      * @inheritDoc
@@ -51,33 +143,9 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     /**
      * @inheritDoc
      */
-    public function getNameAttribute(): string
-    {
-        return $this->field->name;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getMachineNameAttribute(): string
-    {
-        return $this->field->machineName;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getCardinalityAttribute(): string
-    {
-        return $this->field->cardinality;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function name(): string
     {
-        return $this->getNameAttribute();
+        return $this->name;
     }
 
     /**
@@ -85,7 +153,7 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      */
     public function machineName(): string
     {
-        return $this->getMachineNameAttribute();
+        return $this->machineName;
     }
 
     /**
@@ -93,7 +161,7 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      */
     public function cardinality(): int
     {
-        return $this->getCardinalityAttribute();
+        return $this->cardinality;
     }
 
     /**
@@ -101,9 +169,9 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
      * 
      * @return FormRepositoryContract
      */
-    public function forms(): FormRepositoryContract
+    public static function forms(): FormRepositoryContract
     {
-        return new BundleFieldForms($this);
+        return new BundleFieldForms;
     }
     
     /**
@@ -124,14 +192,6 @@ abstract class BaseBundleField extends BaseModel implements BundleFieldContract
     public function value(): HasOne
     {
         return $this->hasOne(BundleFieldValue::class, 'field_id');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function definesRelation()
-    {
-        return false;
     }
 
     /**

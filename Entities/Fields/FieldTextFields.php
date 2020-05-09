@@ -28,4 +28,23 @@ class FieldTextFields extends BundleFieldFieldRepository
             )
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(bool $updating): array
+    {
+        return [
+            'default' => 'string',
+            'required' => 'boolean'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [];
+    }
 }

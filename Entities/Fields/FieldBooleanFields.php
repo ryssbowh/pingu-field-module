@@ -16,4 +16,22 @@ class FieldBooleanFields extends BundleFieldFieldRepository
             new Boolean('default')
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [
+            'default' => 'boolean'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [];
+    }
 }

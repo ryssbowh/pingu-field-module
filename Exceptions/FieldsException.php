@@ -11,9 +11,9 @@ class FieldsException extends \Exception
         return new static("model ".get_class($model)." : missing a validation rule for '$name'");
     }
 
-    public static function undefined(array $names, $object)
+    public static function undefined(string $name, $object)
     {
-        return new static("Field(s) ".implode(', ', $names)." is/are not defined in ".get_class($object));
+        return new static("Field(s) $name is not defined in ".get_class($object));
     }
 
     public static function missingOption($name, $option)

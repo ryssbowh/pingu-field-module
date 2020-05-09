@@ -58,14 +58,6 @@ interface FieldContract extends HasWidgetsContract, HasFilterWidgetsContracts
     public function defaultValidationMessages(): array;
 
     /**
-     * Does this field define a relation, returns false, 'single', or 'multiple'
-     * This will be used to save the value of that field on a model
-     * 
-     * @return false|string
-     */
-    public function definesRelation();
-
-    /**
      * Get this field transformed into a form element
      *
      * @param mixed $valueOrModel
@@ -127,5 +119,22 @@ interface FieldContract extends HasWidgetsContract, HasFilterWidgetsContracts
      * @return string|FieldDisplayerContract
      */
     public static function defaultDisplayer();
+
+    /**
+     * Does this field define a syncable relation (HasMany, BelongToMany)
+     * 
+     * @return bool
+     */
+    public function definesSyncableRelation(): bool;
+
+    /**
+     * Saves a value on a model
+     * 
+     * @param BaseModel $model
+     * @param mixed    $value
+     * 
+     * @return bool
+     */
+    public function saveOnModel(BaseModel $model, $value): bool;
 
 }

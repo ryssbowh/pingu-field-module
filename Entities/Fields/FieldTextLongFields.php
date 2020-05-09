@@ -29,6 +29,22 @@ class FieldTextLongFields extends BundleFieldFieldRepository
         ];
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [];
+    }
+
     protected function alterFieldsForForm(Collection $fields, bool $updating)
     {
         if ($updating) {

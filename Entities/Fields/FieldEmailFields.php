@@ -18,4 +18,25 @@ class FieldEmailFields extends BundleFieldFieldRepository
             new Boolean('required')
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [
+            'default' => 'email',
+            'required' => 'boolean'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [
+            'title.required' => 'Title is required'
+        ];
+    }
 }

@@ -41,9 +41,17 @@ class ManyModel extends Model
     /**
      * @inheritDoc
      */
-    public function definesRelation()
+    public function saveOnModel(BaseModel $model, $value): bool
     {
-        return 'multiple';
+        return $model->{$this->machineName}()->sync($value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function definesSyncableRelation(): bool
+    {
+        return true;
     }
 
     /**
